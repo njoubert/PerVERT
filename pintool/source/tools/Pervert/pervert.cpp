@@ -50,6 +50,7 @@ END_LEGAL */
 
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <string>
 
 #include "pin.H"
@@ -64,38 +65,59 @@ using namespace std;
   #define FREE "free"
 #endif
 
+// Output file stream
 KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "pervert.out", "trace file");
-
 ofstream trace;
 
-// Print a memory read record
-VOID RecordMemRead(ADDRINT ip, VOID * addr)
+// The last size request passed to malloc
+ADDRINT request;
+// All currently active heap locations
+map<ADDRINT, ADDRINT> records;
+
+// A read happened
+VOID RecordMemRead(ADDRINT ip, ADDRINT addr)
 {
-  trace << "R " << addr << endl;
+  for ( map<ADDRINT,ADDRINT>::iterator i = records.begin(), ie = records.end(); i != ie; ++i )
+    if ( addr >= (*i).first && addr < (*i).second )
+    {
+      trace << "R " << addr << endl;
+      return;
+    }
 }
 
-// Print a memory write record
-VOID RecordMemWrite(ADDRINT ip, VOID * addr)
+// A write happened
+VOID RecordMemWrite(ADDRINT ip, ADDRINT addr)
 {
-  trace << "W " << addr << endl;
+  for ( map<ADDRINT,ADDRINT>::iterator i = records.begin(), ie = records.end(); i != ie; ++i )
+    if ( addr >= (*i).first && addr < (*i).second )
+    {
+      trace << "W " << addr << endl;
+      return;
+    }
 }
 
-// Prints a malloc record
+// Malloc was called, requested size bites
 VOID RecordMalloc(ADDRINT size)
 {
-  trace << "M " << size << endl;
+  request = size;
 }
 
-// Prints a malloc return record
-VOID RecordMallocResult(ADDRINT ret)
+// Malloc returned, with size bytes at addr
+VOID RecordMallocResult(ADDRINT addr)
 {
-  trace << "MR " << ret << endl;
+  ADDRINT end = addr + request;
+  records[addr] = end;
+  trace << "M " << addr << " " << end << endl;
 }
 
-// Prints a free record
+// Free was called on addr
 VOID RecordFree(ADDRINT addr)
 {
-  trace << "F " << addr << endl;
+  if ( records.find(addr) != records.end() )
+  {
+    records.erase(addr);
+    trace << "F " << addr << endl;
+  }
 }
 
 // Is called for every instruction and instruments reads and writes
@@ -149,7 +171,8 @@ VOID Image(IMG img, VOID *v)
                        IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
                        IARG_END);
         RTN_InsertCall(mallocRtn, IPOINT_AFTER, (AFUNPTR)RecordMallocResult,
-                       IARG_FUNCRET_EXITPOINT_VALUE, IARG_END);
+                       IARG_FUNCRET_EXITPOINT_VALUE, 
+                       IARG_END);
 
         RTN_Close(mallocRtn);
     }
