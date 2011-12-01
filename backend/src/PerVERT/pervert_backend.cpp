@@ -1,55 +1,15 @@
 #include <cstring>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
-#include "backend.h"
-#include "server/server.h"
-#include "server/config.h"
+#include "pervert/backend.h"
+#include "pervert/server/server.h"
+#include "pervert/server/config.h"
 
-namespace Backend {
+namespace PerVERT {
 	
+using namespace Utils;
+
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
-
-static void daemonize(void) {
-	pid_t pid, sid;
-	
-	/* already a daemon */
-	if ( getppid() == 1 ) return;
-
-	/* Fork off the parent process */
-	pid = fork();
-	if (pid < 0) {
-		exit(EXIT_FAILURE);
-	}
-	/* If we got a good PID, then we can exit the parent process. */
-	if (pid > 0) {
-		exit(EXIT_SUCCESS);
-	}
-	
-	/* At this point we are executing as the child process */
-	
-	/* Change the file mode mask */
-	umask(0);
-	
-	/* Create a new SID for the child process */
-	sid = setsid();
-	if (sid < 0) {
-		exit(EXIT_FAILURE);
-	}
-	
-	/* Change the current working directory.  This prevents the current
-	   directory from being locked; hence not being able to remove it. */
-	if ((chdir("/")) < 0) {
-		exit(EXIT_FAILURE);
-	}
-	
-	/* Redirect standard files to /dev/null */
-	freopen( "/dev/null", "r", stdin);
-	freopen( "/dev/null", "w", stdout);
-	freopen( "/dev/null", "w", stderr);
-}
 
 int getWord(char* buffer) {
 	int count = 0;
@@ -60,15 +20,15 @@ int getWord(char* buffer) {
 	
 void init(Server::Config *config) {
 	Log& log = GETLOG("MAIN");
-	log.log(LOG_STATUS, "Welcome to the PerVERT backend.\n");
+	log.log(LOG_STATUS, "Welcome to the PerVERT PerVERT.\n");
 	
 	if (config->makeDaemon) {
 		log.log(LOG_MESSAGE, "Daemonizing...\n");
-		daemonize();		
+		Utils::daemonize(EXIT_SUCCESS,EXIT_FAILURE);		
 	}
 	log.log(LOG_DEBUG, "DEBUG IS ON");
 	
-	Server::Server &server = Backend::Server::Server::Instance();
+	Server::Server &server = PerVERT::Server::Server::Instance();
 	server.start();
 	char buffer[1024];
 	int c;
@@ -99,7 +59,7 @@ void init(Server::Config *config) {
 	
 }
 
-} /* namespace Backend */
+} /* namespace PerVERT */
 
 
 void usage() {
@@ -109,7 +69,7 @@ void usage() {
 
 int main(int argc, char *argv[]) {
 	
-	Backend::Server::Config config;
+	PerVERT::Server::Config config;
 	
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i],"--daemon") == 0) {
@@ -122,7 +82,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	
-	Backend::init(&config);
+	PerVERT::init(&config);
 
 	return 0;
 }

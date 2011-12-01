@@ -1,6 +1,6 @@
-#include "log.h"
+#include "utils/log.h"
 
-namespace Backend {
+namespace Utils {
 
 #define LOGCR " \n	"
 
@@ -105,4 +105,4 @@ void Log::log(LOGLEVEL level, const char* msg, ...) {
 	va_end(argp);	
 }
 
-} /* namespace Backend */
+} /* namespace Utils */

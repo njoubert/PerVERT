@@ -4,15 +4,16 @@
 //  Created by Niels Joubert on 2011-11-30.
 //
 
-#ifndef SERVER_H_
-#define SERVER_H_
+#ifndef PERVERT_SERVER_H_
+#define PERVERT_SERVER_H_
 
-#include "server/globals.h"
+#include "pervert/server/globals.h"
 
-namespace Backend {
+namespace PerVERT {
 namespace Server {
 	
-	
+using namespace Utils;
+
 class Server {
 public:
 	//using Meyers singleton pattern
@@ -39,7 +40,7 @@ private:
 
 	
 } /* namespace Server */
-} /* namespace Backend */
+} /* namespace PerVERT */
 
 
-#endif /* SERVER_H_ */ 
+#endif /* PERVERT_SERVER_H_ */ 
