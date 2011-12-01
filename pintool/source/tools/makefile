@@ -66,6 +66,7 @@ do-build:
 	-$(MAKE) -C AVX
 	-$(MAKE) -C Replay
 	-$(MAKE) -C MacTests
+	-$(MAKE) -C Pervert
 
 do-build-mypintool:
 	-$(MAKE) -C MyPinTool
@@ -153,3 +154,4 @@ do-clean:
 	-$(MAKE) -C AVX clean
 	-$(MAKE) -C Replay clean
 	-$(MAKE) -C MacTests clean
+	-$(MAKE) -C Pervert clean
