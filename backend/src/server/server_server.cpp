@@ -20,12 +20,13 @@ static const char *options[] = {
   NULL
 };
 
-Server::Server() {
+Server::Server() : _log(GETLOG("SERVER")) {
 	ctx = NULL;
 }
 
 Server::~Server() {
 	if (ctx != NULL) {
+		_log.log(LOG_INFO, "Stopping mongoose server...\n");
 		mg_stop(ctx);
 	}
 	
@@ -37,6 +38,7 @@ void Server::start() {
 	if (ctx == NULL)
 		throw 42;
 	
+	_log.log(LOG_INFO,"PerVERT Server started on port %s.\n", mg_get_option(ctx, "listening_ports"));
 }	
 
 // handle the request, return 0 if everything is OK.

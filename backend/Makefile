@@ -6,11 +6,11 @@ LINKER := g++
 
 # All CXX files grouped by sub-namespace
 SERVER_CXXFILES := $(wildcard $(SRCDIR)/server/*.cpp)
-CXXFILES           := $(SRCDIR)/backend.cpp $(SERVER_CXXFILES)
+CXXFILES           := $(wildcard $(SRCDIR)/*.cpp) $(SERVER_CXXFILES)
 
 # All Header files grouped by sub-namespace
 SERVER_HEADERS     := $(wildcard $(INCLUDEDIR)/server/*.h)
-HEADERS            := $(INCLUDEDIR)/backend.h $(SERVER_HEADERS)
+HEADERS            := $(wildcard $(INCLUDEDIR)/*.h) $(SERVER_HEADERS)
 
 CFLAGS      := -W -Wall -I -pthread -g
 INCLUDE := -I$(INCLUDEDIR)/ -Ilib/

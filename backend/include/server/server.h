@@ -27,7 +27,7 @@ public:
                            const struct mg_request_info *request_info);
 private:
 	struct mg_context *ctx;
-
+	Log& _log;
 	void printRequestInfo(const struct mg_request_info *request_info);
 	
 	//singleton

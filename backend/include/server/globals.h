@@ -14,6 +14,7 @@
 
 #include <mongoose/mongoose.h>
 
+#include "log.h"
 
 
 

@@ -11,5 +11,6 @@
 #include <vector>
 #include <cstdio>
 
+#include "log.h"
 
 #endif /* BACKEND_H_ */ 
