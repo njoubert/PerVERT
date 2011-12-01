@@ -7,7 +7,6 @@ LINKER := g++
 # All CXX files grouped by sub-namespace
 UTILS_CXXFILES := $(shell find $(SRCDIR)/utils -type f -name '*.cpp')
 PERVERT_CXXFILES := $(shell find $(SRCDIR)/pervert -type f -name '*.cpp')
-
 CXXFILES           := $(UTILS_CXXFILES) $(PERVERT_CXXFILES)
 
 # All Header files grouped by sub-namespace
@@ -20,6 +19,20 @@ INCLUDE := -I$(INCLUDEDIR)/ -Ilib/
 CXXFLAGS := -g -Wall -O3 -fmessage-length=0 $(INCLUDE)
 LDFLAGS := 
 LIBS := lib/mongoose.o
+
+ifeq ($(shell sw_vers 2>/dev/null | grep Mac | awk '{ print $$2}'),Mac)
+	PLATFORM := OSX
+
+lib/mongoose.o: 
+	$(CC) $(CFLAGS) -flat_namespace -bundle -undefined suppress -pthreads -c lib/mongoose/mongoose.c -o lib/mongoose.o
+
+else
+	PLATFORM := _POSIX
+
+lib/mongoose.o: 
+	$(CC) $(CFLAGS) -shared -fPIC -fpic -c lib/mongoose/mongoose.c -o lib/mongoose.o 
+
+endif
 
 #Rules -----------------------------------------------------------------
 
@@ -44,5 +57,3 @@ clean:
 
 #Libraries -----------------------------------------------------------------
 
-lib/mongoose.o: 
-	$(CC) $(CFLAGS) -flat_namespace -bundle -undefined suppress -pthreads -c lib/mongoose/mongoose.c -o lib/mongoose.o
