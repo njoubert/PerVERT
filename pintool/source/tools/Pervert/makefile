@@ -37,6 +37,7 @@ endif
 #
 ##############################################################
 
+OBJS = $(OBJDIR)CallStack.o $(OBJDIR)pervert.o
 TOOL_ROOTS = pervert
 
 all: tools
@@ -46,7 +47,6 @@ TOOLS = $(TOOL_ROOTS:%=$(OBJDIR)%$(PINTOOL_SUFFIX))
 tools: $(OBJDIR) $(TOOLS)
 test: $(OBJDIR) $(TOOL_ROOTS:%=%.test)
 
-
 ## build rules
 
 $(OBJDIR):
@@ -54,9 +54,10 @@ $(OBJDIR):
 
 $(OBJDIR)%.o : %.cpp
 	$(CXX) -c $(CXXFLAGS) $(PIN_CXXFLAGS) ${OUTOPT}$@ $<
+
 $(TOOLS): $(PIN_LIBNAMES)
-$(TOOLS): %$(PINTOOL_SUFFIX) : %.o
-	${PIN_LD} $(PIN_LDFLAGS) $(LINK_DEBUG) ${LINK_OUT}$@ $< ${PIN_LPATHS} $(PIN_LIBS) $(DBG)
+$(TOOLS): %$(PINTOOL_SUFFIX) : $(OBJS)
+	${PIN_LD} $(PIN_LDFLAGS) $(LINK_DEBUG) ${LINK_OUT}$@ $< ${PIN_LPATHS} $(PIN_LIBS) $(DBG) $(OBJDIR)pervert.o
 
 ## cleaning
 clean:
