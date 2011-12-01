@@ -1,2 +1,4 @@
 *.o
 backend/server
+.DS_Store
+*~

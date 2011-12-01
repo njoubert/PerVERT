@@ -13,11 +13,12 @@
 #include <stdarg.h>
 #include <map>
 #include <string>
-#include "singleton.h"
+
+#include "utils/singleton.h"
 
 #define GETLOG(className) Singleton<LogFactory>::Instance().getLog(className)
 
-namespace Backend {
+namespace Utils {
 
 using namespace std;
 
@@ -60,7 +61,7 @@ private:
 	map<string, Log> logs;
 };
 
-} /* namespace Backend */
+} /* namespace Utils */
 
 
 #endif  // LOG_H_

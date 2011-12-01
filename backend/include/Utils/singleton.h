@@ -4,12 +4,12 @@
 //  Created by Niels Joubert on 2011-01-21.
 //  Copyright (c) 2011 Niels Joubert. All rights reserved.
 //
-#ifndef SINGLETON_H_
-#define SINGLETON_H_
+#ifndef _UTILS_SINGLETON_H_
+#define _UTILS_SINGLETON_H_
 
 #include <cstdio>
 
-namespace Backend {
+namespace Utils {
 
 template <class T>
 class Singleton {
@@ -28,6 +28,6 @@ private:
 	 Singleton& operator=(Singleton const&);
 };
 
-} /* namespace Backend */
+} /* namespace Utils */
 
-#endif /* _SINGLETON_H_ */
+#endif /* _UTILS_SINGLETON_H_ */

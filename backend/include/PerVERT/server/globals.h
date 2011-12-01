@@ -5,8 +5,8 @@
 //  Copyright (c) 2011 Niels Joubert. All rights reserved.
 //
 
-#ifndef SERVER_GLOBALS_H_
-#define SERVER_GLOBALS_H_
+#ifndef PERVERT_SERVER_GLOBALS_H_
+#define PERVERT_SERVER_GLOBALS_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +14,7 @@
 
 #include <mongoose/mongoose.h>
 
-#include "log.h"
+#include "utils/log.h"
 
 
-#endif  // SERVER_GLOBALS_H_
+#endif  // PERVERT_SERVER_GLOBALS_H_
