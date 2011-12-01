@@ -18,14 +18,14 @@ public:
 		static T _instance;
 		return _instance;
 	}
-  ~Singleton() {
-	printf("WOOOOOOOOOOOOOO\n");
+ 	~Singleton() {
+		printf("WOOOOOOOOOOOOOO\n");
 	}
 
 private:
-  Singleton();
-  Singleton(Singleton const&);
-  Singleton& operator=(Singleton const&);
+	 Singleton();
+	 Singleton(Singleton const&);
+	 Singleton& operator=(Singleton const&);
 };
 
 } /* namespace Backend */

@@ -2,6 +2,8 @@
 
 namespace Backend {
 
+#define LOGCR " \n	"
+
 const char* levelToChar(LOGLEVEL level) {
 	switch(level) {
 		case LOG_OFF:
@@ -82,6 +84,14 @@ LOGLEVEL Log::getLevel() {
 	return _level;
 }
 
+void Log::log_cr(LOGLEVEL level) {
+	if (level > _level)
+		return;
+	fprintf(stderr, LOGCR);
+	fflush(stderr);
+	
+}
+	
 //uses printf-style formatting
 void Log::log(LOGLEVEL level, const char* msg, ...) {
 	if (level > _level)

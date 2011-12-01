@@ -65,6 +65,7 @@ void init(Server::Config *config) {
 		log.log(LOG_MESSAGE, "Daemonizing...\n");
 		daemonize();		
 	}
+	log.log(LOG_DEBUG, "DEBUG IS ON");
 	
 	Server::Server &server = Backend::Server::Server::Instance();
 	server.start();

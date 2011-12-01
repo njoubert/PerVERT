@@ -22,12 +22,12 @@ namespace Backend {
 using namespace std;
 
 enum LOGLEVEL {
-	LOG_OFF     = 0,     //don't log ANYTHING
+	LOG_OFF     = 0,   //don't log ANYTHING
 	LOG_ERROR   = 1,   //something fucked up
-	LOG_MESSAGE = 2, //message to the user, not inside loop
+	LOG_MESSAGE = 2,   //message to the user, not inside loop
 	LOG_WARN    = 3,
-	LOG_STATUS  = 4,  //status of system, periodic but not often
-	LOG_INFO    = 5,    //might be inside loops
+	LOG_STATUS  = 4,   //status of system, periodic but not often
+	LOG_INFO    = 5,   //might be inside loops
 	LOG_DEBUG   = 6    //dumping like your grandma
 };
 
@@ -41,6 +41,7 @@ public:
 	void setLevel(LOGLEVEL level);
 	LOGLEVEL getLevel();
 	void log(LOGLEVEL level, const char* msg, ...);
+	void log_cr(LOGLEVEL level);
 private:
 	string _className;
 	LOGLEVEL _level;

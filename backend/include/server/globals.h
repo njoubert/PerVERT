@@ -17,5 +17,4 @@
 #include "log.h"
 
 
-
 #endif  // SERVER_GLOBALS_H_
