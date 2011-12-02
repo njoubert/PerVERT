@@ -1,5 +1,5 @@
 #include "pervert/app/loggerlayer.h"
-
+#include <arpa/inet.h>
 namespace PerVERT {
 namespace App {
 
@@ -11,11 +11,13 @@ LoggerLayer::LoggerLayer(LoggerLayerLevel l, char* file) {
 
 void LoggerLayer::handle(Server::Request* req, Server::Response* res) {
 	const struct mg_request_info *request_info = req->request_info;
-	
+	struct in_addr a;
+	a.s_addr = htonl(request_info->remote_ip);
 	if (_l == TINY) {
-		_file << request_info->remote_ip << ":" << request_info->remote_port;
+		_file << inet_ntoa(a);
 		_file << " [HTTP " << request_info->http_version << " " << request_info->request_method << "] ";
 		_file << request_info->uri;
+		_file << "?" << request_info->query_string;
 	} else if (_l == BIG) {	
 		_file << "request_method: " << request_info->request_method;
 		_file << "uri           : " << request_info->uri ;
