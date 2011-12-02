@@ -1,6 +1,5 @@
 #include "pervert/server/server.h"
 
-
 namespace PerVERT {
 namespace Server {
 
@@ -41,28 +40,48 @@ void Server::start() {
 	_log.log(LOG_STATUS,"PerVERT Server started on port %s.\n", mg_get_option(ctx, "listening_ports"));
 }	
 
+void Server::registerLayer(Layer* layer) {
+	_log.log(LOG_STATUS, "Registering layer %s\n", layer->name());
+	_layers.push_back(layer);
+	layer->setServer(this);
+}
+
+void Server::next(Request* req, Response* res) {
+	unsigned int l = req->currentLayer;
+	if (l < _layers.size()) {
+		req->currentLayer++;
+		_log.log(LOG_INFO, "calling next layer: %s\n", _layers[l]->name());
+		_layers[l]->handle(req,res);
+	} else {
+		_log.log(LOG_INFO, "ran out of layers!\n");
+		res->mg_success = 0;
+	}
+}
+
 // handle the request, return 0 if everything is OK.
 int Server::handleRequest(enum mg_event event,
                           struct mg_connection *conn,
                           const struct mg_request_info *request_info) {
-	if (_log.getLevel() == LOG_DEBUG)
-		printRequestInfo(request_info);
-	int processed = 0;
+	Request* req = new Request(request_info);
+	Response * res = new Response(conn);
 	switch (event) {
 			case MG_NEW_REQUEST:    // New HTTP request has arrived from the client
-				//processed = (_requestHandler.handle(conn, request_info) == true) ? 1 : 0;
+				next(req,res);
 				break;
 			case MG_HTTP_ERROR :    // HTTP error must be returned to the client
 				_log.log(LOG_WARN, "Mongoose HTTP error.\n");
 				break;
 			case MG_EVENT_LOG  :    // Mongoose logs an event, request_info.log_message
-				_log.log(LOG_WARN, "Mongoose Event Logged.\n");
+				_log.log(LOG_WARN, "Mongoose Event Logged: %s\n", request_info->log_message);
 				break;
 			case MG_INIT_SSL   :    // Mongoose initializes SSL. Instead of mg_connection *,
 				_log.log(LOG_WARN, "SSL Not Supported.\n");
 				break;
 	}
-	return processed;
+	int r = res->mg_success;
+	delete req;
+	delete res;
+	return r;
 }
 
 void Server::printRequestInfo(const struct mg_request_info *request_info) {

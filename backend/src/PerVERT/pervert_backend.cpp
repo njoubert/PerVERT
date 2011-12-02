@@ -3,6 +3,7 @@
 #include "pervert/backend.h"
 #include "pervert/server/server.h"
 #include "pervert/server/config.h"
+#include "pervert/app/loggerlayer.h"
 
 namespace PerVERT {
 	
@@ -29,6 +30,7 @@ void init(Server::Config *config) {
 	log.log(LOG_DEBUG, "DEBUG IS ON");
 	
 	Server::Server &server = PerVERT::Server::Server::Instance();
+	server.registerLayer(new App::LoggerLayer());
 	server.start();
 	char buffer[1024];
 	int c;
