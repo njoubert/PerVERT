@@ -30,7 +30,7 @@ void init(Server::Config *config) {
 	log.log(LOG_DEBUG, "DEBUG IS ON");
 	
 	Server::Server &server = PerVERT::Server::Server::Instance();
-	server.registerLayer(new App::LoggerLayer());
+	server.registerLayer(new App::LoggerLayer(App::TINY,"server.log"));
 	server.start();
 	char buffer[1024];
 	int c;
