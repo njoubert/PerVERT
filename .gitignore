@@ -2,3 +2,4 @@
 backend/server
 .DS_Store
 *~
+*.log
