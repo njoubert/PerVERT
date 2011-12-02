@@ -20,26 +20,8 @@ int getWord(char* buffer) {
 	while ((c = getchar()) != ' ' && c != '\n') { buffer[count] = c; count++; }
 	return count;
 }
-	
-void init(Server::Config *config) {
-	Log& log = GETLOG("MAIN");
-	log.log(LOG_STATUS, "Welcome to the PerVERT PerVERT.\n");
-	
-	if (config->makeDaemon) {
-		log.log(LOG_MESSAGE, "Daemonizing...\n");
-		Utils::daemonize(EXIT_SUCCESS,EXIT_FAILURE);		
-	}
-	log.log(LOG_DEBUG, "DEBUG IS ON");
-	
-	
-	Server::Server &server = PerVERT::Server::Server::Instance();
-	server.registerLayer(new App::LoggerLayer(App::TINY,"server.log"));
-	server.registerLayer(new App::PervertLayer());
-	server.registerLayer(new App::StaticLayer("../frontend/"));
-	server.start();
-	
-	
-	
+
+void interactiveloop() {
 	char buffer[1024];
 	int c;
 	while (1) {
@@ -64,6 +46,32 @@ void init(Server::Config *config) {
 		} else {
 			printf("Press \'q'\' to quit, 'h' for help.\n");			
 		}			
+	}	
+}
+
+void init(Server::Config *config) {
+	Log& log = GETLOG("MAIN");
+	log.log(LOG_STATUS, "Welcome to the PerVERT PerVERT.\n");
+	
+	log.log(LOG_DEBUG, "DEBUG IS ON");
+	
+	Server::Server &server = PerVERT::Server::Server::Instance();
+	server.registerLayer(new App::LoggerLayer(App::TINY,"server.log"));
+	server.registerLayer(new App::PervertLayer());
+	server.registerLayer(new App::StaticLayer("../frontend/"));
+	server.start();
+	
+
+
+	if (config->makeDaemon) {
+		log.log(LOG_MESSAGE, "Daemonizing...\n");
+		Singleton<LogFactory>::Instance().setAllLogTo(fopen("server.err", "w"));
+		Utils::daemonize(EXIT_SUCCESS,EXIT_FAILURE);
+		while(1) {
+			getchar();
+		}
+	} else {
+		interactiveloop();
 	}
 
 	

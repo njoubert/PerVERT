@@ -37,15 +37,17 @@ const char* levelToChar(LOGLEVEL level);
 class Log {
 public:
 	Log();
-	Log(string className, LOGLEVEL level);
+	Log(string className, LOGLEVEL level, FILE* fp);
 	~Log();
 	void setLevel(LOGLEVEL level);
+	void log_to(FILE* fp);
 	LOGLEVEL getLevel();
 	void log(LOGLEVEL level, const char* msg, ...);
 	void log_cr(LOGLEVEL level);
 private:
 	string _className;
 	LOGLEVEL _level;
+	FILE* _fp;
 };
 
 class LogFactory {
@@ -55,8 +57,10 @@ public:
 	Log& getLog(string className);
 	void setDefaultLevel(LOGLEVEL level);
 	void setAllLogLevel(LOGLEVEL level);
+	void setAllLogTo(FILE* fp);
 
 private:
+	FILE* _fp;
 	LOGLEVEL _level;
 	map<string, Log> logs;
 };

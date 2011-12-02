@@ -13,7 +13,7 @@ void StaticLayer::handle(Server::Request* req, Server::Response* res) {
 	
 	if (strcmp(request_info->request_method,"GET") == 0) {
 		
-		printf("uri: %s\n", request_info->uri);
+		//printf("uri: %s\n", request_info->uri);
 		
 	} else {
 		next(req,res);

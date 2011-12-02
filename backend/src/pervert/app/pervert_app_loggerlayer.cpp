@@ -17,7 +17,6 @@ void LoggerLayer::handle(Server::Request* req, Server::Response* res) {
 		_file << inet_ntoa(a);
 		_file << " [HTTP " << request_info->http_version << " " << request_info->request_method << "] ";
 		_file << request_info->uri;
-		_file << "?" << request_info->query_string;
 	} else if (_l == BIG) {	
 		_file << "request_method: " << request_info->request_method;
 		_file << "uri           : " << request_info->uri ;
