@@ -116,9 +116,9 @@ void Log::log(LOGLEVEL level, const char* msg, ...) {
 	va_list argp;
 	va_start(argp, msg);
 	fprintf(_fp, "%s: %s ", levelToChar(level), _className.c_str());
-	fflush(stdout);
 	vfprintf(_fp, msg, argp);
 	va_end(argp);	
+	fflush(_fp);
 }
 
 } /* namespace Utils */

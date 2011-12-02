@@ -52,8 +52,28 @@ void interactiveloop() {
 void init(Server::Config *config) {
 	Log& log = GETLOG("MAIN");
 	log.log(LOG_STATUS, "Welcome to the PerVERT PerVERT.\n");
+
+	if (config->makeDaemon) {
+		log.log(LOG_MESSAGE, "Daemonizing...\n");
+		FILE* errfp = fopen("server.err", "a");
+		Singleton<LogFactory>::Instance().setAllLogTo(errfp);
+		
+		#define MAXPATHLEN 1024
+		char path[MAXPATHLEN];
+        getcwd(path, MAXPATHLEN);
+		strcat(path, "/server.pid");
+		#undef MAXPATHLEN
+		
+		//int pid = Utils::daemonize(EXIT_SUCCESS,EXIT_FAILURE);
+		
+		//log.log(LOG_MESSAGE, "PerVERT daemon running, pid is %d\n", pid);
 	
-	log.log(LOG_DEBUG, "DEBUG IS ON");
+		FILE* fpid = fopen(path, "w");
+		//log.log(LOG_STATUS, "opened server.pid on fp %d\n", fpid);
+		//fprintf(fpid, "%d\n",pid);
+		fclose(fpid);
+	}
+	
 	
 	Server::Server &server = PerVERT::Server::Server::Instance();
 	server.registerLayer(new App::LoggerLayer(App::TINY,"server.log"));
@@ -62,19 +82,13 @@ void init(Server::Config *config) {
 	server.start();
 	
 
-
-	if (config->makeDaemon) {
-		log.log(LOG_MESSAGE, "Daemonizing...\n");
-		Singleton<LogFactory>::Instance().setAllLogTo(fopen("server.err", "w"));
-		Utils::daemonize(EXIT_SUCCESS,EXIT_FAILURE);
-		while(1) {
-			getchar();
-		}
-	} else {
+	// if (config->makeDaemon) {
+	// 	while(1) {
+	// 		getchar();
+	// 	}
+	// } else {
 		interactiveloop();
-	}
-
-	
+	// }
 }
 
 } /* namespace PerVERT */
