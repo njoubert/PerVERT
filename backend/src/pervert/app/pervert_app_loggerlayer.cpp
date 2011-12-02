@@ -16,7 +16,6 @@ void LoggerLayer::handle(Server::Request* req, Server::Response* res) {
 		_file << request_info->remote_ip << ":" << request_info->remote_port;
 		_file << " [HTTP " << request_info->http_version << " " << request_info->request_method << "] ";
 		_file << request_info->uri;
-		printf("LOGGED\n");
 	} else if (_l == BIG) {	
 		_file << "request_method: " << request_info->request_method;
 		_file << "uri           : " << request_info->uri ;

@@ -1,11 +1,11 @@
 //
-//  pervertlayer
+//  staticlayer
 //
 //  Created by Niels Joubert on 2011-11-30.
 //
 
-#ifndef PERVERT_APP_PERVERTLAYER_H_
-#define PERVERT_APP_PERVERTLAYER_H_
+#ifndef PERVERT_APP_STATICLAYER_H_
+#define PERVERT_APP_STATICLAYER_H_
 
 #include <iostream>
 #include <fstream>
@@ -17,13 +17,13 @@ namespace App {
 	
 using namespace Utils;
 
-class PervertLayer : public Server::Layer {
+class StaticLayer : public Server::Layer {
 public:
-	PervertLayer();
+	StaticLayer(char* httproot);
 	void handle(Server::Request* req, Server::Response* res);
 	char* name();
 private:
-
+	char* _httproot;
 };
 
 
@@ -31,4 +31,4 @@ private:
 } /* namespace PerVERT */
 
 
-#endif /* PERVERT_APP_PERVERTLAYER_H_ */ 
+#endif /* PERVERT_APP_STATICLAYER_H_ */ 

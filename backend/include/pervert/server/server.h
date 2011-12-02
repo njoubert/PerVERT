@@ -45,8 +45,6 @@ private:
 	void next(Request* req, Response* res);
 	std::vector<Layer*> _layers;
 	
-	void printRequestInfo(const struct mg_request_info *request_info);
-	
 };
 
 	
