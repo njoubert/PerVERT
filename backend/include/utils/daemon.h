@@ -29,6 +29,7 @@ static int daemonize(int exit_success, int exit_failure) {
 	if (pid < 0) {
 		exit(exit_failure);
 	}
+	
 	/* If we got a good PID, then we can exit the parent process. */
 	if (pid > 0) {
 		exit(exit_success);
@@ -56,7 +57,13 @@ static int daemonize(int exit_success, int exit_failure) {
 	freopen( "/dev/null", "w", stdout);
 	freopen( "/dev/null", "w", stderr);
 
-	return pid;
+	return 0; //this returns success.
+}
+
+static void infinitesleep() {
+	while(1) {
+		sleep(1000);
+	}
 }
 
 } /* namespace Utils */

@@ -53,10 +53,18 @@ void init(Server::Config *config) {
 	Log& log = GETLOG("MAIN");
 	log.log(LOG_STATUS, "Welcome to the PerVERT PerVERT.\n");
 
+	//If you want to use relative paths to the current running directory,
+	//you HAVE to initialize this code BEFORE you daemonize, since 
+	//daemonizing changes the current directory  to avoid locking a dir.
+	Server::Server &server = PerVERT::Server::Server::Instance();
+	server.registerLayer(new App::LoggerLayer(App::TINY,"server.log"));
+	server.registerLayer(new App::PervertLayer());
+	server.registerLayer(new App::StaticLayer("../frontend/"));
+
+
 	if (config->makeDaemon) {
 		log.log(LOG_MESSAGE, "Daemonizing...\n");
-		FILE* errfp = fopen("server.err", "a");
-		Singleton<LogFactory>::Instance().setAllLogTo(errfp);
+		Singleton<LogFactory>::Instance().setAllLogTo(fopen("server.err", "a"));
 		
 		#define MAXPATHLEN 1024
 		char path[MAXPATHLEN];
@@ -64,31 +72,25 @@ void init(Server::Config *config) {
 		strcat(path, "/server.pid");
 		#undef MAXPATHLEN
 		
-		//int pid = Utils::daemonize(EXIT_SUCCESS,EXIT_FAILURE);
+		Utils::daemonize(EXIT_SUCCESS,EXIT_FAILURE);
 		
-		//log.log(LOG_MESSAGE, "PerVERT daemon running, pid is %d\n", pid);
-	
+		int pid = getpid();
+		
+		log.log(LOG_MESSAGE, "PerVERT daemon running, pid is %d\n", pid);
 		FILE* fpid = fopen(path, "w");
-		//log.log(LOG_STATUS, "opened server.pid on fp %d\n", fpid);
-		//fprintf(fpid, "%d\n",pid);
+		fprintf(fpid, "%d\n",pid);
 		fclose(fpid);
 	}
 	
 	
-	Server::Server &server = PerVERT::Server::Server::Instance();
-	server.registerLayer(new App::LoggerLayer(App::TINY,"server.log"));
-	server.registerLayer(new App::PervertLayer());
-	server.registerLayer(new App::StaticLayer("../frontend/"));
 	server.start();
 	
 
-	// if (config->makeDaemon) {
-	// 	while(1) {
-	// 		getchar();
-	// 	}
-	// } else {
+	if (config->makeDaemon) {
+		Utils::infinitesleep();
+	} else {
 		interactiveloop();
-	// }
+	}
 }
 
 } /* namespace PerVERT */
