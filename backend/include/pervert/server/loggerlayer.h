@@ -13,16 +13,16 @@
 #include "pervert/server/server.h"
 
 namespace PerVERT {
-namespace App {
+namespace Server {
 	
 using namespace Utils;
 
 enum LoggerLayerLevel { TINY, BIG };
 
-class LoggerLayer : public Server::Layer {
+class LoggerLayer : public Layer {
 public:
 	LoggerLayer(LoggerLayerLevel l, char* file);
-	void handle(Server::Request* req, Server::Response* res);
+	void handle(Request* req, Response* res);
 	char* name();
 private:
 	std::ofstream _file;

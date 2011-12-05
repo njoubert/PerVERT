@@ -1,7 +1,8 @@
-#include "pervert/app/loggerlayer.h"
+#include "pervert/server/loggerlayer.h"
 #include <arpa/inet.h>
+
 namespace PerVERT {
-namespace App {
+namespace Server {
 
 LoggerLayer::LoggerLayer(LoggerLayerLevel l, char* file) {
 	_l = l;
@@ -9,7 +10,7 @@ LoggerLayer::LoggerLayer(LoggerLayerLevel l, char* file) {
 }
 
 
-void LoggerLayer::handle(Server::Request* req, Server::Response* res) {
+void LoggerLayer::handle(Request* req, Response* res) {
 	const struct mg_request_info *request_info = req->request_info;
 	struct in_addr a;
 	a.s_addr = htonl(request_info->remote_ip);

@@ -13,14 +13,14 @@
 #include "pervert/server/server.h"
 
 namespace PerVERT {
-namespace App {
+namespace Server {
 	
 using namespace Utils;
 
-class StaticLayer : public Server::Layer {
+class StaticLayer : public Layer {
 public:
 	StaticLayer(char* httproot);
-	void handle(Server::Request* req, Server::Response* res);
+	void handle(Request* req, Response* res);
 	char* name();
 private:
 	char* _httproot;

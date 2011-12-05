@@ -3,9 +3,9 @@
 #include "pervert/backend.h"
 #include "pervert/server/server.h"
 #include "pervert/server/config.h"
-#include "pervert/app/loggerlayer.h"
+#include "pervert/server/loggerlayer.h"
+#include "pervert/server/staticlayer.h"
 #include "pervert/app/pervertlayer.h"
-#include "pervert/app/staticlayer.h"
 
 namespace PerVERT {
 	
@@ -57,9 +57,9 @@ void init(Server::Config *config) {
 	//you HAVE to initialize this code BEFORE you daemonize, since 
 	//daemonizing changes the current directory  to avoid locking a dir.
 	Server::Server &server = PerVERT::Server::Server::Instance();
-	server.registerLayer(new App::LoggerLayer(App::TINY,"server.log"));
+	server.registerLayer(new Server::LoggerLayer(Server::TINY,"server.log"));
 	server.registerLayer(new App::PervertLayer());
-	server.registerLayer(new App::StaticLayer("../frontend/"));
+	server.registerLayer(new Server::StaticLayer("../frontend/"));
 
 
 	if (config->makeDaemon) {

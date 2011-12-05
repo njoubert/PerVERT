@@ -1,14 +1,14 @@
-#include "pervert/app/staticlayer.h"
+#include "pervert/server/staticlayer.h"
 
 namespace PerVERT {
-namespace App {
+namespace Server {
 
 StaticLayer::StaticLayer(char* httproot) {
 	_httproot = httproot;
 }
 
 
-void StaticLayer::handle(Server::Request* req, Server::Response* res) {
+void StaticLayer::handle(Request* req, Response* res) {
 	const struct mg_request_info *request_info = req->request_info;
 	
 	if (strcmp(request_info->request_method,"GET") == 0) {
