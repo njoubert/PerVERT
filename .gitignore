@@ -3,3 +3,5 @@ backend/server
 .DS_Store
 *~
 *.log
+*.err
+*.pid
