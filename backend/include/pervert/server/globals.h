@@ -8,8 +8,10 @@
 #ifndef PERVERT_SERVER_GLOBALS_H_
 #define PERVERT_SERVER_GLOBALS_H_
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+
 #include <iostream>
 
 #include <mongoose/mongoose.h>
