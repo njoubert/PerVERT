@@ -69,29 +69,33 @@ void Server::afterwards(Request* req, Response* res) {
 int Server::handleRequest(enum mg_event event,
                           struct mg_connection *conn,
                           const struct mg_request_info *request_info) {
+
 	Request* req = new Request(request_info);
 	Response * res = new Response(conn);
 	switch (event) {
 			case MG_NEW_REQUEST:    // New HTTP request has arrived from the client
 				next(req,res);
+				afterwards(req,res);
 				break;
 			case MG_HTTP_ERROR :    // HTTP error must be returned to the client
 				_log.log(LOG_WARN, "Mongoose HTTP error.\n");
+				res->mg_success = 0;
 				break;
 			case MG_EVENT_LOG  :    // Mongoose logs an event, request_info.log_message
 				_log.log(LOG_WARN, "Mongoose Event Logged: %s\n", request_info->log_message);
+				res->mg_success = 0;
 				break;
 			case MG_INIT_SSL   :    // Mongoose initializes SSL. Instead of mg_connection *,
 				_log.log(LOG_WARN, "SSL Not Supported.\n");
+				res->mg_success = 0;
 				break;
 	}
-	//OK, after the whole stack has completed, we can do callbacks
-	afterwards(req,res);
 	
 	int r = res->mg_success;
 	delete req;
 	delete res;
 	return r;
+	
 }
 
 } /* namespace Server */
