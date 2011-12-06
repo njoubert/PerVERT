@@ -12,7 +12,7 @@ void PervertLayer::handle(Server::Request* req, Server::Response* res) {
 	const struct mg_request_info *request_info = req->request_info;
 	
 	
-	
+
 	
 	next(req,res);
 }
@@ -23,3 +23,6 @@ char* PervertLayer::name() {
 
 } /* namespace Server */
 } /* namespace PerVERT */
+
+
+

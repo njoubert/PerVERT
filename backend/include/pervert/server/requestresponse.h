@@ -12,7 +12,13 @@
 namespace PerVERT {
 namespace Server {
 	
-enum ResponseStatus { NONE, FIRSTHEADER, HEADERS, DATA };
+enum ResponseStatus { NONE, FIRSTHEADER, HEADERS, DATA, CLOSED };
+
+class Layer;
+
+struct Metadata {
+	//extend this inside your layers with your own custom data.
+};
 	
 using namespace Utils;
 
@@ -21,19 +27,23 @@ struct Request {
 private:
 	friend class Server;
 	unsigned int currentLayer;
-	Request(const struct mg_request_info *req) { currentLayer = 0; request_info = req; }
+	Request(const struct mg_request_info *req);
 };
 
 struct Response {
 	struct mg_connection *conn;
+	void setMetadata(Layer* layer, Metadata* value);
+	Metadata* getMetadata(Layer* layer);
 	void writeFirstHeader(int code, char* str);
 	void writeHeader(char* key, char* value);
 	void write();
+	void close();
 private:
 	int mg_success;
 	ResponseStatus _rs;
 	friend class Server;
-	Response(struct mg_connection *c) { conn = c; mg_success = 1; _rs = NONE; }
+	Response(struct mg_connection *c);
+	map<Layer*,Metadata*> _metadata;
 };
 
 	

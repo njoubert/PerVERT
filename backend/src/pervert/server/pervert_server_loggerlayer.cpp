@@ -1,8 +1,13 @@
 #include "pervert/server/loggerlayer.h"
 #include <arpa/inet.h>
+#include <sys/time.h>
 
 namespace PerVERT {
 namespace Server {
+
+struct LoggerMetadata : public Metadata {
+	timeval starttime;
+};
 
 LoggerLayer::LoggerLayer(LoggerLayerLevel l, char* file) {
 	_l = l;
@@ -11,6 +16,20 @@ LoggerLayer::LoggerLayer(LoggerLayerLevel l, char* file) {
 
 
 void LoggerLayer::handle(Request* req, Response* res) {
+	LoggerMetadata* m = new LoggerMetadata(); //TODO: should be "current time"
+	gettimeofday(&(m->starttime), 0);
+	res->setMetadata(this, m);
+	next(req,res);
+}
+
+void LoggerLayer::afterwards(Request* req, Response* res) {
+	LoggerMetadata* m = (LoggerMetadata*) res->getMetadata(this);
+	timeval currentTime;
+	gettimeofday(&currentTime, 0);
+	double duration = (double) (1000*(currentTime.tv_sec - m->starttime.tv_sec) + 1e-3
+            * (currentTime.tv_usec - m->starttime.tv_usec));
+	delete m;
+
 	const struct mg_request_info *request_info = req->request_info;
 	struct in_addr a;
 	a.s_addr = htonl(request_info->remote_ip);
@@ -18,6 +37,7 @@ void LoggerLayer::handle(Request* req, Response* res) {
 		_file << inet_ntoa(a);
 		_file << " [HTTP " << request_info->http_version << " " << request_info->request_method << "] ";
 		_file << request_info->uri;
+		_file << " " << duration << " ms";
 	} else if (_l == BIG) {	
 		_file << "request_method: " << request_info->request_method;
 		_file << "uri           : " << request_info->uri ;
@@ -30,13 +50,13 @@ void LoggerLayer::handle(Request* req, Response* res) {
 		_file << "status_code   : " << request_info->status_code;
 		_file << "is_ssl        : " << request_info->is_ssl;
 		_file << "num_headers   : " << request_info->num_headers;
+		_file << "duration      : " << duration << " ms";
 		for (int i = 0; i < request_info->num_headers; i++) {
 			_file << " header : [" <<  request_info->http_headers[i].name << "] = " << request_info->http_headers[i].value << "\n";
 		}
 	}
 	_file << "\n";
-	_file.flush();
-	next(req,res);
+	_file.flush();	
 }
 
 char* LoggerLayer::name() {

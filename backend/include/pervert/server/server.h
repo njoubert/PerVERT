@@ -43,6 +43,7 @@ private:
 	//layer management
 	friend class Layer;
 	void next(Request* req, Response* res);
+	void afterwards(Request* req, Response* res);
 	std::vector<Layer*> _layers;
 	
 };

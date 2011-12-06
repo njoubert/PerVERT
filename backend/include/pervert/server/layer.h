@@ -19,8 +19,15 @@ class Server;
 
 class Layer {
 public:
-	virtual void handle(Request* req, Response* res) = 0;
+	virtual void init();
 	virtual char* name() = 0;
+
+	//called by the server when this layer starts running.
+	virtual void handle(Request* req, Response* res) = 0;
+	
+	//called by the server when all the layers finished running.
+	//do not write to response, it's closed by now!
+	virtual void afterwards(Request* req, Response* res);
 	
 protected:
 	void next(Request* req, Response* res);

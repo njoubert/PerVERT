@@ -44,6 +44,7 @@ void Server::registerLayer(Layer* layer) {
 	_log.log(LOG_STATUS, "Registering layer %s\n", layer->name());
 	_layers.push_back(layer);
 	layer->setServer(this);
+	layer->init();
 }
 
 void Server::next(Request* req, Response* res) {
@@ -55,6 +56,12 @@ void Server::next(Request* req, Response* res) {
 	} else {
 		_log.log(LOG_INFO, "ran out of layers!\n");
 		res->mg_success = 0;
+	}
+}
+
+void Server::afterwards(Request* req, Response* res) {
+	for (int i = _layers.size()-1; i > -1; i--) {
+		_layers[i]->afterwards(req,res);
 	}
 }
 
@@ -78,6 +85,9 @@ int Server::handleRequest(enum mg_event event,
 				_log.log(LOG_WARN, "SSL Not Supported.\n");
 				break;
 	}
+	//OK, after the whole stack has completed, we can do callbacks
+	afterwards(req,res);
+	
 	int r = res->mg_success;
 	delete req;
 	delete res;

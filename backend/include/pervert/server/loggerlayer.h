@@ -22,8 +22,12 @@ enum LoggerLayerLevel { TINY, BIG };
 class LoggerLayer : public Layer {
 public:
 	LoggerLayer(LoggerLayerLevel l, char* file);
-	void handle(Request* req, Response* res);
 	char* name();
+
+	void handle(Request* req, Response* res);
+
+	void afterwards(Request* req, Response* res);
+	
 private:
 	std::ofstream _file;
 	LoggerLayerLevel _l;
