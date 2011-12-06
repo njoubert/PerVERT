@@ -11,7 +11,11 @@ void HTTPLayer::writeStatus(Request* req, Response* res, int code) {
 		case 200: //OK
 		res->write("HTTP/1.1 200 OK\r\n");
 		break;
-		
+
+		case 404: //Request Entity Too Large
+		res->write("HTTP/1.1 404 Not Found\r\n");
+		break;
+				
 		case 413: //Request Entity Too Large
 		res->write("HTTP/1.1 413 Request Entity Too Large\r\n");
 		break;
