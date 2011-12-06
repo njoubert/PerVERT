@@ -33,7 +33,7 @@ void StaticLayer::handle(Request* req, Response* res) {
 		
 		//does this file exist?
 		if (access(f.c_str(), R_OK) != 0) {
-			return next(req,res);
+			return writeStatus(req,res,404);
 		}
 		
 		struct stat status;

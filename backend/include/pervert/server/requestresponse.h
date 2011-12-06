@@ -34,7 +34,7 @@ struct Response {
 	struct mg_connection *conn;
 	void setMetadata(Layer* layer, Metadata* value);
 	Metadata* getMetadata(Layer* layer);
-	void write(char* d);
+	void write(char* data, size_t len);
 	void close();
 private:
 	int mg_success;

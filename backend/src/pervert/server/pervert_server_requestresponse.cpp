@@ -23,8 +23,8 @@ Request::Request(const struct mg_request_info *req) { currentLayer = 0; request_
 
 Response::Response(struct mg_connection *c) { conn = c; mg_success = 1; _rs = NONE; }
 
-void Response::write(char* d) {
-	mg_printf(conn, "%s", d);
+void Response::write(char* data, size_t len) {
+	mg_write(conn, data, len);
 }
 
 void Response::setMetadata(Layer* layer, Metadata* value) {
