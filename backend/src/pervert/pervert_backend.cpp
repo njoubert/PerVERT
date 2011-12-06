@@ -59,7 +59,7 @@ void init(Server::Config *config) {
 	Server::Server &server = PerVERT::Server::Server::Instance();
 	server.registerLayer(new Server::LoggerLayer(Server::TINY,"server.log"));
 	server.registerLayer(new App::PervertLayer());
-	server.registerLayer(new Server::StaticLayer("../frontend/"));
+	server.registerLayer(new Server::StaticLayer("/../frontend"));
 
 
 	if (config->makeDaemon) {

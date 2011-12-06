@@ -23,7 +23,7 @@ public:
 	void handle(Request* req, Response* res);
 	char* name();
 private:
-	char* _httproot;
+	string _httproot;
 };
 
 
