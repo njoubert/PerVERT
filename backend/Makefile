@@ -22,17 +22,15 @@ LIBS := lib/mongoose.o
 
 ifeq ($(shell sw_vers 2>/dev/null | grep Mac | awk '{ print $$2}'),Mac)
 	PLATFORM := OSX
-
-lib/mongoose.o: 
-	$(CC) $(CFLAGS) -flat_namespace -bundle -undefined suppress -pthreads -c lib/mongoose/mongoose.c -o lib/mongoose.o
-
+	MONGOOSE_FLAGS := -flat_namespace -bundle -undefined suppress -pthreads -c lib/mongoose/mongoose.c -o lib/mongoose.o
 else
 	PLATFORM := _POSIX
+	MONGOOSE_FLAGS := -shared -fPIC -fpic -c lib/mongoose/mongoose.c -o lib/mongoose.o
+	LDFLAGS += -lpthread -ldl
+endif
 
 lib/mongoose.o: 
-	$(CC) $(CFLAGS) -shared -fPIC -fpic -c lib/mongoose/mongoose.c -o lib/mongoose.o 
-
-endif
+	$(CC) $(CFLAGS) $(MONGOOSE_FLAGS)
 
 #Rules -----------------------------------------------------------------
 
@@ -44,7 +42,7 @@ CXXOBJS     := $(CXXFILES:.cpp=.o)
 server: $(CXXOBJS) $(HEADERS) $(LIBS)
 	echo $(CXXFILES)
 	echo $(HEADERS)
-	$(LINKER) -o server $(CXXOBJS) $(LDFLAGS) $(LIBS)
+	$(LINKER) -o server $(CXXOBJS) $(LIBS) $(LDFLAGS) 
 
 lint:
 	$(foreach myfile,$(SERVER_HEADERS),python cpplint.py --filter=-whitespace $(myfile);)
