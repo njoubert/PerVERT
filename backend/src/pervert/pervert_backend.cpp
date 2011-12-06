@@ -5,6 +5,7 @@
 #include "pervert/server/config.h"
 #include "pervert/server/loggerlayer.h"
 #include "pervert/server/staticlayer.h"
+#include "pervert/server/querylayer.h"
 #include "pervert/app/pervertlayer.h"
 
 namespace PerVERT {
@@ -58,6 +59,7 @@ void init(Server::Config *config) {
 	//daemonizing changes the current directory  to avoid locking a dir.
 	Server::Server &server = PerVERT::Server::Server::Instance();
 	server.registerLayer(new Server::LoggerLayer(Server::TINY,"server.log"));
+	server.registerLayer(new Server::QueryLayer());
 	server.registerLayer(new App::PervertLayer());
 	server.registerLayer(new Server::StaticLayer("/../frontend",10485760));
 

@@ -18,12 +18,12 @@ LoggerLayer::LoggerLayer(LoggerLayerLevel l, char* file) {
 void LoggerLayer::handle(Request* req, Response* res) {
 	LoggerMetadata* m = new LoggerMetadata(); //TODO: should be "current time"
 	gettimeofday(&(m->starttime), 0);
-	res->setMetadata(this, m);
+	res->setMetadata("logger", m);
 	next(req,res);
 }
 
 void LoggerLayer::afterwards(Request* req, Response* res) {
-	LoggerMetadata* m = (LoggerMetadata*) res->getMetadata(this);
+	LoggerMetadata* m = (LoggerMetadata*) res->getMetadata("logger");
 	timeval currentTime;
 	gettimeofday(&currentTime, 0);
 	double duration = (double) (1000*(currentTime.tv_sec - m->starttime.tv_sec) + 1e-3

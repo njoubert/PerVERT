@@ -27,12 +27,16 @@ void Response::write(char* data, size_t len) {
 	mg_write(conn, data, len);
 }
 
-void Response::setMetadata(Layer* layer, Metadata* value) {
-	_metadata[layer] = value;
+void Response::setMetadata(string name, Metadata* value) {
+	_metadata[name] = value;
 }
 
-Metadata* Response::getMetadata(Layer* layer) {
-	return _metadata[layer];
+Metadata* Response::getMetadata(string name) {
+	if (_metadata.count(name) > 0) {
+		return _metadata[name];
+	} else {
+		return NULL;
+	}
 }
 
 

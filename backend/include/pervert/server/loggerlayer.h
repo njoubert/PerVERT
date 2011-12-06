@@ -4,8 +4,8 @@
 //  Created by Niels Joubert on 2011-11-30.
 //
 
-#ifndef PERVERT_APP_LOGGER_H_
-#define PERVERT_APP_LOGGER_H_
+#ifndef PERVERT_SERVER_LOGGER_H_
+#define PERVERT_SERVER_LOGGER_H_
 
 #include <iostream>
 #include <fstream>
@@ -39,4 +39,4 @@ private:
 } /* namespace PerVERT */
 
 
-#endif /* PERVERT_SERVER_LAYER_H_ */ 
+#endif /* PERVERT_SERVER_LOGGER_H_ */ 

@@ -10,20 +10,21 @@
 #include <iostream>
 #include <fstream>
 
-#include "pervert/server/server.h"
+#include "pervert/server/httplayer.h"
+#include "utils/log.h"
 
 namespace PerVERT {
 namespace App {
 	
 using namespace Utils;
 
-class PervertLayer : public Server::Layer {
+class PervertLayer : public Server::HTTPLayer {
 public:
 	PervertLayer();
 	void handle(Server::Request* req, Server::Response* res);
 	char* name();
 private:
-
+	Log& _log;
 };
 
 

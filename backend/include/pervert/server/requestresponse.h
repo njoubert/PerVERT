@@ -32,8 +32,8 @@ private:
 
 struct Response {
 	struct mg_connection *conn;
-	void setMetadata(Layer* layer, Metadata* value);
-	Metadata* getMetadata(Layer* layer);
+	void setMetadata(string name, Metadata* value);
+	Metadata* getMetadata(string name);
 	void write(char* data, size_t len);
 	void close();
 private:
@@ -41,7 +41,7 @@ private:
 	ResponseStatus _rs;
 	friend class Server;
 	Response(struct mg_connection *c);
-	map<Layer*,Metadata*> _metadata;
+	map<string,Metadata*> _metadata;
 };
 
 	

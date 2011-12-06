@@ -90,7 +90,7 @@ int Server::handleRequest(enum mg_event event,
 				res->mg_success = 0;
 				break;
 	}
-	
+	_log.log(LOG_INFO, "done with request.\n");
 	int r = res->mg_success;
 	delete req;
 	delete res;
