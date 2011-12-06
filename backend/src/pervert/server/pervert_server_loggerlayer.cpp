@@ -46,7 +46,7 @@ void LoggerLayer::afterwards(Request* req, Response* res) {
 		_file << "remote_user   : " << request_info->remote_user;
 		_file << "log_message   : " << request_info->log_message;
 		_file << "remote_ip     : " << request_info->remote_ip;
-		_file << "rempote_port  : " << request_info->remote_port;
+		_file << "remote_port   : " << request_info->remote_port;
 		_file << "status_code   : " << request_info->status_code;
 		_file << "is_ssl        : " << request_info->is_ssl;
 		_file << "num_headers   : " << request_info->num_headers;

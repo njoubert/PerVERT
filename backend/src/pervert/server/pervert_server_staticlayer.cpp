@@ -1,10 +1,12 @@
 #include "pervert/server/staticlayer.h"
+#include <sys/times.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 namespace PerVERT {
 namespace Server {
 
-StaticLayer::StaticLayer(char* httproot) {
+StaticLayer::StaticLayer(char* httproot, unsigned int maxfilesize) {
 	#define MAXPATHLEN 1024
 	char temp[MAXPATHLEN];
 	
@@ -13,6 +15,7 @@ StaticLayer::StaticLayer(char* httproot) {
 	#undef MAXPATHLEN
 	
 	_httproot = cwd.append(string(httproot));
+	_maxfilesize = maxfilesize;
 }
 
 void StaticLayer::handle(Request* req, Response* res) {
@@ -33,16 +36,25 @@ void StaticLayer::handle(Request* req, Response* res) {
 			return next(req,res);
 		}
 		
+		struct stat status;
+		stat(f.c_str(), &status);
 		
 		//pull file from disk
-		
-		
-		
-		//set headers correctly
-		
-		//send file across wire
-		
-		
+		if (status.st_size > _maxfilesize) {
+			writeStatus(req,res,413);
+		} else {
+			char* filedata = new char[status.st_size];
+			FILE* fd = fopen(f.c_str(),"r");
+			size_t readstatus = fread(filedata,sizeof(char),status.st_size,fd);
+			if (readstatus != status.st_size) {
+				writeStatus(req,res,500);
+			} else {
+				writeStaticPage(req,res,filedata, readstatus);
+				//close
+				
+			}
+			delete filedata;
+		}
 		
 	} else {
 		return next(req,res);

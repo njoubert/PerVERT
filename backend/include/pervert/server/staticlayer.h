@@ -11,19 +11,21 @@
 #include <fstream>
 
 #include "pervert/server/server.h"
+#include "pervert/server/httplayer.h"
 
 namespace PerVERT {
 namespace Server {
 	
 using namespace Utils;
 
-class StaticLayer : public Layer {
+class StaticLayer : public HTTPLayer {
 public:
-	StaticLayer(char* httproot);
+	StaticLayer(char* httproot, unsigned int maxfilesize);
 	void handle(Request* req, Response* res);
 	char* name();
 private:
 	string _httproot;
+	unsigned int _maxfilesize;
 };
 
 
