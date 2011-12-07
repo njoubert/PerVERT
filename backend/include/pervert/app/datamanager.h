@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <pthread.h>
 
 #include "utils/log.h"
 #include <cstring>
@@ -21,12 +22,20 @@ using namespace Utils;
 class DataManager {
 public:
 	DataManager(string exec);
+	~DataManager();
 	
 	int update(string logs);
+	bool status();
 
 private:
 	Log& _log;
 	string _exec;
+	pthread_mutex_t the_lock;
+	
+	void lock();
+	void unlock();
+	
+	bool _busy;
 	
 };
 
