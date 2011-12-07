@@ -10,6 +10,7 @@
 	<meta name="author" content="Niels Joubert">
 	
 	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	<link rel="stylesheet" type="text/css" href="css/pictos/pictos.css">
 	<link rel="stylesheet" type="text/css" href="css/site.css">
 	
 	<script type="text/javascript" src="js/d3-233d80a/d3.js"></script>
@@ -17,28 +18,75 @@
   
 	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script> 
 
+<script type="text/javascript">
 
+function showSpinner(status) {
+  $("#loadingspinner").hide();
+  $("#okayspinner").hide();
+  $("#errorspinner").hide();
+  
+  if (status == "GOOD") {
+    $("#okayspinner").show();
+    $("#statusmsg").hide();
+  } else if (status == "BUSY") {
+    $("#loadingspinner").show();
+    $("#statusmsg").hide();
+  } else {
+    $("#statusmsg").show();
+    $("#statusmsg").html(status);
+    $("#errorspinner").show();
+  }
+}
+
+var currentStatus;
+function handlePollResult(data) {
+  if (currentStatus != data) {
+    showSpinner(data);    
+    currentStatus = data;
+  }
+}
+
+function doPoll() {
+  $.post('/f/status?exec=a', function(data) {
+    handlePollResult(data);
+    setTimeout(doPoll,200);
+  })
+}
+
+$(document).ready(function() {
+  $("#loadingspinner").show();
+  $("#okayspinner").hide();
+  $("#errorspinner").hide();
+  doPoll();
+});
+
+</script>
 </head>
 <body>
 <div class="container">
   <div id="inside">
     
     <div id="header">
-    <h1>It works</h1>
+    <h1>pervert visualizer </h1>
+        <div id="statusspinner">
+          <span id="loadingspinner"><img src="img/ajax-loader.gif"></img></span>
+          <span id="okayspinner">2</span>
+          <span id="errorspinner">!</span>
+        </div>
+        <div id="statusmsg"></div>
     </div>
     
     <div id="left-sidebar">
-      Links
+      Nav
     </div>
     
     <div id="content">
-      Content
     </div>
     
     <div style="clear:both;"></div>
     
     <div id="footer">
-      <p>Footer</p>
+      <p>©2011 <a href="http://njoubert.com">Niels Joubert</a>, <a href="http://cs.stanford.edu/people/eschkufz/">Eric Schkufza</a></p>
     </div>
     
   </div>
