@@ -46,7 +46,7 @@
   font-size: 1.4em;
   font-family: 'Pictos', sans-serif;
 }
-#statusmsg {
+#errormsg {
   position: absolute;
   float: left;
   display: block;
@@ -58,7 +58,20 @@
   padding-left: 5px;
   padding-right: 5px;
   border: 1px solid;
-  
+}
+#infomsg {
+  position: absolute;
+  float: left;
+  display: block;
+  top: 15px;
+  left: 205px;
+  border: 1px solid;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  color: #4F8A10;
+  background-color: #DFF2BF;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 /* Typography and Color */
 

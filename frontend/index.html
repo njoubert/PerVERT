@@ -20,6 +20,19 @@
 
 <script type="text/javascript">
 
+
+function getParameterByName(name)
+{
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regexS = "[\\?&]" + name + "=([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.href);
+  if(results == null)
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 function showSpinner(status) {
   $("#loadingspinner").hide();
   $("#okayspinner").hide();
@@ -27,17 +40,22 @@ function showSpinner(status) {
   
   if (status == "GOOD") {
     $("#okayspinner").show();
-    $("#statusmsg").hide();
+    $("#errormsg").hide();
+    $("#infomsg").html("Debugging \'" + getParameterByName("exec") + "\'");
+    $("#infomsg").show();
   } else if (status == "BUSY") {
     $("#loadingspinner").show();
-    $("#statusmsg").hide();
+    $("#errormsg").hide();
+    $("#infomsg").hide();
   } else {
-    $("#statusmsg").show();
-    $("#statusmsg").html(status);
+    $("#infomsg").hide();
+    $("#errormsg").show();
+    $("#errormsg").html(status);
     $("#errorspinner").show();
   }
   
 }
+
 
 var currentStatus;
 function handlePollResult(data, testStatus, jqXHR) {
@@ -52,16 +70,23 @@ function handlePollError(d,t,e) {
 }
 
 function doPoll() {
-  $.ajax('/f/status?exec=a',
-    {
-      timeout: 100,
-      success: function(d,t,j) { handlePollResult(d,t,j); setTimeout(doPoll,200); },
-      error:   function(d,t,e) { handlePollError(d,t,e); setTimeout(doPoll,200); }
-    });
+  var exec = getParameterByName("exec");
+  if (exec == "") {
+    showSpinner("No executable specified...\n");
+    setTimeout(doPoll,200);
+  } else {
+    $.ajax('/f/status?exec='+exec,
+      {
+        timeout: 100,
+        success: function(d,t,j) { handlePollResult(d,t,j); setTimeout(doPoll,200); },
+        error:   function(d,t,e) { handlePollError(d,t,e); setTimeout(doPoll,200); }
+      });    
+  }
 }
 
 $(document).ready(function() { //ajax
-  $("#statusmsg").hide();
+  $("#infomsg").hide();
+  $("#errormsg").hide();
   $("#loadingspinner").show();
   $("#okayspinner").hide();
   $("#errorspinner").hide();
@@ -81,11 +106,11 @@ $(document).ready(function() { //ajax
           <span id="okayspinner">2</span>
           <span id="errorspinner">!</span>
         </div>
-        <div id="statusmsg"></div>
+        <div id="errormsg"></div>
+        <div id="infomsg">Debugging</div>
     </div>
     
     <div id="left-sidebar">
-      
     </div>
     
     <div id="content">
