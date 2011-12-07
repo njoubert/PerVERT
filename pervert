@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# Check command line usage
+
+if [ $# -eq 0 ];
+then
+  echo "Incorrect usage!"
+  echo $0" <binary> <args>"
+  exit 1
+fi
+
+# Check paths to component programs
+
+HERE=$(dirname $0)
+
+PIN=$HERE/pintool/pin
+PIN_PLUGIN=$HERE/pintool/source/tools/Pervert/obj-intel64/pervert.so
+SERVER=$HERE/backend/server
+
+CURL=/usr/bin/curl
+OBJDUMP=/usr/bin/objdump
+
+if [ ! -e $PIN ];
+then
+  echo "Unable to locate pintool!"
+  echo "This is bad... pintool ships with this."
+  exit 2
+fi
+
+if [ ! -e $PIN_PLUGIN ];
+then
+  echo "Unable to locate pintool plugin!"
+  echo "Rebuild plugin: cd pintool/source/tools/Pervert && make"
+  exit 3
+fi
+
+if [ ! -e $SERVER ];
+then
+  echo "Unable to locate server!"
+  echo "Rebuild backend: cd backend/ && make"
+  exit 4
+fi
+
+if [ ! -e $CURL ];
+then
+  echo "Unable to locate curl!"
+  echo "Try installing libcurl"
+  exit 5
+fi
+
+if [ ! -e $OBJDUMP ];
+then
+  echo "Unable to locate objdump!"
+  echo "Try installing binutils"
+  exit 6
+fi
+
+# Bring up the server if it isn't already running
+
+RESPONSE=`$CURL localhost:8083/ping 2>/dev/null`
+if [ "$RESPONSE" != "pong" ];
+then
+  $SERVER --daemon 
+  # TODO: Check that server has come up?
+fi
+
+# Initialize output paths
+
+PROGRAM=$(basename $1)
+OUTPATH=/var/tmp/$PROGRAM
+mkdir -p $OUTPATH
+
+# Initialize output filenames
+
+NAME=`date +%s`
+OBJDUMP_OUT=$OUTPATH/$NAME.line
+PIN_OUT=$OUTPATH/$NAME.pin
+
+# Run tools
+
+$OBJDUMP -WL $1 > $OBJDUMP_OUT
+$PIN -t $PIN_PLUGIN -o $PIN_OUT -- $@ 
+
+# Tell the server what it needs to hear
+
+URL="localhost:8083/pp/update?exec="$PROGRAM"&logs="$OUTPATH
+$CURL $URL > /dev/null 2>&1
+
+if [ $? -ne 0 ];
+then
+  echo "Error sending update message to server!"
+  exit 7
+fi
+
+exit 0
