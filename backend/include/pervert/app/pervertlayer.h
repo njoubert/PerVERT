@@ -22,9 +22,18 @@ class PervertLayer : public Server::HTTPLayer {
 public:
 	PervertLayer();
 	void handle(Server::Request* req, Server::Response* res);
-	char* name();
+	const char* name();
 private:
 	Log& _log;
+	
+	//HTTP methods:
+	
+	void ping(Server::Request* req, Server::Response* res);
+	void pp_update(Server::Request* req, Server::Response* res);
+
+	void f_status(Server::Request* req, Server::Response* res);
+	
+
 };
 
 

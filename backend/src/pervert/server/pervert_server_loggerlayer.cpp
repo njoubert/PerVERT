@@ -9,7 +9,7 @@ struct LoggerMetadata : public Metadata {
 	timeval starttime;
 };
 
-LoggerLayer::LoggerLayer(LoggerLayerLevel l, char* file) {
+LoggerLayer::LoggerLayer(LoggerLayerLevel l, const char* file) {
 	_l = l;
 	_file.open(file, std::ios::out);
 }
@@ -59,7 +59,7 @@ void LoggerLayer::afterwards(Request* req, Response* res) {
 	_file.flush();	
 }
 
-char* LoggerLayer::name() {
+const char* LoggerLayer::name() {
 	return "LoggerLayer";
 }
 

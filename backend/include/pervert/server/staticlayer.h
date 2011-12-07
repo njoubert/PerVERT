@@ -20,9 +20,9 @@ using namespace Utils;
 
 class StaticLayer : public HTTPLayer {
 public:
-	StaticLayer(char* httproot, unsigned int maxfilesize);
+	StaticLayer(const char* httproot, unsigned int maxfilesize);
 	void handle(Request* req, Response* res);
-	char* name();
+	const char* name();
 private:
 	string _httproot;
 	unsigned int _maxfilesize;

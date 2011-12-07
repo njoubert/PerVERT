@@ -63,7 +63,7 @@ void QueryLayer::afterwards(Request* req, Response* res) {
 	}
 }
 
-char* QueryLayer::name() {
+const char* QueryLayer::name() {
 	return "QueryLayer";
 }
 

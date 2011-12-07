@@ -21,11 +21,13 @@ using namespace Utils;
 class HTTPLayer : public Layer {
 public:
 	virtual void handle(Request* req, Response* res) = 0;
-	virtual char* name() = 0;
+	virtual const char* name() = 0;
 
 protected:
+	void writeHeadersEnd(Request* req, Response* res);
 	void writeStatus(Request* req, Response* res, int code);
-	void writeStaticPage(Request* req, Response* res, char* data, size_t len);
+	void writeStatusAndEnd(Request* req, Response* res, int code);
+	void writeOKResponseWithContentLength(Request* req, Response* res, const char* data, size_t len);
 
 private:
 

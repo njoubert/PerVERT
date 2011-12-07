@@ -28,7 +28,7 @@ private:
 class QueryLayer : public Layer {
 public:
 	QueryLayer();
-	char* name();
+	const char* name();
 
 	void handle(Request* req, Response* res);
 

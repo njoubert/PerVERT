@@ -21,8 +21,8 @@ enum LoggerLayerLevel { TINY, BIG };
 
 class LoggerLayer : public Layer {
 public:
-	LoggerLayer(LoggerLayerLevel l, char* file);
-	char* name();
+	LoggerLayer(LoggerLayerLevel l, const char* file);
+	const char* name();
 
 	void handle(Request* req, Response* res);
 
