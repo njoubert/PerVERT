@@ -36,24 +36,32 @@ function showSpinner(status) {
     $("#statusmsg").html(status);
     $("#errorspinner").show();
   }
+  
 }
 
 var currentStatus;
-function handlePollResult(data) {
+function handlePollResult(data, testStatus, jqXHR) {
   if (currentStatus != data) {
     showSpinner(data);    
     currentStatus = data;
   }
 }
-
-function doPoll() {
-  $.post('/f/status?exec=a', function(data) {
-    handlePollResult(data);
-    setTimeout(doPoll,200);
-  })
+function handlePollError(d,t,e) {
+  currentStatus = "Server Unavailable";
+  showSpinner(currentStatus);
 }
 
-$(document).ready(function() {
+function doPoll() {
+  $.ajax('/f/status?exec=a',
+    {
+      timeout: 100,
+      success: function(d,t,j) { handlePollResult(d,t,j); setTimeout(doPoll,200); },
+      error:   function(d,t,e) { handlePollError(d,t,e); setTimeout(doPoll,200); }
+    });
+}
+
+$(document).ready(function() { //ajax
+  $("#statusmsg").hide();
   $("#loadingspinner").show();
   $("#okayspinner").hide();
   $("#errorspinner").hide();
@@ -77,7 +85,7 @@ $(document).ready(function() {
     </div>
     
     <div id="left-sidebar">
-      Nav
+      
     </div>
     
     <div id="content">

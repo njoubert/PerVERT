@@ -9,7 +9,6 @@
 	margin: 10px 10px 0px 10px;
 	padding-bottom: 10px;
 }
-	
 #content {
 	padding-left: 175px;
 	padding-top: 5px;
@@ -21,7 +20,7 @@
 	margin-bottom: 5px;
 	border-bottom: solid 1px #ddd;
 }
-	
+
 #left-sidebar {
   background: #ddd;
 	width: 150px;
@@ -61,7 +60,7 @@
   border: 1px solid;
   
 }
-/* */
+/* Typography and Color */
 
 html { font-size:100.01%; }
 body { line-height: 1.25; font-size: 75%; color: #222; background: #fff; font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; }
