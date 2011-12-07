@@ -21,6 +21,8 @@ using namespace Utils;
 class DataManager {
 public:
 	DataManager(string exec);
+	
+	int update(string logs);
 
 private:
 	Log& _log;

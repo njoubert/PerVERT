@@ -33,6 +33,26 @@ void PervertLayer::pp_update(Server::Request* req, Server::Response* res) {
 		return writeStatusAndEnd(req,res,500);
 	} else {
 		
+		DataManager* dm;
+		string exec = query->get("exec");
+		if (_dms.count(exec) < 1) {
+			_log.log(LOG_INFO, "Creating new DataManager for %s\n", exec.c_str());
+			dm = new DataManager(exec);
+			_dms[exec] = dm;
+		} else {
+			dm = _dms[exec];
+		}
+		
+		int success = dm->update(query->get("logs"));
+		
+		if (success == 0) {
+			_log.log(LOG_STATUS, "Successfully handled /pp/update query\n");
+			return writeStatusAndEnd(req,res,200);
+		} else {
+			_log.log(LOG_WARN, "Failed to handle /pp/update query\n");
+			return writeStatusAndEnd(req,res,500);
+		}
+		
 		
 		
 	}

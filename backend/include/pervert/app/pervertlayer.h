@@ -27,6 +27,7 @@ public:
 	const char* name();
 private:
 	Log& _log;
+	map<string,DataManager*> _dms;
 	
 	//HTTP methods:
 	

@@ -7,7 +7,7 @@ bool QueryData::exists(string value) {
 	return _data.count(value) > 0;
 }
 
-string QueryData::operator[](string value) {
+string QueryData::get(string value) {
 	if (exists(value)) {
 		return _data[value];
 	} else {
