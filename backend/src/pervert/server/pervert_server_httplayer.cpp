@@ -5,6 +5,10 @@
 
 namespace PerVERT {
 namespace Server {
+	
+void HTTPLayer::writeHeadersEnd(Request* req, Response* res) {
+	res->write("\r\n", 2);
+}
 
 void HTTPLayer::writeStatus(Request* req, Response* res, int code) {
 	switch(code) {
@@ -29,7 +33,11 @@ void HTTPLayer::writeStatus(Request* req, Response* res, int code) {
 		break;
 	}
 }
-void HTTPLayer::writeStaticPage(Request* req, Response* res, char* data, size_t len) {
+void HTTPLayer::writeStatusAndEnd(Request* req, Response* res, int code) {
+	writeStatus(req,res,code);
+	writeHeadersEnd(req,res);
+}
+void HTTPLayer::writeOKResponseWithContentLength(Request* req, Response* res, const char* data, size_t len) {
 	
 	static const char *ajax_reply_start =
 		"HTTP/1.1 200 OK\r\n"

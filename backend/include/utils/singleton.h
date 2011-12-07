@@ -18,7 +18,7 @@ public:
 		static T _instance;
 		return _instance;
 	}
- 	~Singleton() {
+ 	virtual ~Singleton() {
 		printf("WOOOOOOOOOOOOOO\n");
 	}
 

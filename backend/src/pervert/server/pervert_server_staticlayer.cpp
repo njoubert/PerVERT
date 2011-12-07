@@ -6,7 +6,7 @@
 namespace PerVERT {
 namespace Server {
 
-StaticLayer::StaticLayer(char* httproot, unsigned int maxfilesize) {
+StaticLayer::StaticLayer(const char* httproot, unsigned int maxfilesize) {
 	#define MAXPATHLEN 1024
 	char temp[MAXPATHLEN];
 	
@@ -33,7 +33,7 @@ void StaticLayer::handle(Request* req, Response* res) {
 		
 		//does this file exist?
 		if (access(f.c_str(), R_OK) != 0) {
-			return writeStatus(req,res,404);
+			return writeStatusAndEnd(req,res,404);
 		}
 		
 		struct stat status;
@@ -41,15 +41,15 @@ void StaticLayer::handle(Request* req, Response* res) {
 		
 		//pull file from disk
 		if (status.st_size > _maxfilesize) {
-			writeStatus(req,res,413);
+			writeStatusAndEnd(req,res,413);
 		} else {
 			char* filedata = new char[status.st_size];
 			FILE* fd = fopen(f.c_str(),"r");
 			size_t readstatus = fread(filedata,sizeof(char),status.st_size,fd);
 			if (readstatus != status.st_size) {
-				writeStatus(req,res,500);
+				writeStatusAndEnd(req,res,500);
 			} else {
-				writeStaticPage(req,res,filedata, readstatus);
+				writeOKResponseWithContentLength(req,res,filedata, readstatus);
 				//close
 				
 			}
@@ -62,7 +62,7 @@ void StaticLayer::handle(Request* req, Response* res) {
 	
 }
 
-char* StaticLayer::name() {
+const char* StaticLayer::name() {
 	return "StaticLayer";
 }
 

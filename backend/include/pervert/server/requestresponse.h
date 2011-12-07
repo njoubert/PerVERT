@@ -34,7 +34,7 @@ struct Response {
 	struct mg_connection *conn;
 	void setMetadata(string name, Metadata* value);
 	Metadata* getMetadata(string name);
-	void write(char* data, size_t len);
+	void write(const char* data, size_t len);
 	void close();
 private:
 	int mg_success;

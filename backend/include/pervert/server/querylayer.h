@@ -19,7 +19,7 @@ using namespace Utils;
 
 struct QueryData : public Metadata {
 	bool exists(string value);
-	string operator[](string value);
+	string get(string value);
 private:
 	map<string, string> _data;
 	friend class QueryLayer;
@@ -28,13 +28,14 @@ private:
 class QueryLayer : public Layer {
 public:
 	QueryLayer();
-	char* name();
+	const char* name();
 
 	void handle(Request* req, Response* res);
 
 	void afterwards(Request* req, Response* res);
 	
 private:
+	Log& _log;
 
 	
 };

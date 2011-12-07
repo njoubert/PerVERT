@@ -20,7 +20,7 @@ class Server;
 class Layer {
 public:
 	virtual void init();
-	virtual char* name() = 0;
+	virtual const char* name() = 0;
 
 	//called by the server when this layer starts running.
 	virtual void handle(Request* req, Response* res) = 0;

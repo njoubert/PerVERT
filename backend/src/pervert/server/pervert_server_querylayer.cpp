@@ -7,7 +7,7 @@ bool QueryData::exists(string value) {
 	return _data.count(value) > 0;
 }
 
-string QueryData::operator[](string value) {
+string QueryData::get(string value) {
 	if (exists(value)) {
 		return _data[value];
 	} else {
@@ -16,7 +16,7 @@ string QueryData::operator[](string value) {
 }
 
 
-QueryLayer::QueryLayer() { }
+QueryLayer::QueryLayer() : _log(GETLOG("QUERY")) { }
 
 void QueryLayer::handle(Request* req, Response* res) {
 	//We just parse the querystring
@@ -44,7 +44,7 @@ void QueryLayer::handle(Request* req, Response* res) {
 			if ((l = entries[i].find("=")) != string::npos) {
 				string key = entries[i].substr(0, l);
 				string value = entries[i].substr(l+1, entries[i].length() - l-1);
-				cout << key << "=>" << value << "\n";
+				_log.log(LOG_INFO, "Parsed query {%s: %s}\n", key.c_str(), value.c_str());
 				qd->_data[key] = value;
 			} else {
 				delete qd;
@@ -63,7 +63,7 @@ void QueryLayer::afterwards(Request* req, Response* res) {
 	}
 }
 
-char* QueryLayer::name() {
+const char* QueryLayer::name() {
 	return "QueryLayer";
 }
 

@@ -12,6 +12,8 @@
 
 #include "pervert/server/httplayer.h"
 #include "utils/log.h"
+#include "pervert/app/datamanager.h"
+
 
 namespace PerVERT {
 namespace App {
@@ -22,9 +24,19 @@ class PervertLayer : public Server::HTTPLayer {
 public:
 	PervertLayer();
 	void handle(Server::Request* req, Server::Response* res);
-	char* name();
+	const char* name();
 private:
 	Log& _log;
+	map<string,DataManager*> _dms;
+	
+	//HTTP methods:
+	
+	void ping(Server::Request* req, Server::Response* res);
+	void pp_update(Server::Request* req, Server::Response* res);
+
+	void f_status(Server::Request* req, Server::Response* res);
+	
+
 };
 
 

@@ -1,1 +1,37 @@
-/* Nothing here yet */
+/* Layout */
+
+.container {
+	background: white;
+	min-width: 780px;
+	margin: 10px auto;
+}
+.container #inside {
+	margin: 10px 10px 0px 10px;
+	padding-bottom: 10px;
+}
+	
+#content {
+	padding-left: 230px;
+	padding-top: 20px;
+}
+	
+#header {
+	background: #267f23;
+	text-align: center;
+	height: 36px;
+}
+	
+#left-sidebar {
+	width: 150px;
+	float: left;
+	padding-left: 15px;
+	padding-top: 20px;
+}
+
+#footer {
+	background: #267f23;
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	color: white;
+}
