@@ -19,7 +19,7 @@ using namespace Utils;
 
 class DataManager {
 public:
-
+	DataManager();
 
 private:
 	Log& _log;

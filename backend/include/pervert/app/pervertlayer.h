@@ -12,6 +12,8 @@
 
 #include "pervert/server/httplayer.h"
 #include "utils/log.h"
+#include "pervert/app/datamanager.h"
+
 
 namespace PerVERT {
 namespace App {

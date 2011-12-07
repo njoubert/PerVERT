@@ -1,6 +1,5 @@
 #include "pervert/app/pervertlayer.h"
 #include "pervert/server/querylayer.h"
-#include "pervert/app/datamanager.h"
 
 namespace PerVERT {
 namespace App {
