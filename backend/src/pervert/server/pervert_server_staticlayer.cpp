@@ -45,13 +45,16 @@ void StaticLayer::handle(Request* req, Response* res) {
 		} else {
 			char* filedata = new char[status.st_size];
 			FILE* fd = fopen(f.c_str(),"r");
-			size_t readstatus = fread(filedata,sizeof(char),status.st_size,fd);
-			if (readstatus != status.st_size) {
-				writeStatusAndEnd(req,res,500);
+			if (fd == NULL) {
+				return writeStatusAndEnd(req,res,500);
 			} else {
-				writeOKResponseWithContentLength(req,res,filedata, readstatus);
-				//close
-				
+				size_t readstatus = fread(filedata,sizeof(char),status.st_size,fd);
+				fclose(fd);
+				if (readstatus != status.st_size) {
+					writeStatusAndEnd(req,res,500);
+				} else {
+					writeOKResponseWithContentLength(req,res,filedata, readstatus);
+				}
 			}
 			delete filedata;
 		}
