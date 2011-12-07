@@ -15,7 +15,7 @@ void PervertLayer::ping(Server::Request* req, Server::Response* res) {
 }
 
 void PervertLayer::f_status(Server::Request* req, Server::Response* res) {
-	writeOKResponseWithContentLength(req,res,"pong",4);
+	writeOKResponseWithContentLength(req,res,"UP",2);
 }
 
 void PervertLayer::pp_update(Server::Request* req, Server::Response* res) {

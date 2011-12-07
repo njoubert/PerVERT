@@ -26,6 +26,8 @@ public:
 private:
 	Log& _log;
 	
+	DataManager _dataManager;
+	
 	//HTTP methods:
 	
 	void ping(Server::Request* req, Server::Response* res);
