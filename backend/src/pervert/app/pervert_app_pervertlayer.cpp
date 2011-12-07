@@ -4,7 +4,7 @@
 namespace PerVERT {
 namespace App {
 
-PervertLayer::PervertLayer()  : _log(GETLOG("PERVERT")){
+PervertLayer::PervertLayer() : _log(GETLOG("PERVERT")) {
 	
 	
 }
@@ -14,14 +14,27 @@ void PervertLayer::ping(Server::Request* req, Server::Response* res) {
 }
 
 void PervertLayer::f_status(Server::Request* req, Server::Response* res) {
-	writeOKResponseWithContentLength(req,res,"UP",2);
+	Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+	if (query == NULL ||
+		!query->exists("exec")) {
+		return writeStatusAndEnd(req,res,500);
+	} else {
+		return writeOKResponseWithContentLength(req,res,"UP",2);
+		
+	}
 }
 
 void PervertLayer::pp_update(Server::Request* req, Server::Response* res) {
 			
 	Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
-	if (query == NULL) {
+	if (query == NULL ||
+		!query->exists("exec") ||
+		!query->exists("logs")) {
 		return writeStatusAndEnd(req,res,500);
+	} else {
+		
+		
+		
 	}
 	
 }
@@ -33,7 +46,7 @@ void PervertLayer::handle(Server::Request* req, Server::Response* res) {
 		return ping(req,res);
 	} else if (strcmp(request_info->uri, "/pp/update") == 0) {
 		return pp_update(req,res);
-	} else if (strcmp(request_info->uri, "/f/status")) {
+	} else if (strcmp(request_info->uri, "/f/status") == 0) {
 		return f_status(req,res);
 	} else {
 		next(req,res);

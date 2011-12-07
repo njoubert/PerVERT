@@ -11,6 +11,7 @@
 #include <fstream>
 
 #include "utils/log.h"
+#include <cstring>
 
 namespace PerVERT {
 namespace App {
@@ -19,10 +20,11 @@ using namespace Utils;
 
 class DataManager {
 public:
-	DataManager();
+	DataManager(string exec);
 
 private:
 	Log& _log;
+	string _exec;
 	
 };
 

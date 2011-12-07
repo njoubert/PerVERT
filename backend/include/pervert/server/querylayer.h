@@ -35,6 +35,7 @@ public:
 	void afterwards(Request* req, Response* res);
 	
 private:
+	Log& _log;
 
 	
 };
