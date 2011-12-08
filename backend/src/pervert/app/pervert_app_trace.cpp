@@ -98,7 +98,7 @@ string Trace::debugPrint() const
 bool Trace::parseLineFile(const char* file)
 {
   ifstream ifs(file);
-  if ( ifs.bad() )
+  if ( ifs.fail() )
     return false;
 
   // Insert the unknown location
@@ -163,7 +163,7 @@ bool Trace::parseLineFile(const char* file)
 bool Trace::parseTraceFile(const char* file)
 {
   ifstream ifs(file);
-  if ( ifs.bad() )
+  if ( ifs.fail() )
     return false;
 
   Event event;
