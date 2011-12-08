@@ -16,8 +16,13 @@ static const char *options[] = {
   "document_root", "html",
   "listening_ports", "8083",
   "num_threads", "5",
+  "enable_keep_alive", "no",
   NULL
 };
+
+//unfortunately, Mongoose doesn't allow you to control 
+//connections from the callback. BIG PROBLEM for WEBSOCKETS!
+//   C10K problem: http://www.kegel.com/c10k.html
 
 Server::Server() : _log(GETLOG("SERVER")) {
 	ctx = NULL;
@@ -55,6 +60,7 @@ void Server::next(Request* req, Response* res) {
 		_layers[l]->handle(req,res);
 	} else {
 		_log.log(LOG_INFO, "ran out of layers!\n");
+		
 		res->mg_success = 0;
 	}
 }

@@ -19,7 +19,18 @@ void PervertLayer::f_status(Server::Request* req, Server::Response* res) {
 		!query->exists("exec")) {
 		return writeStatusAndEnd(req,res,500);
 	} else {
-		return writeOKResponseWithContentLength(req,res,"UP",2);
+		string exec = query->get("exec");
+		if (_dms.count(exec) < 1) {
+			return writeOKResponseWithContentLength(req,res,"NOT EXIST",9);		
+		} else {
+			bool busy = _dms[exec]->status();
+			if (busy) {
+				return writeOKResponseWithContentLength(req,res,"BUSY",4);				
+			} else {
+				return writeOKResponseWithContentLength(req,res,"GOOD",4);
+
+			}
+		}
 		
 	}
 }
@@ -40,6 +51,7 @@ void PervertLayer::pp_update(Server::Request* req, Server::Response* res) {
 			dm = new DataManager(exec);
 			_dms[exec] = dm;
 		} else {
+			_log.log(LOG_INFO, "Found DataManager for %s\n", exec.c_str());
 			dm = _dms[exec];
 		}
 		

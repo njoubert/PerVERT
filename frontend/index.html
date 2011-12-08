@@ -10,6 +10,7 @@
 	<meta name="author" content="Niels Joubert">
 	
 	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	<link rel="stylesheet" type="text/css" href="css/pictos/pictos.css">
 	<link rel="stylesheet" type="text/css" href="css/site.css">
 	
 	<script type="text/javascript" src="js/d3-233d80a/d3.js"></script>
@@ -17,12 +18,112 @@
   
 	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script> 
 
+<script type="text/javascript">
 
+
+function getParameterByName(name)
+{
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regexS = "[\\?&]" + name + "=([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.href);
+  if(results == null)
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function showSpinner(status) {
+  $("#loadingspinner").hide();
+  $("#okayspinner").hide();
+  $("#errorspinner").hide();
+  
+  if (status == "GOOD") {
+    $("#okayspinner").show();
+    $("#errormsg").hide();
+    $("#infomsg").html("Debugging \'" + getParameterByName("exec") + "\'");
+    $("#infomsg").show();
+  } else if (status == "BUSY") {
+    $("#loadingspinner").show();
+    $("#errormsg").hide();
+    $("#infomsg").hide();
+  } else {
+    $("#infomsg").hide();
+    $("#errormsg").show();
+    $("#errormsg").html(status);
+    $("#errorspinner").show();
+  }
+  
+}
+
+
+var currentStatus;
+function handlePollResult(data, testStatus, jqXHR) {
+  if (currentStatus != data) {
+    showSpinner(data);    
+    currentStatus = data;
+  }
+}
+function handlePollError(d,t,e) {
+  currentStatus = "Backend Unavailable";
+  showSpinner(currentStatus);
+}
+
+function doPoll() {
+  var exec = getParameterByName("exec");
+  if (exec == "") {
+    showSpinner("No executable specified...\n");
+    setTimeout(doPoll,200);
+  } else {
+    $.ajax('/f/status?exec='+exec,
+      {
+        timeout: 100,
+        success: function(d,t,j) { handlePollResult(d,t,j); setTimeout(doPoll,200); },
+        error:   function(d,t,e) { handlePollError(d,t,e); setTimeout(doPoll,200); }
+      });    
+  }
+}
+
+$(document).ready(function() { //ajax
+  $("#infomsg").hide();
+  $("#errormsg").hide();
+  $("#loadingspinner").show();
+  $("#okayspinner").hide();
+  $("#errorspinner").hide();
+  doPoll();
+});
+
+</script>
 </head>
 <body>
 <div class="container">
-  <h1>It works</h1>
-  
+  <div id="inside">
+    
+    <div id="header">
+    <h1>pervert visualizer </h1>
+        <div id="statusspinner">
+          <span id="loadingspinner"><img src="img/ajax-loader.gif"></img></span>
+          <span id="okayspinner">2</span>
+          <span id="errorspinner">!</span>
+        </div>
+        <div id="errormsg"></div>
+        <div id="infomsg">Debugging</div>
+    </div>
+    
+    <div id="left-sidebar">
+    </div>
+    
+    <div id="content">
+    </div>
+    
+    <div style="clear:both;"></div>
+    
+    <div id="footer">
+      <p>©2011 <a href="http://njoubert.com">Niels Joubert</a>, <a href="http://cs.stanford.edu/people/eschkufz/">Eric Schkufza</a></p>
+    </div>
+    
+  </div>
+  <div style="clear:both;"></div>
 </div>
 </body>
 </html>
