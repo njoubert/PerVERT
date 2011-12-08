@@ -10,7 +10,7 @@
 	padding-bottom: 10px;
 }
 #content {
-	padding-left: 175px;
+	padding-right: 200px;
 	padding-top: 5px;
 	min-height: 450px;
 }
@@ -21,10 +21,10 @@
 	border-bottom: solid 1px #ddd;
 }
 
-#left-sidebar {
+#right-sidebar {
   background: #ddd;
-	width: 150px;
-	float: left;
+	width: 175px;
+	float: right;
 	padding-left: 15px;
 	padding-top: 5px;
 	min-height: 450px;

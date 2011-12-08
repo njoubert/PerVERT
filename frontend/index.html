@@ -21,8 +21,7 @@
 <script type="text/javascript">
 
 
-function getParameterByName(name)
-{
+function getParameterByName(name) {
   name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
   var regexS = "[\\?&]" + name + "=([^&#]*)";
   var regex = new RegExp(regexS);
@@ -37,18 +36,16 @@ function showSpinner(status) {
   $("#loadingspinner").hide();
   $("#okayspinner").hide();
   $("#errorspinner").hide();
+  $("#errormsg").hide();
+  $("#infomsg").hide();
   
   if (status == "GOOD") {
     $("#okayspinner").show();
-    $("#errormsg").hide();
     $("#infomsg").html("Debugging \'" + getParameterByName("exec") + "\'");
     $("#infomsg").show();
   } else if (status == "BUSY") {
     $("#loadingspinner").show();
-    $("#errormsg").hide();
-    $("#infomsg").hide();
   } else {
-    $("#infomsg").hide();
     $("#errormsg").show();
     $("#errormsg").html(status);
     $("#errorspinner").show();
@@ -59,27 +56,31 @@ function showSpinner(status) {
 
 var currentStatus;
 function handlePollResult(data, testStatus, jqXHR) {
-  if (currentStatus != data) {
+  if (testStatus != "success") {
+    currentStatus = "Backend Unavailable";
+    showSpinner(currentStatus);    
+  } else if (currentStatus != data) { //A state transition occurred!
     showSpinner(data);    
     currentStatus = data;
   }
+  return true;
 }
-function handlePollError(d,t,e) {
-  currentStatus = "Backend Unavailable";
-  showSpinner(currentStatus);
+
+function handlePollFail() {
+  showSpinner("No executable specified...\n");
 }
 
 function doPoll() {
   var exec = getParameterByName("exec");
   if (exec == "") {
-    showSpinner("No executable specified...\n");
+    handlePollFail();
     setTimeout(doPoll,200);
   } else {
     $.ajax('/f/status?exec='+exec,
       {
-        timeout: 100,
-        success: function(d,t,j) { handlePollResult(d,t,j); setTimeout(doPoll,200); },
-        error:   function(d,t,e) { handlePollError(d,t,e); setTimeout(doPoll,200); }
+        timeout: 500,
+        success: function(d,t,j) { if (handlePollResult(d,t,j)) { setTimeout(doPoll,500); } },
+        error: function(d,t,j) { if (handlePollResult(d,t,j)) { setTimeout(doPoll,500); } }
       });    
   }
 }
@@ -110,10 +111,19 @@ $(document).ready(function() { //ajax
         <div id="infomsg">Debugging</div>
     </div>
     
-    <div id="left-sidebar">
+    <div id="right-sidebar">
     </div>
     
     <div id="content">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis quis nunc mauris, at rhoncus justo. Vivamus magna mi, dignissim at feugiat sed, hendrerit sit amet orci. Quisque adipiscing dapibus risus nec commodo. Praesent ut mattis orci. Sed non purus ipsum, a ullamcorper velit. Pellentesque pulvinar bibendum diam sit amet pellentesque. Praesent ligula nulla, egestas at vestibulum in, scelerisque quis diam. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed accumsan placerat quam, id auctor purus rutrum vel. Fusce laoreet tempus urna nec commodo. Etiam in odio at sapien consectetur pharetra. Sed pellentesque suscipit faucibus.
+
+Fusce suscipit porttitor eros, id tristique velit pellentesque vitae. Proin id augue neque, vel hendrerit leo. Aenean vestibulum lectus ac lacus faucibus convallis. Praesent sapien enim, faucibus nec dapibus adipiscing, pulvinar id elit. Morbi mollis viverra molestie. Aenean mattis tortor eu nibh posuere et suscipit nisi iaculis. Nam id purus erat. Aliquam volutpat, lorem ut adipiscing vestibulum, ipsum mi aliquet lectus, ac semper ante justo a nulla. Donec non lorem sed tellus pulvinar varius. Ut risus leo, malesuada id pulvinar vel, tincidunt et dolor. Donec hendrerit mauris sed lacus euismod molestie. Vivamus elit felis, commodo at placerat quis, consequat non sapien. Nam ut dolor mi. Aliquam velit quam, ornare ut tempus nec, dictum vel sapien.
+
+Aenean lobortis iaculis urna, et posuere enim bibendum et. Suspendisse placerat velit rhoncus mi placerat quis molestie enim rhoncus. Ut convallis bibendum pharetra. Pellentesque id suscipit massa. Nulla facilisi. Morbi lobortis blandit cursus. Aliquam blandit nibh vel elit ultricies porta.
+
+Integer ac nibh sed lorem egestas convallis vel sit amet ipsum. Aenean hendrerit dui at ligula feugiat a ultrices dui faucibus. Suspendisse cursus lobortis mauris. Aenean tellus erat, convallis et faucibus vel, suscipit laoreet libero. Nullam et mauris ut lacus sagittis auctor. In lorem massa, volutpat dapibus placerat at, interdum nec est. Vivamus in nulla est, at ullamcorper magna. Integer eu est sit amet lectus volutpat dignissim. Morbi auctor sollicitudin tellus eu dapibus. Cras nisl magna, tempor ut congue sed, egestas at augue. Integer semper mollis lectus, et viverra felis ultrices ut. Maecenas posuere magna nec magna placerat eu pretium elit vulputate. Mauris tempus molestie lacus, quis pharetra nulla accumsan id. Duis sit amet tortor eget libero blandit blandit quis a magna. Suspendisse volutpat tempor dolor, at tincidunt nisl convallis vel. In hac habitasse platea dictumst.
+
+Curabitur et elit lorem. Sed sit amet luctus mauris. Morbi imperdiet pretium consequat. Nulla non elit arcu. Phasellus accumsan adipiscing orci, non feugiat tortor aliquam non. Proin sem justo, rhoncus sit amet vehicula sit amet, laoreet sit amet nisl. Integer ut felis metus, in sollicitudin diam. Aliquam erat volutpat.
     </div>
     
     <div style="clear:both;"></div>
