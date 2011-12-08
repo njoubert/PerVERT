@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+#include "utils/log.h"
+
 namespace PerVERT
 {
 namespace App
@@ -41,11 +43,14 @@ class Trace
       std::string debugPrint() const;
     };
 
-    Trace(const char* lineFile, const char* traceFile);
+    Trace(const char* linefile, const char* tracefile);
 
     std::string debugPrint() const;
 
   private:
+    // Log file
+    Utils::Log& log_;
+
     // Location File
     std::vector<Location> locations_;
     // Trace File

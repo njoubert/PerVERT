@@ -7,12 +7,15 @@
 #ifndef PERVERT_APP_DATAMANAGER_H_
 #define PERVERT_APP_DATAMANAGER_H_
 
-#include <iostream>
-#include <fstream>
+#include <cstring>
 #include <pthread.h>
 
+#include <iostream>
+#include <fstream>
+
 #include "utils/log.h"
-#include <cstring>
+
+#include "pervert/app/trace.h"
 
 namespace PerVERT {
 namespace App {
@@ -37,7 +40,8 @@ private:
 	void unlock();
 	
 	bool _busy;
-	
+
+  Trace* _trace;  
 };
 
 
