@@ -5,7 +5,8 @@
  * Copyright 2011, Niels Joubert, Eric Schkufza
  *
  * Dependencies: 
- *   - jQuery
+ *   - jQuery      http://jquery.com
+ *   - JSON        https://github.com/douglascrockford/JSON-js
  *
  * This uses the Revealing Module pattern.
  * Do NOT use this pattern if you create lots of objects,
@@ -15,8 +16,8 @@
  */
 
 (function(global){ 
-  var pervert = function(exec) {
-    return Pervert(exec);
+  var pervert = function(exec, toggleBusy) {
+    return Pervert(exec, toggleBusy);
   }
 
   var jqXHRQueue = function() {
@@ -27,7 +28,7 @@
       var idx = self.__data.indexOf(xhr);
       if (idx!=-1) self.__data.splice(idx, 1);
     };
-    self.abort = function() { $.each(self.__data, function(xhr) { xhr.abort(); }); };
+    self.abort = function() { $.each(self.__data, function(xhr) { xhr.abort(); }); self.__Data = []; };
     self.ajax = function(path, settings) {
       $("#right-sidebar").html(self.__data.length);
       settings["complete"] = self.complete;
@@ -37,9 +38,10 @@
     } 
   }
 
-  var Pervert = function(exec) {
+  var Pervert = function(exec, toggleBusy) {
     var self = this;
     var __exec = exec;
+    var __toggleBusy = toggleBusy;
     
     var __ajaxqueue = new jqXHRQueue(); 
     
@@ -55,12 +57,16 @@
      
     // Public API:  
     var init = function() {
+      __toggleBusy(true);
+      __ajaxqueue.abort();
       getListOfExecs();
-      
+      __toggleBusy(false);
     }
     
     var remove = function() {
-      
+      __toggleBusy(true);
+      __ajaxqueue.abort();
+      __toggleBusy(false);
     } 
 
     

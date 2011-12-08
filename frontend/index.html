@@ -103,7 +103,7 @@ $(document).ready(function() { //ajax
   $("#errorspinner").hide();
 
   var exec = getParameterByName("exec");
-  pv = pervert(exec);
+  pv = pervert(exec, function(isBusy) { if (isBusy) { showSpinner("BUSY"); } else { showSpinner(currentStatus); };});
 
   doPoll();
 });
