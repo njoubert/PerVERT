@@ -45,9 +45,14 @@ class Trace
 
     Trace(const char* linefile, const char* tracefile);
 
+    bool okay() const;
+
     std::string debugPrint() const;
 
   private:
+    // Internal status
+    bool okay_;
+
     // Log file
     Utils::Log& log_;
 
@@ -67,8 +72,8 @@ class Trace
     std::map<Context*, std::vector<Event*> > byContext_;
 
     // Helper methods used by constructor
-    void parseLineFile(const char* file);
-    void parseTraceFile(const char* file);
+    bool parseLineFile(const char* file);
+    bool parseTraceFile(const char* file);
     void parseContext(const std::string& s);
     void indexTraceFile();
 };

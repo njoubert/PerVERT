@@ -14,20 +14,26 @@ namespace App
 {
 
 Trace::Trace(const char* linefile, const char* tracefile) :
+  okay_(true),
   log_(GETLOG("TRACE"))
 {
   log_.log(LOG_STATUS, "Initializing trace\n");
   log_.log(LOG_STATUS, "  linefile=%s\n", linefile);
   log_.log(LOG_STATUS, "  tracefile=%s\n", tracefile);
 
-  parseLineFile(linefile);
+  okay_ = okay_ && parseLineFile(linefile);
   log_.log(LOG_STATUS, "Done parsing line file!\n");
-  parseTraceFile(tracefile);
+  okay_ = okay_ && parseTraceFile(tracefile);
   log_.log(LOG_STATUS, "Done parsing trace file!\n");
   indexTraceFile();
   log_.log(LOG_STATUS, "Done indexing trace file!\n");
 
   log_.log(LOG_STATUS, "Trace:\n%s", debugPrint().c_str());
+}
+
+bool Trace::okay() const
+{
+  return okay_;
 }
 
 string Trace::Location::debugPrint() const
@@ -89,9 +95,11 @@ string Trace::debugPrint() const
   return oss.str();
 }
 
-void Trace::parseLineFile(const char* file)
+bool Trace::parseLineFile(const char* file)
 {
   ifstream ifs(file);
+  if ( ifs.bad() )
+    return false;
 
   // Insert the unknown location
   Location unknown;
@@ -148,11 +156,15 @@ void Trace::parseLineFile(const char* file)
 
     locations_.push_back(location);
   }
+
+  return true;
 }
 
-void Trace::parseTraceFile(const char* file)
+bool Trace::parseTraceFile(const char* file)
 {
   ifstream ifs(file);
+  if ( ifs.bad() )
+    return false;
 
   Event event;
   while ( true )
@@ -202,6 +214,8 @@ void Trace::parseTraceFile(const char* file)
 
     events_.push_back(event);
   }
+
+  return true;
 }
 
 void Trace::parseContext(const string& s)
