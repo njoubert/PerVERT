@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 
+using namespace Utils;
 using namespace std;
 
 namespace PerVERT
@@ -12,11 +13,21 @@ namespace PerVERT
 namespace App
 {
 
-Trace::Trace(const char* lineFile, const char* traceFile)
+Trace::Trace(const char* linefile, const char* tracefile) :
+  log_(GETLOG("TRACE"))
 {
-  parseLineFile(lineFile);
-  parseTraceFile(traceFile);
+  log_.log(LOG_STATUS, "Initializing trace\n");
+  log_.log(LOG_STATUS, "  linefile=%s\n", linefile);
+  log_.log(LOG_STATUS, "  tracefile=%s\n", tracefile);
+
+  parseLineFile(linefile);
+  log_.log(LOG_STATUS, "Done parsing line file!\n");
+  parseTraceFile(tracefile);
+  log_.log(LOG_STATUS, "Done parsing trace file!\n");
   indexTraceFile();
+  log_.log(LOG_STATUS, "Done indexing trace file!\n");
+
+  log_.log(LOG_STATUS, "Trace:\n%s", debugPrint().c_str());
 }
 
 string Trace::Location::debugPrint() const
@@ -67,6 +78,11 @@ string Trace::debugPrint() const
 {
   ostringstream oss;
 
+  oss << "Line File:" << endl;
+  for ( vector<Location>::const_iterator i = locations_.begin(), ie = locations_.end(); i != ie; ++i )
+    oss << (*i).debugPrint() << endl;
+
+  oss << "Trace File:" << endl;
   for ( vector<Event>::const_iterator i = events_.begin(), ie = events_.end(); i != ie; ++i )
     oss << (*i).debugPrint();
 
@@ -77,8 +93,11 @@ void Trace::parseLineFile(const char* file)
 {
   ifstream ifs(file);
 
-  // Always discard the first four lines
+  // Always discard the first seven lines
   string ignore;
+  getline(ifs, ignore); // 
+  getline(ifs, ignore); // <exec>:     file format elf64-x86-64
+  getline(ifs, ignore); // 
   getline(ifs, ignore); // Decoded dump of debug contents of section .debug_line:
   getline(ifs, ignore); //
   getline(ifs, ignore); // CU: <filename>:
@@ -98,25 +117,23 @@ void Trace::parseLineFile(const char* file)
       continue;
 
     // Ignore lines that begin UNKNOWN
-    if ( line.length() >= 7 && line.substr(0,7) == "UNKNOWN" )
+    if ( line.length() >= 7 && line.substr(0,7) == "UNKNOWN" ) 
       continue;
 
-    // Lines beginning with a path are the current file (discard colon)
+    // Ignore lines that give full paths
     if ( line[0] == '.' || line[0] == '/' )
-    {
-      string filename = line.substr(0, line.length()-1);
-      pair<set<string>::iterator, bool> ret = filenames_.insert(filename); 
-      location.file = &(*(ret.first));
-
       continue;
-    }
 
     // Everything else is a location
-    // (Ignore the partial filename on each line, use the full current filename)
-    string ignore;
-    ifs >> ignore;
-    ifs >> dec >> location.line;
-    ifs >> hex >> location.address;
+    istringstream iss(line);
+
+    string filename;
+    iss >> filename;
+    pair<set<string>::iterator, bool> ret = filenames_.insert(filename); 
+    location.file = &(*(ret.first));
+
+    iss >> location.line;
+    iss >> hex >> location.address >> dec;
 
     locations_.push_back(location);
   }
@@ -136,23 +153,23 @@ void Trace::parseTraceFile(const char* file)
     {
       case 'M':
         event.type = Trace::Event::MALLOC;
-        ifs >> event.arg1;
-        ifs >> event.arg2;
+        ifs >> hex >> event.arg1 >> dec;
+        ifs >> hex >> event.arg2 >> dec;
         break;
 
       case 'F':
         event.type = Trace::Event::FREE;
-        ifs >> event.arg1;
+        ifs >> hex >> event.arg1 >> dec;
         break;
 
       case 'R':
         event.type = Trace::Event::READ;
-        ifs >> event.arg1;
+        ifs >> hex >> event.arg1 >> dec;
         break;
 
       case 'W':
         event.type = Trace::Event::WRITE;
-        ifs >> event.arg1;
+        ifs >> hex >> event.arg1 >> dec;
         break;
 
       case 'E':
@@ -187,19 +204,20 @@ void Trace::parseContext(const string& s)
   while ( true )
   {
     uint64_t address;
-    iss >> hex >> address;
+    iss >> hex >> address >> dec;
     
     if ( iss.eof() )
       break;
 
     unsigned int i = 0;
     for ( unsigned int ie = locations_.size() - 1; i < ie; ++i )
-      if ( address >= locations_[i].address && address < locations_[i].address ) 
+      if ( address >= locations_[i].address && address < locations_[i+1].address ) 
       {
         context.push_back(&locations_[i]);
         break;
       }
  
+    // TODO: This should be an unknown location
     if ( i == locations_.size() - 1 ) 
       context.push_back(&locations_[i]);
   }
