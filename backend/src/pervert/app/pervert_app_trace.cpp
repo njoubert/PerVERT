@@ -93,6 +93,14 @@ void Trace::parseLineFile(const char* file)
 {
   ifstream ifs(file);
 
+  // Insert the unknown location
+  Location unknown;
+  unknown.file = &(*(filenames_.insert("UNKNOWN").first));
+  unknown.line = 0;
+  unknown.address = 0;
+
+  locations_.push_back(unknown);
+
   // Always discard the first seven lines
   string ignore;
   getline(ifs, ignore); // 
@@ -129,9 +137,8 @@ void Trace::parseLineFile(const char* file)
 
     string filename;
     iss >> filename;
-    pair<set<string>::iterator, bool> ret = filenames_.insert(filename); 
-    location.file = &(*(ret.first));
 
+    location.file = &(*(filenames_.insert(filename).first));
     iss >> location.line;
     iss >> hex >> location.address >> dec;
 
@@ -209,7 +216,7 @@ void Trace::parseContext(const string& s)
     if ( iss.eof() )
       break;
 
-    unsigned int i = 0;
+    unsigned int i = 1;
     for ( unsigned int ie = locations_.size() - 1; i < ie; ++i )
       if ( address >= locations_[i].address && address < locations_[i+1].address ) 
       {
@@ -217,9 +224,8 @@ void Trace::parseContext(const string& s)
         break;
       }
  
-    // TODO: This should be an unknown location
     if ( i == locations_.size() - 1 ) 
-      context.push_back(&locations_[i]);
+      context.push_back(&locations_[0]);
   }
 
   contexts_[s] = context;
