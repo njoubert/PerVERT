@@ -11,6 +11,9 @@ DataManager::DataManager(string exec)  : _log(GETLOG("DATAMANAGER")){
 DataManager::~DataManager() {
 	pthread_mutex_destroy(&the_lock);
 }
+string DataManager::exec() {
+	return _exec;
+}
 
 //Returns 0 on success
 int DataManager::update(string logs) {

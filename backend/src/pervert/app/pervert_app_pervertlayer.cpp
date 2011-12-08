@@ -36,7 +36,7 @@ void PervertLayer::f_status(Server::Request* req, Server::Response* res) {
 }
 
 void PervertLayer::pp_update(Server::Request* req, Server::Response* res) {
-			
+	_log.log(LOG_STATUS, "pp_update called\n");	
 	Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
 	if (query == NULL ||
 		!query->exists("exec") ||
@@ -64,8 +64,21 @@ void PervertLayer::pp_update(Server::Request* req, Server::Response* res) {
 			_log.log(LOG_WARN, "Failed to handle /pp/update query\n");
 			return writeStatusAndEnd(req,res,500);
 		}
-		
 	}
+}
+void PervertLayer::pp_list(Server::Request* req, Server::Response* res) {
+	Json::Value root;
+	Json::Value execs(Json::arrayValue);
+
+	vector<Json::Value> execs_arr;
+	map<string,DataManager*>::iterator it;
+	for (it=_dms.begin(); it != _dms.end(); it++) {
+		execs.append(Json::Value((*it).first.c_str()));
+	}
+
+	root["count"] = (int) _dms.size();
+	root["execs"] = execs;	
+	writeJSONResponse(req,res,root);
 	
 }
 
@@ -76,6 +89,8 @@ void PervertLayer::handle(Server::Request* req, Server::Response* res) {
 		return ping(req,res);
 	} else if (strcmp(request_info->uri, "/pp/update") == 0) {
 		return pp_update(req,res);
+	} else if (strcmp(request_info->uri, "/pp/list") == 0) {
+		return pp_list(req,res);
 	} else if (strcmp(request_info->uri, "/f/status") == 0) {
 		return f_status(req,res);
 	} else {

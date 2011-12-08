@@ -23,6 +23,7 @@ class DataManager {
 public:
 	DataManager(string exec);
 	~DataManager();
+	string exec();
 	
 	int update(string logs);
 	bool status();

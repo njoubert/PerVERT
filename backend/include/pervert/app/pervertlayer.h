@@ -10,7 +10,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "pervert/server/httplayer.h"
+#include "pervert/server/jsonlayer.h"
 #include "utils/log.h"
 #include "pervert/app/datamanager.h"
 
@@ -20,7 +20,7 @@ namespace App {
 	
 using namespace Utils;
 
-class PervertLayer : public Server::HTTPLayer {
+class PervertLayer : public Server::JSONLayer {
 public:
 	PervertLayer();
 	void handle(Server::Request* req, Server::Response* res);
@@ -29,11 +29,10 @@ private:
 	Log& _log;
 	map<string,DataManager*> _dms;
 	
-	//HTTP methods:
-	
+	//HTTP methods we respond to:
 	void ping(Server::Request* req, Server::Response* res);
 	void pp_update(Server::Request* req, Server::Response* res);
-
+	void pp_list(Server::Request* req, Server::Response* res);
 	void f_status(Server::Request* req, Server::Response* res);
 	
 
