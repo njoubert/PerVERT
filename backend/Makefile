@@ -5,14 +5,16 @@ CXX := g++
 LINKER := g++
 
 # All CXX files grouped by sub-namespace
+JSON_CXXFILES := $(shell find $(SRCDIR)/json -type f -name '*.cpp')
 UTILS_CXXFILES := $(shell find $(SRCDIR)/utils -type f -name '*.cpp')
 PERVERT_CXXFILES := $(shell find $(SRCDIR)/pervert -type f -name '*.cpp')
-CXXFILES           := $(UTILS_CXXFILES) $(PERVERT_CXXFILES)
+CXXFILES           := $(UTILS_CXXFILES) $(PERVERT_CXXFILES) $(JSON_CXXFILES)
 
 # All Header files grouped by sub-namespace
+JSON_HEADERS     := $(shell find $(INCLUDEDIR)/json -type f -name '*.h')
 UTILS_HEADERS     := $(shell find $(INCLUDEDIR)/utils -type f -name '*.h')
 PERVERT_HEADERS   := $(shell find $(INCLUDEDIR)/pervert -type f -name '*.h')
-HEADERS            := $(UTILS_HEADERS) $(SERVER_HEADERS)
+HEADERS            := $(UTILS_HEADERS) $(SERVER_HEADERS) $(JSON_HEADERS)
 
 CFLAGS      := -W -Wall -I -pthread -g
 INCLUDE := -I$(INCLUDEDIR)/ -Ilib/
