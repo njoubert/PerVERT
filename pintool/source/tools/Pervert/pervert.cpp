@@ -292,7 +292,7 @@ VOID RecordMemRead(ADDRINT ip, ADDRINT addr)
   for ( map<ADDRINT,ADDRINT>::iterator i = records.begin(), ie = records.end(); i != ie; ++i )
     if ( addr >= (*i).first && addr < (*i).second )
     {
-      trace << "R " << addr << endl;
+      trace << "R " << addr << " ";
       trace << (void*) ip;
       callStack.DumpStack(&trace);
       trace << endl;
@@ -307,7 +307,7 @@ VOID RecordMemWrite(ADDRINT ip, ADDRINT addr)
   for ( map<ADDRINT,ADDRINT>::iterator i = records.begin(), ie = records.end(); i != ie; ++i )
     if ( addr >= (*i).first && addr < (*i).second )
     {
-      trace << "W " << addr << endl;
+      trace << "W " << addr << " ";
       trace << (void*) ip;
       callStack.DumpStack(&trace);
       trace << endl;
@@ -328,7 +328,7 @@ VOID RecordMallocResult(ADDRINT ip, ADDRINT addr)
   ADDRINT end = addr + request;
   records[addr] = end;
 
-  trace << "M " << addr << " " << end << endl;
+  trace << "M " << addr << " " << end << " ";
   trace << (void*) ip;
   callStack.DumpStack(&trace);
   trace << endl;
@@ -340,7 +340,7 @@ VOID RecordFree(ADDRINT ip, ADDRINT addr)
   if ( records.find(addr) != records.end() )
   {
     records.erase(addr);
-    trace << "F " << addr << endl;
+    trace << "F " << addr << " ";
     trace << (void*) ip;
     callStack.DumpStack(&trace);
     trace << endl;
