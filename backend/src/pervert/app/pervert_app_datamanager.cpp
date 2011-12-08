@@ -7,7 +7,7 @@ DataManager::DataManager(string exec)  : _log(GETLOG("DATAMANAGER")){
 	_log.log(LOG_STATUS, "datamamanger created...\n");
 	_exec = exec;
 	pthread_mutex_init(&the_lock,0);
-  _trace = 0;
+	_trace = 0;
 }
 DataManager::~DataManager() {
 	pthread_mutex_destroy(&the_lock);
@@ -19,18 +19,18 @@ string DataManager::exec() {
 }
 
 //Returns 0 on success
-int DataManager::update(string logs) {
+bool DataManager::update(string logs) {
 	lock();
 
   if ( _trace != 0 )
     delete _trace;
 
-  string linefile = logs + ".line";
-  string tracefile = logs + ".trace";
-  _trace = new Trace(linefile.c_str(), tracefile.c_str());
-
+	string linefile = logs + ".line";
+	string tracefile = logs + ".trace";
+	_trace = new Trace(linefile.c_str(), tracefile.c_str());
+	
 	unlock();
-	return 0; //success
+	return _trace->okay(); //success
 }
 bool DataManager::status() {
 	if (pthread_mutex_trylock(&the_lock) != 0) {

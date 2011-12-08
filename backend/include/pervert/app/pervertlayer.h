@@ -28,7 +28,12 @@ public:
 private:
 	Log& _log;
 	map<string,DataManager*> _dms;
-	
+
+	//call this whenever internal state changes.
+	void logChange();	
+	int _lastChangeID;
+
+	void writePollResponse(Server::Request* req, Server::Response* res, const char* text);
 	//HTTP methods we respond to:
 	void ping(Server::Request* req, Server::Response* res);
 	void pp_update(Server::Request* req, Server::Response* res);

@@ -28,7 +28,7 @@ public:
 	~DataManager();
 	string exec();
 	
-	int update(string logs);
+	bool update(string logs);
 	bool status();
 
 private:

@@ -17,7 +17,10 @@
 	<script type="text/javascript" src="js/d3-233d80a/d3.layout.min.js"></script>
   
 	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script> 
-
+  <script type="text/javascript" src="js/json2.js"></script> 
+	
+  <script type="text/javascript" src="js/pervert.js"></script> 
+	
 <script type="text/javascript">
 
 
@@ -54,15 +57,22 @@ function showSpinner(status) {
 }
 
 
-var currentStatus;
-function handlePollResult(data, testStatus, jqXHR) {
+var pv = null;
+var currentStatus = "BUSY";
+var lastChangeID = -1;
+function handlePollResult(exec, data, testStatus, jqXHR) {
   if (testStatus != "success") {
     currentStatus = "Backend Unavailable";
-    showSpinner(currentStatus);    
-  } else if (currentStatus != data) { //A state transition occurred!
-    showSpinner(data);    
-    currentStatus = data;
+  } else {
+    changeID = data.substr(0, data.indexOf(" "));
+    newStatus = data.substr(data.indexOf(" ")+1, data.length); 
+    if (lastChangeID != changeID) { //A state transition occurred!
+      currentStatus = newStatus;
+      lastChangeID = changeID;
+      pv.init();
+    }
   }
+  showSpinner(currentStatus);
   return true;
 }
 
@@ -79,8 +89,8 @@ function doPoll() {
     $.ajax('/f/status?exec='+exec,
       {
         timeout: 500,
-        success: function(d,t,j) { if (handlePollResult(d,t,j)) { setTimeout(doPoll,500); } },
-        error: function(d,t,j) { if (handlePollResult(d,t,j)) { setTimeout(doPoll,500); } }
+        success: function(d,t,j) { if (handlePollResult(exec, d,t,j)) { setTimeout(doPoll,500); } },
+        error: function(d,t,j) { if (handlePollResult(exec, d,t,j)) { setTimeout(doPoll,500); } }
       });    
   }
 }
@@ -91,6 +101,10 @@ $(document).ready(function() { //ajax
   $("#loadingspinner").show();
   $("#okayspinner").hide();
   $("#errorspinner").hide();
+
+  var exec = getParameterByName("exec");
+  pv = pervert(exec);
+
   doPoll();
 });
 
@@ -115,8 +129,7 @@ $(document).ready(function() { //ajax
       </div>
     </div>
         
-    <div id="right-sidebar">
-    </div>
+    <div id="right-sidebar"></div>
     
     <div id="content">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis quis nunc mauris, at rhoncus justo. Vivamus magna mi, dignissim at feugiat sed, hendrerit sit amet orci. Quisque adipiscing dapibus risus nec commodo. Praesent ut mattis orci. Sed non purus ipsum, a ullamcorper velit. Pellentesque pulvinar bibendum diam sit amet pellentesque. Praesent ligula nulla, egestas at vestibulum in, scelerisque quis diam. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed accumsan placerat quam, id auctor purus rutrum vel. Fusce laoreet tempus urna nec commodo. Etiam in odio at sapien consectetur pharetra. Sed pellentesque suscipit faucibus.
@@ -133,7 +146,10 @@ Curabitur et elit lorem. Sed sit amet luctus mauris. Morbi imperdiet pretium con
     <div style="clear:both;"></div>
     
     <div id="footer">
-      <p>©2011 <a href="http://njoubert.com">Niels Joubert</a>, <a href="http://cs.stanford.edu/people/eschkufz/">Eric Schkufza</a></p>
+      <p>
+        ©2011 <a href="http://njoubert.com">Niels Joubert</a>, <a href="http://cs.stanford.edu/people/eschkufz/">Eric Schkufza</a><br/>
+        <a href="/pp/list">exec list</a>
+      </p>
     </div>
     
   </div>

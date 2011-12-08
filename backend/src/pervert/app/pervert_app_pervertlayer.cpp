@@ -5,14 +5,23 @@ namespace PerVERT {
 namespace App {
 
 PervertLayer::PervertLayer() : _log(GETLOG("PERVERT")) {
-	
-	
+	_lastChangeID = 0;
 }
+
+void PervertLayer::logChange() {
+	__sync_add_and_fetch(&_lastChangeID,1); //atomic add
+}
+
 
 void PervertLayer::ping(Server::Request* req, Server::Response* res) {
 	write200Response(req,res,TEXT_PLAIN,"pong",4);
 }
 
+void PervertLayer::writePollResponse(Server::Request* req, Server::Response* res, const char* text) {
+	char buffer[512];
+	sprintf(buffer,"%d %s", _lastChangeID, text);
+	write200Response(req,res,TEXT_PLAIN,buffer,strlen(buffer));
+}
 void PervertLayer::f_status(Server::Request* req, Server::Response* res) {
 	Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
 	if (query == NULL ||
@@ -21,13 +30,13 @@ void PervertLayer::f_status(Server::Request* req, Server::Response* res) {
 	} else {
 		string exec = query->get("exec");
 		if (_dms.count(exec) < 1) {
-			return write200Response(req,res,TEXT_PLAIN,"The given executable is not known to Pervert.",45);		
+			return writePollResponse(req,res,"The given executable is not known to Pervert.");		
 		} else {
 			bool busy = _dms[exec]->status();
 			if (busy) {
-				return write200Response(req,res,TEXT_PLAIN,"BUSY",4);				
+				return writePollResponse(req,res,"BUSY");				
 			} else {
-				return write200Response(req,res,TEXT_PLAIN,"GOOD",4);
+				return writePollResponse(req,res,"GOOD");
 
 			}
 		}
@@ -55,9 +64,10 @@ void PervertLayer::pp_update(Server::Request* req, Server::Response* res) {
 			dm = _dms[exec];
 		}
 		
-		int success = dm->update(query->get("logs"));
+		bool success = dm->update(query->get("logs"));
+		logChange();
 		
-		if (success == 0) {
+		if (success) {
 			_log.log(LOG_STATUS, "Successfully handled /pp/update query\n");
 			return writeStatusAndEnd(req,res,200);
 		} else {
