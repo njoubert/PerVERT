@@ -29,7 +29,6 @@ int DataManager::update(string logs) {
   string tracefile = logs + ".trace";
   _trace = new Trace(linefile.c_str(), tracefile.c_str());
 
-	sleep(4);
 	unlock();
 	return 0; //success
 }
