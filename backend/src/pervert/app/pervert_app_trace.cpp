@@ -101,15 +101,18 @@ void Trace::parseLineFile(const char* file)
 
   locations_.push_back(unknown);
 
-  // Always discard the first seven lines
-  string ignore;
-  getline(ifs, ignore); // 
-  getline(ifs, ignore); // <exec>:     file format elf64-x86-64
-  getline(ifs, ignore); // 
-  getline(ifs, ignore); // Decoded dump of debug contents of section .debug_line:
-  getline(ifs, ignore); //
-  getline(ifs, ignore); // CU: <filename>:
-  getline(ifs, ignore); // File name [...] Line number [...] Starting address
+  // Always discard the first seven lines (but record the file on line 6)
+  string ignore, currentfile;
+  getline(ifs, ignore);      // 
+  getline(ifs, ignore);      // <exec>:     file format elf64-x86-64
+  getline(ifs, ignore);      // 
+  getline(ifs, ignore);      // Decoded dump of debug contents of section .debug_line:
+  getline(ifs, ignore);      //
+  getline(ifs, currentfile); // CU: <filename>:
+  getline(ifs, ignore);      // File name [...] Line number [...] Starting address
+
+  // Discard leading and trailing characters from currentfile
+  currentfile = currentfile.substr(4, currentfile.rfind(':')-4);
 
   Location location;
   while ( true )
@@ -128,17 +131,18 @@ void Trace::parseLineFile(const char* file)
     if ( line.length() >= 7 && line.substr(0,7) == "UNKNOWN" ) 
       continue;
 
-    // Ignore lines that give full paths
+    // Update the currentfile for lines that begin with path delimiters
     if ( line[0] == '.' || line[0] == '/' )
+    {
+      currentfile = line.substr(0, line.rfind(':'));
       continue;
+    }
 
-    // Everything else is a location
+    // Everything else is a location (ignore the short filename, use currentfile)
     istringstream iss(line);
+    iss >> ignore;
 
-    string filename;
-    iss >> filename;
-
-    location.file = &(*(filenames_.insert(filename).first));
+    location.file = &(*(filenames_.insert(currentfile).first));
     iss >> location.line;
     iss >> hex >> location.address >> dec;
 
