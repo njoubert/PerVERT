@@ -35,6 +35,7 @@ struct Response {
 	void setMetadata(string name, Metadata* value);
 	Metadata* getMetadata(string name);
 	void write(const char* data, size_t len);
+	void printf(const char *fmt, ...);
 	void close();
 private:
 	int mg_success;

@@ -5,7 +5,16 @@
 
 namespace PerVERT {
 namespace Server {
-	
+
+static const char* content_type_to_string[] = {
+	"unknown",
+	"application/json",
+	"application/javascript",
+	"text/plain",
+	"text/html",
+	"text/css"
+};
+
 void HTTPLayer::writeHeadersEnd(Request* req, Response* res) {
 	res->write("\r\n", 2);
 }
@@ -37,16 +46,25 @@ void HTTPLayer::writeStatusAndEnd(Request* req, Response* res, int code) {
 	writeStatus(req,res,code);
 	writeHeadersEnd(req,res);
 }
-void HTTPLayer::writeOKResponseWithContentLength(Request* req, Response* res, const char* data, size_t len) {
-	
-	static const char *ajax_reply_start =
-		"HTTP/1.1 200 OK\r\n"
-		"Cache: no-cache\r\n";
-	mg_printf(res->conn, "%sContent-Length:%d\r\n\r\n", ajax_reply_start, len);
+void HTTPLayer::write200Response(Request* req, Response* res, CONTENT_TYPE ct, const char* data, size_t len) {
+	writeStatus(req,res,200);
+	static const char *headers = 
+		"Cache: no-cache\r\n"
+		"Content-Length: %d\r\n"
+		"%s%s%s"
+		"\r\n";
+	char buffer[1024];
+	if (ct == UNKNOWN) {
+		sprintf(buffer, headers, len, "", "", "");		
+	} else {
+		sprintf(buffer, headers, len, "Content-Type: ", content_type_to_string[ct], "\r\n");
+	}
+	res->write(buffer, strlen(buffer));
 	res->write(data, len);
-	mg_printf(res->conn, "\r\n");
-	
+	res->write("\r\n", 2);
 }
+
+
 
 } /* namespace Server */
 } /* namespace PerVERT */

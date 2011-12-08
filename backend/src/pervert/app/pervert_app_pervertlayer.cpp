@@ -10,7 +10,7 @@ PervertLayer::PervertLayer() : _log(GETLOG("PERVERT")) {
 }
 
 void PervertLayer::ping(Server::Request* req, Server::Response* res) {
-	writeOKResponseWithContentLength(req,res,"pong",4);
+	write200Response(req,res,TEXT_PLAIN,"pong",4);
 }
 
 void PervertLayer::f_status(Server::Request* req, Server::Response* res) {
@@ -21,13 +21,13 @@ void PervertLayer::f_status(Server::Request* req, Server::Response* res) {
 	} else {
 		string exec = query->get("exec");
 		if (_dms.count(exec) < 1) {
-			return writeOKResponseWithContentLength(req,res,"NOT EXIST",9);		
+			return write200Response(req,res,TEXT_PLAIN,"The given executable is not known to Pervert.",45);		
 		} else {
 			bool busy = _dms[exec]->status();
 			if (busy) {
-				return writeOKResponseWithContentLength(req,res,"BUSY",4);				
+				return write200Response(req,res,TEXT_PLAIN,"BUSY",4);				
 			} else {
-				return writeOKResponseWithContentLength(req,res,"GOOD",4);
+				return write200Response(req,res,TEXT_PLAIN,"GOOD",4);
 
 			}
 		}
@@ -64,8 +64,6 @@ void PervertLayer::pp_update(Server::Request* req, Server::Response* res) {
 			_log.log(LOG_WARN, "Failed to handle /pp/update query\n");
 			return writeStatusAndEnd(req,res,500);
 		}
-		
-		
 		
 	}
 	

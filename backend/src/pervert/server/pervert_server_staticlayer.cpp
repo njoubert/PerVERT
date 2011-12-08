@@ -6,6 +6,7 @@
 namespace PerVERT {
 namespace Server {
 
+
 StaticLayer::StaticLayer(const char* httproot, unsigned int maxfilesize) {
 	#define MAXPATHLEN 1024
 	char temp[MAXPATHLEN];
@@ -53,7 +54,7 @@ void StaticLayer::handle(Request* req, Response* res) {
 				if (readstatus != status.st_size) {
 					writeStatusAndEnd(req,res,500);
 				} else {
-					writeOKResponseWithContentLength(req,res,filedata, readstatus);
+					write200Response(req,res,UNKNOWN,filedata, readstatus);
 				}
 			}
 			delete filedata;

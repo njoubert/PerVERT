@@ -19,7 +19,16 @@ using namespace Utils;
 
 /* This is an intermediate layer object that provides an API to return HTTP data. */
 class HTTPLayer : public Layer {
-public:
+public:	
+	enum CONTENT_TYPE {
+		UNKNOWN = 0,
+		APP_JSON = 1,
+		APP_JAVASCRIPT = 2,
+		TEXT_PLAIN = 3,
+		TEXT_HTML = 4,
+		TEXT_CSS = 5
+	};
+
 	virtual void handle(Request* req, Response* res) = 0;
 	virtual const char* name() = 0;
 
@@ -27,7 +36,7 @@ protected:
 	void writeHeadersEnd(Request* req, Response* res);
 	void writeStatus(Request* req, Response* res, int code);
 	void writeStatusAndEnd(Request* req, Response* res, int code);
-	void writeOKResponseWithContentLength(Request* req, Response* res, const char* data, size_t len);
+	void write200Response(Request* req, Response* res, CONTENT_TYPE ct, const char* data, size_t len);
 
 private:
 
