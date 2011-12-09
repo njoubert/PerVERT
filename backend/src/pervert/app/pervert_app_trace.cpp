@@ -13,8 +13,9 @@ namespace PerVERT
 namespace App
 {
 
-Trace::Trace(const char* linefile, const char* tracefile) :
+Trace::Trace(const char* linefile, const char* tracefile, uint64_t cacheLine) :
   okay_(true),
+  cacheLine_(cacheLine),
   log_(GETLOG("TRACE"))
 {
   log_.log(LOG_STATUS, "Initializing trace\n");
@@ -27,8 +28,10 @@ Trace::Trace(const char* linefile, const char* tracefile) :
   log_.log(LOG_STATUS, "Done parsing trace file!\n");
   indexTraceFile();
   log_.log(LOG_STATUS, "Done indexing trace file!\n");
+  remapAddresses();
+  log_.log(LOG_STATUS, "Done remapping addresses!\n");
 
-  log_.log(LOG_STATUS, "Trace:\n%s", debugPrint().c_str());
+  //log_.log(LOG_STATUS, "Trace:\n%s", debugPrint().c_str());
 }
 
 bool Trace::okay() const
@@ -275,6 +278,97 @@ void Trace::indexTraceFile()
         assert(false && "Control should never reach here!");
         break;
     }
+  }
+}
+
+static uint64_t remapAddress(uint64_t address, map<uint64_t, uint64_t>& regions, map<uint64_t, uint64_t>& offsets)
+{
+  for ( map<uint64_t, uint64_t>::iterator i = regions.begin(), ie = regions.end(); i != ie; ++i )
+    if ( address >= (*i).first && address <= (*i).second )
+      return address - (*i).first + offsets[(*i).first];
+
+  assert(false && "Control should never reach here!");
+  return 0;
+}
+
+void Trace::remapAddresses()
+{
+  map<uint64_t, int> regions;
+  for ( vector<Event*>::iterator i = byType_[Event::MALLOC].begin(), ie = byType_[Event::MALLOC].end(); i != ie; ++i )
+  {
+    uint64_t begin = (*i)->arg1;
+    uint64_t end = (*i)->arg2;
+
+    if ( regions.find(begin) == regions.end() )
+      regions[begin] = 1;
+    else
+      regions[begin]++;
+
+    if ( regions.find(end) == regions.end() )
+      regions[end] = -1;
+    else
+      regions[end]--;
+  }
+
+//  log_.log(LOG_STATUS, "Region begin/end count:\n");
+//  for ( map<uint64_t, int>::iterator i = regions.begin(), ie = regions.end(); i != ie; ++i )
+//    log_.log(LOG_STATUS, "%x: %d\n", (*i).first, (*i).second);
+
+  map<uint64_t, uint64_t> mergedRegions;
+  int nOpen = 0;          // the number of nested regions we're within
+  uint64_t firstOpen = 0; // the beginning of the outer-most region
+
+  for ( map<uint64_t, int>::iterator i = regions.begin(), ie = regions.end(); i != ie; ++i )
+  {
+    if ( nOpen == 0 )
+      firstOpen = (*i).first;
+
+    nOpen += (*i).second;
+
+    if ( nOpen == 0 )
+      mergedRegions[firstOpen] = (*i).first;
+  }
+
+//  log_.log(LOG_STATUS, "Merged region ranges:\n");
+//  for ( map<uint64_t, uint64_t>::iterator i = mergedRegions.begin(), ie = mergedRegions.end(); i != ie; ++i )
+//    log_.log(LOG_STATUS, "%x -> %x\n", (*i).first, (*i).second);
+
+  map<uint64_t, uint64_t> offsets;
+  uint64_t lastEndO = (*mergedRegions.begin()).first; // end previous region in original space
+  uint64_t lastEndM = lastEndO % cacheLine_;          // end previous region in mapped space
+
+  for ( map<uint64_t, uint64_t>::iterator i = mergedRegions.begin(), ie = mergedRegions.end(); i != ie; ++i )
+  {
+    uint64_t beginO = (*i).first; // begin this region in original space
+    uint64_t endO = (*i).second;  // end this region in original space
+
+    uint64_t delta = beginO - lastEndO; // distance between this and previous region in original space
+
+    uint64_t offsetO = beginO % cacheLine_;          // cache line offset of begin this region in original space
+    uint64_t lastEndOffsetO = lastEndO % cacheLine_; // cache line offset of end previous region in original space
+
+    uint64_t padding = 0;
+    if ( offsetO >= lastEndOffsetO && delta < cacheLine_ ) // was this region on the same line as the previous in original space?
+      padding = delta;
+    else                                                   // wrap it around to the next line in mapped space
+      padding = cacheLine_ + offsetO - lastEndOffsetO;
+    offsets[beginO] = lastEndM + padding;
+    
+    lastEndM = lastEndM + padding + endO - beginO;
+    lastEndO = endO;
+  }
+
+//  log_.log(LOG_STATUS, "Region remapping:\n");
+//  for ( map<uint64_t, uint64_t>::iterator i = offsets.begin(), ie = offsets.end(); i != ie; ++i )
+//    log_.log(LOG_STATUS, "%x --> %x\n", (*i).first, (*i).second);
+
+  for ( vector<Event>::iterator i = events_.begin(), ie = events_.end(); i != ie; ++i )
+  {
+    Event& e = *i;
+
+    e.arg1 = remapAddress(e.arg1, mergedRegions, offsets);
+    if ( e.type == Event::MALLOC )
+      e.arg2 = remapAddress(e.arg2, mergedRegions, offsets);
   }
 }
 
