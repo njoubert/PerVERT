@@ -83,14 +83,38 @@
   */
   var ViewState = function(pv) {
     var __pv = pv;
+    var __listeners = {};
     
     //Public API
     var reset = function() {
       //reset to the original view state;
     }
-    
+
+    //EVENT architecture:
+    var fireEvent = function(event,caller) {
+      $.each(__listeners[event], function(idx,func) {
+        func(event,caller);
+      })
+    }
+    var addEvent = function(event) {
+      if (!__listeners[event]) {
+        __listeners[event] = [];        
+      }
+      return this;
+    }
+    //calls func(event,caller) when event fires
+    var addListener = function(event,func) {
+      if (!__listeners[event]) {
+        addEvent(event);
+      }
+      __listeners[event].push(func);
+      return this;
+    }
     return {
       reset: reset,
+      addListener: addListener,
+      addEvent: addEvent,
+      fireEvent: fireEvent
     }
   }
 
@@ -106,17 +130,25 @@
     var __div_memscatter = null;
     var __div_debug = null;
     
-    var __viewState = ViewState(this);
+    var __vS = ViewState(this);
     var __db = null;
     
     //private functions:
 
     function create_controls_view() {
-      
+      $(__div_controls).html("<div id='pv_ctx_view'></div>");
+      __vS
+        .addEvent("controls_click")
+        .addEvent("controls_range")
+      $("#pv_ctx_view")
+        .css("width", 400)
+        .css("height", 100)
+        .css("background", "#ddd")
+        .click(function() {__vS.fireEvent("controls_click", this)});
     }
     
     function create_mem_view() {
-      
+    //  __div_memmap.html("CREATE MEM VIEW");
     }
     
     function create_context_view() {
@@ -124,7 +156,7 @@
     }
     
     function create_scatter_view() {
-      
+      //d3.select(__div_memscatter).text("CREATE SCATTER VIEW");
     }
      
     // Public API:  
@@ -134,6 +166,8 @@
         __db.abort();
       log("Initializing PerVert...");
       __db = DB(this); //create a new DB
+      
+      __vS.addListener("controls_click", function() { log("event Controls_Click"); })
       
       __db.init(function() {__toggleBusy(false);});
     }
@@ -149,7 +183,7 @@
       if (__div_debug) {
         var d1 = new Date();
         var ds = d1.getHours() + ":" + d1.getMinutes() + ":" + d1.getSeconds() + "  "
-        __div_debug.prepend("<p>" + ds + msg + "</p>");
+        $(__div_debug).prepend("<p>" + ds + msg + "</p>");
         
       }
     }

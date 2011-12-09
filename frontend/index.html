@@ -113,11 +113,11 @@ $(document).ready(function() {
           } else { 
             //$("#content").html(""); 
           };})
-        .bindMemView($("#pv_memmap"))
-        .bindContextView($("#pv_context"))
-        .bindControlsView($("#pv_controls"))
-        .bindMemScatterView($("#pv_memscat"))
-        .bindDebugView($("#pv_debug"));
+        .bindMemView("#pv_memmap")
+        .bindContextView("#pv_context")
+        .bindControlsView("#pv_controls")
+        .bindMemScatterView("#pv_memscat")
+        .bindDebugView("#pv_debug");
         
   doPoll();
 });
