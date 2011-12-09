@@ -1,0 +1,5 @@
+IDEA:
+
+Can we build a API/DSL inside C++ that allows you to drop in, define a web interface
+and API for your C++ code, and it'll generate the client-server stuff for you?
+

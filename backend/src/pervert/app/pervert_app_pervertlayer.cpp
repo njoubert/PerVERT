@@ -79,7 +79,7 @@ void PervertLayer::pp_update(Server::Request* req, Server::Response* res) {
 void PervertLayer::pp_list(Server::Request* req, Server::Response* res) {
 	Json::Value root;
 	Json::Value execs(Json::arrayValue);
-
+	
 	vector<Json::Value> execs_arr;
 	map<string,DataManager*>::iterator it;
 	for (it=_dms.begin(); it != _dms.end(); it++) {

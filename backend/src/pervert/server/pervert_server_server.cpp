@@ -56,7 +56,7 @@ void Server::next(Request* req, Response* res) {
 	unsigned int l = req->currentLayer;
 	if (l < _layers.size()) {
 		req->currentLayer++;
-		_log.log(LOG_INFO, "calling next layer: %s\n", _layers[l]->name());
+		_log.log(LOG_DEBUG, "calling next layer: %s\n", _layers[l]->name());
 		_layers[l]->handle(req,res);
 	} else {
 		_log.log(LOG_INFO, "ran out of layers!\n");
@@ -96,7 +96,7 @@ int Server::handleRequest(enum mg_event event,
 				res->mg_success = 0;
 				break;
 	}
-	_log.log(LOG_INFO, "done with request.\n");
+	_log.log(LOG_DEBUG, "done with request.\n");
 	int r = res->mg_success;
 	delete req;
 	delete res;
