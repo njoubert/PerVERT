@@ -20,6 +20,7 @@
     return Pervert(exec, toggleBusy);
   }
 
+  /* AJAX Requests Queue - Helper Object */
   var jqXHRQueue = function() {
     self = this;
     self.__data = [];
@@ -37,43 +38,169 @@
       return t; 
     } 
   }
-
-  var Pervert = function(exec, toggleBusy) {
-    var self = this;
+  
+  /* 
+  * Back-end Cache Helper Module 
+  *   This class handles all the server data interaction and caching.
+  *   It gets blown away when we "init" something, so we can start fresh.
+  */
+  var DB = function(pv, exec) {
+    var __pv = pv;
     var __exec = exec;
-    var __toggleBusy = toggleBusy;
-    
     var __ajaxqueue = new jqXHRQueue(); 
     
-    //set up event handlers:
-    
-    
-    //private functions:
+        
     function getListOfExecs(cont) {
       __ajaxqueue.ajax('/pp/list', {
-        success: function(data) { $("#right-sidebar").html(JSON.stringify(data)); },
+        success: function(data) { $("#pv_bullshit").html(JSON.stringify(data)); },
         complete: function() { cont(); }
        });
+    }
+    
+    var init = function(cont) {
+      __pv.log("initting DB");
+      getListOfExecs(cont);
+
+      
+    }
+    
+    var abort = function() {
+      __ajaxqueue.abort();
+    }
+    
+    return {
+      init: init,
+      abort: abort,
+      
+    }
+  }
+  
+  /* 
+  * Carries the view state around. 
+  *   This interacts with the user and the UI,
+  *   and keeps everything happy and up to date.
+  *   The UI itself registers event-listeners to this
+  */
+  var ViewState = function(pv) {
+    var __pv = pv;
+    
+    //Public API
+    var reset = function() {
+      //reset to the original view state;
+    }
+    
+    return {
+      reset: reset,
+    }
+  }
+
+
+  var Pervert = function(exec) {
+    var self = this;
+    var __exec = exec;
+    var __toggleBusy = function() {return;};
+    
+    var __div_controls = null;
+    var __div_memmap = null;
+    var __div_context = null;
+    var __div_memscatter = null;
+    var __div_debug = null;
+    
+    var __viewState = ViewState(this);
+    var __db = null;
+    
+    //private functions:
+
+    function create_controls_view() {
+      
+    }
+    
+    function create_mem_view() {
+      
+    }
+    
+    function create_context_view() {
+      
+    }
+    
+    function create_scatter_view() {
+      
     }
      
     // Public API:  
     var init = function() {
       __toggleBusy(true);
-      __ajaxqueue.abort();
-      getListOfExecs(function() {__toggleBusy(false);});
+      if (__db)
+        __db.abort();
+      log("Initializing PerVert...");
+      __db = DB(this); //create a new DB
+      
+      __db.init(function() {__toggleBusy(false);});
     }
     
-    var remove = function() {
+    var clean = function() {
       __toggleBusy(true);
 
-      __ajaxqueue.abort();
+      __db.abort();
       __toggleBusy(false);
-    } 
-
+    }     
     
+    var log = function log(msg) {
+      if (__div_debug) {
+        var d1 = new Date();
+        var ds = d1.getHours() + ":" + d1.getMinutes() + ":" + d1.getSeconds() + "  "
+        __div_debug.prepend("<p>" + ds + msg + "</p>");
+        
+      }
+    }
+
+    var bindBusy = function(busy) {
+      __toggleBusy = busy;
+      return this;
+    }
+
+    var bindMemView = function(div_memmap, div_memslider) {
+      __div_memmap = div_memmap;
+      create_mem_view();
+      return this;
+    }
+
+    var bindContextView = function(div_context) {
+      __div_context = div_context;
+      create_context_view();
+      return this;
+    }
+    
+    var bindControlsView = function(div_controls) {
+      __div_controls = div_controls;
+      create_controls_view();
+      return this;
+    }
+    
+    var bindMemScatterView = function(div_memscatter) {
+      __div_memscatter = div_memscatter;
+      create_scatter_view();
+      return this;
+    }
+
+    var bindDebugView = function(div_debug) {
+      __div_debug = div_debug;
+      return this;
+    }
+    
+    // Exports the public api:
     return {
       init: init,
-      remove: remove
+      clean: clean,
+      log: log,
+      bindBusy: bindBusy,
+      bindMemView: bindMemView,
+      bindContextView: bindContextView,
+      bindControlsView: bindControlsView,
+      bindMemScatterView: bindMemScatterView,
+      bindDebugView: bindDebugView,
+      
+      
     }
     
   }

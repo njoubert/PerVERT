@@ -63,15 +63,14 @@ var lastChangeID = -1;
 function handlePollResult(exec, data, testStatus, jqXHR) {
   if (testStatus != "success") {
     currentStatus = "Backend Unavailable";
-    pv.remove();
+    pv.clean();
   } else {
     changeID = data.substr(0, data.indexOf(" "));
-    newStatus = data.substr(data.indexOf(" ")+1, data.length);
+    currentStatus = data.substr(data.indexOf(" ")+1, data.length);
     
     if (lastChangeID != changeID) { //A state transition occurred!
-      currentStatus = newStatus;
       lastChangeID = changeID;
-      if (newStatus == "GOOD") {
+      if (currentStatus == "GOOD") {
         pv.init();
       }
     }
@@ -99,7 +98,7 @@ function doPoll() {
   }
 }
 
-$(document).ready(function() { //ajax
+$(document).ready(function() {
   $("#infomsg").hide();
   $("#errormsg").hide();
   $("#loadingspinner").show();
@@ -107,8 +106,19 @@ $(document).ready(function() { //ajax
   $("#errorspinner").hide();
 
   var exec = getParameterByName("exec");
-  pv = pervert(exec, function(isBusy) { if (isBusy) { $("#content").html("Processing data..."); } else { $("#content").html(""); };});
-
+  pv = pervert(exec)
+        .bindBusy(function(isBusy) { 
+          if (isBusy) { 
+            //$("#content").html("Processing data..."); 
+          } else { 
+            //$("#content").html(""); 
+          };})
+        .bindMemView($("#pv_memmap"))
+        .bindContextView($("#pv_context"))
+        .bindControlsView($("#pv_controls"))
+        .bindMemScatterView($("#pv_memscat"))
+        .bindDebugView($("#pv_debug"));
+        
   doPoll();
 });
 
@@ -133,18 +143,16 @@ $(document).ready(function() { //ajax
       </div>
     </div>
         
-    <div id="right-sidebar"></div>
+    <div id="right-sidebar">
+      <div id="pv_context"></div>
+      <div id="pv_memscat"></div>
+      <div id="pv_bullshit"></div>
+      <div id="pv_debug"></div>
+    </div>
     
     <div id="content">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis quis nunc mauris, at rhoncus justo. Vivamus magna mi, dignissim at feugiat sed, hendrerit sit amet orci. Quisque adipiscing dapibus risus nec commodo. Praesent ut mattis orci. Sed non purus ipsum, a ullamcorper velit. Pellentesque pulvinar bibendum diam sit amet pellentesque. Praesent ligula nulla, egestas at vestibulum in, scelerisque quis diam. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed accumsan placerat quam, id auctor purus rutrum vel. Fusce laoreet tempus urna nec commodo. Etiam in odio at sapien consectetur pharetra. Sed pellentesque suscipit faucibus.
-
-Fusce suscipit porttitor eros, id tristique velit pellentesque vitae. Proin id augue neque, vel hendrerit leo. Aenean vestibulum lectus ac lacus faucibus convallis. Praesent sapien enim, faucibus nec dapibus adipiscing, pulvinar id elit. Morbi mollis viverra molestie. Aenean mattis tortor eu nibh posuere et suscipit nisi iaculis. Nam id purus erat. Aliquam volutpat, lorem ut adipiscing vestibulum, ipsum mi aliquet lectus, ac semper ante justo a nulla. Donec non lorem sed tellus pulvinar varius. Ut risus leo, malesuada id pulvinar vel, tincidunt et dolor. Donec hendrerit mauris sed lacus euismod molestie. Vivamus elit felis, commodo at placerat quis, consequat non sapien. Nam ut dolor mi. Aliquam velit quam, ornare ut tempus nec, dictum vel sapien.
-
-Aenean lobortis iaculis urna, et posuere enim bibendum et. Suspendisse placerat velit rhoncus mi placerat quis molestie enim rhoncus. Ut convallis bibendum pharetra. Pellentesque id suscipit massa. Nulla facilisi. Morbi lobortis blandit cursus. Aliquam blandit nibh vel elit ultricies porta.
-
-Integer ac nibh sed lorem egestas convallis vel sit amet ipsum. Aenean hendrerit dui at ligula feugiat a ultrices dui faucibus. Suspendisse cursus lobortis mauris. Aenean tellus erat, convallis et faucibus vel, suscipit laoreet libero. Nullam et mauris ut lacus sagittis auctor. In lorem massa, volutpat dapibus placerat at, interdum nec est. Vivamus in nulla est, at ullamcorper magna. Integer eu est sit amet lectus volutpat dignissim. Morbi auctor sollicitudin tellus eu dapibus. Cras nisl magna, tempor ut congue sed, egestas at augue. Integer semper mollis lectus, et viverra felis ultrices ut. Maecenas posuere magna nec magna placerat eu pretium elit vulputate. Mauris tempus molestie lacus, quis pharetra nulla accumsan id. Duis sit amet tortor eget libero blandit blandit quis a magna. Suspendisse volutpat tempor dolor, at tincidunt nisl convallis vel. In hac habitasse platea dictumst.
-
-Curabitur et elit lorem. Sed sit amet luctus mauris. Morbi imperdiet pretium consequat. Nulla non elit arcu. Phasellus accumsan adipiscing orci, non feugiat tortor aliquam non. Proin sem justo, rhoncus sit amet vehicula sit amet, laoreet sit amet nisl. Integer ut felis metus, in sollicitudin diam. Aliquam erat volutpat.
+      <div id="pv_controls"></div>
+      <div id="pv_memmap"></div>
     </div>
     
     <div style="clear:both;"></div>
