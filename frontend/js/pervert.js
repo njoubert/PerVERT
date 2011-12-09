@@ -28,10 +28,10 @@
       var idx = self.__data.indexOf(xhr);
       if (idx!=-1) self.__data.splice(idx, 1);
     };
-    self.abort = function() { $.each(self.__data, function(xhr) { xhr.abort(); }); self.__Data = []; };
+    self.abort = function() { $.each(self.__data, function(id,xhr) { xhr.abort(); }); self.__data = []; };
     self.ajax = function(path, settings) {
-      $("#right-sidebar").html(self.__data.length);
-      settings["complete"] = self.complete;
+      var oldcomplete = settings["complete"];
+      settings["complete"] = function() { self.complete(); oldcomplete(); }
       var t = $.ajax(path, settings);
       self.add(t);
       return t; 
@@ -49,9 +49,10 @@
     
     
     //private functions:
-    function getListOfExecs() {
+    function getListOfExecs(cont) {
       __ajaxqueue.ajax('/pp/list', {
-        success: function(data) { $("#right-sidebar").html(JSON.stringify(data)); }
+        success: function(data) { $("#right-sidebar").html(JSON.stringify(data)); },
+        complete: function() { cont(); }
        });
     }
      
@@ -59,12 +60,12 @@
     var init = function() {
       __toggleBusy(true);
       __ajaxqueue.abort();
-      getListOfExecs();
-      __toggleBusy(false);
+      getListOfExecs(function() {__toggleBusy(false);});
     }
     
     var remove = function() {
       __toggleBusy(true);
+
       __ajaxqueue.abort();
       __toggleBusy(false);
     } 

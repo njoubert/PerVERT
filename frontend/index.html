@@ -63,13 +63,17 @@ var lastChangeID = -1;
 function handlePollResult(exec, data, testStatus, jqXHR) {
   if (testStatus != "success") {
     currentStatus = "Backend Unavailable";
+    pv.remove();
   } else {
     changeID = data.substr(0, data.indexOf(" "));
-    newStatus = data.substr(data.indexOf(" ")+1, data.length); 
+    newStatus = data.substr(data.indexOf(" ")+1, data.length);
+    
     if (lastChangeID != changeID) { //A state transition occurred!
       currentStatus = newStatus;
       lastChangeID = changeID;
-      pv.init();
+      if (newStatus == "GOOD") {
+        pv.init();
+      }
     }
   }
   showSpinner(currentStatus);
@@ -103,7 +107,7 @@ $(document).ready(function() { //ajax
   $("#errorspinner").hide();
 
   var exec = getParameterByName("exec");
-  pv = pervert(exec, function(isBusy) { if (isBusy) { showSpinner("BUSY"); } else { showSpinner(currentStatus); };});
+  pv = pervert(exec, function(isBusy) { if (isBusy) { $("#content").html("Processing data..."); } else { $("#content").html(""); };});
 
   doPoll();
 });
