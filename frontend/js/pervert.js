@@ -143,11 +143,35 @@
     //private functions:
   
 
+    function drawshit(ex,ey) {
+      var canvas = document.getElementById("pv_memmap_canvas");
+      
+      var ctx = canvas.getContext("2d");
+      var canvasWidth  = canvas.width;
+      var canvasHeight = canvas.height;
+      var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+
+      var data = imageData.data;
+
+      for (var y = 0; y < canvasHeight; ++y) {
+          for (var x = 0; x < canvasWidth; ++x) {
+              var index = (y * canvasWidth + x) * 4;
+
+              var value = x * y & 0xff;
+
+              data[index]   = value;    // red
+              data[++index] = value;    // green
+              data[++index] = value;    // blue
+              data[++index] = 255;      // alpha
+          }
+      }
+
+      ctx.putImageData(imageData, ex-$("#pv_memmap_canvas").position().left, ey-$("#pv_memmap_canvas").position().top);
+    }
     function create_controls_view() {
       __state = false;
       $(__div_controls).html("<div id='pv_ctx_view'></div>");
-      __vS
-        .addEvent("controls_click")
+      __vS.addEvent("controls_click")
         .addEvent("controls_range")
       $("#pv_ctx_view")
         .css("width", 400)
@@ -166,7 +190,17 @@
     }
     
     function create_mem_view() {
-    //  __div_memmap.html("CREATE MEM VIEW");
+      var width = 1024;
+      var height = 1024;
+      $(__div_memmap).css("width", width);
+      $(__div_memmap).css("height", width);
+      $(__div_memmap).html("<canvas id='pv_memmap_canvas' width='"+width+"' height='"+height+"'></canvas>");
+      __vS.addEvent("memmap_click");
+      $("#pv_memmap_canvas").click(function(eventObj) {__vS.fireEvent("memmap_click", eventObj, this);})
+      
+      __vS.addListener("memmap_click", function(eventname,event,caller) { drawshit(event.pageX, event.pageY)});
+      
+
     }
     
     function create_context_view() {
