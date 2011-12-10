@@ -36,10 +36,11 @@ class Trace
     {
       enum Type { MALLOC = 0, FREE, READ, WRITE, END };
       
-      Type type;        // What type of event was this?
-      uint64_t arg1;    // MALLOC: begin, FREE: begin, READ/WRITE: addr
-      uint64_t arg2;    // MALLOC: end
-      Context* context; // Context
+      unsigned int index; // Global index
+      Type type;          // What type of event was this?
+      uint64_t arg1;      // MALLOC: begin, FREE: begin, READ/WRITE: addr
+      uint64_t arg2;      // MALLOC: end
+      Context* context;   // Context
 
       std::string debugPrint() const;
     };
@@ -62,6 +63,9 @@ class Trace
     std::map<Context*, std::vector<Event*> > byContext_;
     // Valid regions by timestamp
     std::vector<std::list<Event*> > validRegions_;
+
+    // The maximum address ever allocated
+    uint64_t maxAddress_;
 
     // This will generate A LOT of output
     std::string debugPrint() const;

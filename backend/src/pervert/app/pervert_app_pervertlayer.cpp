@@ -1,6 +1,7 @@
 #include "pervert/app/pervertlayer.h"
 #include "pervert/server/querylayer.h"
 
+#include <cassert>
 #include <cstdlib>
 
 namespace PerVERT {
@@ -107,11 +108,12 @@ void PervertLayer::f_counts(Server::Request* req, Server::Response* res) {
 
   Json::Value root;
 
-  root["event"]  = (int) trace->events_.size();
-  root["malloc"] = (int) trace->byType_[Trace::Event::MALLOC].size();
-  root["free"]   = (int) trace->byType_[Trace::Event::FREE].size();
-  root["read"]   = (int) trace->byType_[Trace::Event::READ].size();
-  root["write"]  = (int) trace->byType_[Trace::Event::WRITE].size();
+  root["max_addr"] = (int) trace->maxAddress_; 
+  root["event"]    = (int) trace->events_.size();
+  root["malloc"]   = (int) trace->byType_[Trace::Event::MALLOC].size();
+  root["free"]     = (int) trace->byType_[Trace::Event::FREE].size();
+  root["read"]     = (int) trace->byType_[Trace::Event::READ].size();
+  root["write"]    = (int) trace->byType_[Trace::Event::WRITE].size();
 
   writeJSONResponse(req,res,root);
 }
@@ -124,11 +126,11 @@ void PervertLayer::f_mem_status(Server::Request* req, Server::Response* res) {
   if ( _dms.find(exec) == _dms.end() )
     return writeStatusAndEnd(req,res,500);
 
-  DataManager* dm = _dms[exec];
-  Trace* trace = dm->getTrace();
-
   int frame = atoi(query->get("frame").c_str());   
   int window = atoi(query->get("window").c_str());   
+
+  DataManager* dm = _dms[exec];
+  Trace* trace = dm->getTrace();
 
   if ( (unsigned int) frame >= trace->events_.size() )
     return writeStatusAndEnd(req,res,500);
@@ -177,6 +179,96 @@ void PervertLayer::f_mem_status(Server::Request* req, Server::Response* res) {
 
   writeJSONResponse(req,res,root);
 }
+void PervertLayer::f_context_stack(Server::Request* req, Server::Response* res) {
+  Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+	if (query == NULL || !query->exists("exec") || !query->exists("frame")) 
+		return writeStatusAndEnd(req,res,500);
+
+  string exec = query->get("exec");
+  if ( _dms.find(exec) == _dms.end() )
+    return writeStatusAndEnd(req,res,500);
+
+  DataManager* dm = _dms[exec];
+  Trace* trace = dm->getTrace();
+
+  int frame = atoi(query->get("frame").c_str());   
+  Trace::Context* context = trace->events_[frame].context;
+
+  if ( (unsigned int) frame >= trace->events_.size() )
+    return writeStatusAndEnd(req,res,500);
+
+  Json::Value root;
+  Json::Value stack(Json::arrayValue);
+
+  for ( Trace::Context::iterator i = context->begin(), ie = context->end(); i != ie; ++i )
+  {
+    Json::Value stackframe;
+    stackframe["file"] = *(*i)->file;
+    stackframe["line"] = (*i)->line;
+
+    stack.append(stackframe);
+  }
+
+  root["stack"] = stack;
+  writeJSONResponse(req,res,root);
+}
+void PervertLayer::f_context_events(Server::Request* req, Server::Response* res) {
+  Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+	if (query == NULL || !query->exists("exec") || !query->exists("frame")) 
+		return writeStatusAndEnd(req,res,500);
+
+  string exec = query->get("exec");
+  if ( _dms.find(exec) == _dms.end() )
+    return writeStatusAndEnd(req,res,500);
+
+  DataManager* dm = _dms[exec];
+  Trace* trace = dm->getTrace();
+
+  int frame = atoi(query->get("frame").c_str());   
+  if ( (unsigned int) frame >= trace->events_.size() )
+    return writeStatusAndEnd(req,res,500);
+
+  Trace::Event::Type type = trace->events_[frame].type;
+  Trace::Context* context = trace->events_[frame].context;
+
+  Json::Value root;
+
+  switch ( type )
+  {
+    case Trace::Event::MALLOC:
+      root["type"] = "m";
+      break;
+    case Trace::Event::FREE:
+      root["type"] = "f";
+      break;
+    case Trace::Event::READ:
+      root["type"] = "r";
+      break;
+    case Trace::Event::WRITE:
+      root["type"] = "w";
+      break;
+
+    default:
+      assert(false && "Control should never reach here!");
+      break;
+  }
+
+  Json::Value events(Json::arrayValue);
+  if ( type == Trace::Event::READ || type == Trace::Event::WRITE )
+    for ( vector<Trace::Event*>::iterator i = trace->byContext_[context].begin(), ie = trace->byContext_[context].end(); i != ie; ++i )
+    {
+      Json::Value event;
+      event["addr"]  = (int) (*i)->arg1;
+      event["index"] = (int) (*i)->index;
+
+      events.append(event); 
+    }
+  root["events"] = events;
+
+  writeJSONResponse(req,res,root);
+}
+
+
 void PervertLayer::handle(Server::Request* req, Server::Response* res) {
 	const struct mg_request_info *request_info = req->request_info;
 	
@@ -192,6 +284,10 @@ void PervertLayer::handle(Server::Request* req, Server::Response* res) {
     return f_mem_status(req,res);
   } else if (strcmp(request_info->uri, "/f/counts") == 0 ) {
     return f_counts(req,res);
+  } else if (strcmp(request_info->uri, "/f/context_stack") == 0 ) {
+    return f_context_stack(req,res);
+  } else if (strcmp(request_info->uri, "/f/context_events") == 0 ) {
+    return f_context_events(req,res);
 	} else {
 		next(req,res);
 	}

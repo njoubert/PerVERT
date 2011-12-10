@@ -172,6 +172,8 @@ bool Trace::parseTraceFile(const char* file)
   Event event;
   while ( true )
   {
+    event.index = events_.size();
+
     char c;
     ifs >> c;
 
@@ -343,7 +345,7 @@ void Trace::remapAddresses()
 
   map<uint64_t, uint64_t> offsets;
   uint64_t lastEndO = (*mergedRegions.begin()).first; // end previous region in original space
-  uint64_t lastEndM = lastEndO % cacheLine_;          // end previous region in mapped space
+  maxAddress_ = lastEndO % cacheLine_;                // end previous region in mapped space
 
   for ( map<uint64_t, uint64_t>::iterator i = mergedRegions.begin(), ie = mergedRegions.end(); i != ie; ++i )
   {
@@ -360,9 +362,9 @@ void Trace::remapAddresses()
       padding = delta;
     else                                                   // wrap it around to the next line in mapped space
       padding = cacheLine_ + offsetO - lastEndOffsetO;
-    offsets[beginO] = lastEndM + padding;
+    offsets[beginO] = maxAddress_ + padding;
     
-    lastEndM = lastEndM + padding + endO - beginO;
+    maxAddress_ = maxAddress_ + padding + endO - beginO;
     lastEndO = endO;
   }
 
