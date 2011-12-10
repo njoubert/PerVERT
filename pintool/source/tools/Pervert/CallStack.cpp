@@ -167,30 +167,6 @@ CallStack::ProcessReturn(ADDRINT ip, ADDRINT current_sp, bool prevIpDoesPush)
 VOID 
 CallStack::DumpStack(ostream *o)
 {
-  vector<Activation>::reverse_iterator i;
-  int level = _activations.size() - 1;
-  string last;
-  bool repeated = false;
-  //bool first = true;
-  for(i = _activations.rbegin(); i != _activations.rend(); i++) {
-    string cur = _Target2RtnName(i->ip(), i->target());
-    if( cur != last ) {
-      //if( !first ) {*o << endl;}
-      *o << /*level << ": " <<*/ " " << cur;
-    } else {
-      if( !repeated ) {
-	*o << "(repeated)";
-      }
-      repeated = true;
-    }
-    //first = false;
-    last = cur;
-    level--;
-  }
-  //*o << endl;
-
-  //cout << _activations.size() << ":" << _Target2RtnName(target) 
-  //<< "@0x" << hex << target << dec
-  //<< " in " << _Target2LibName(target) 
-  // << endl;  
+  for( vector<Activation>::reverse_iterator i = _activations.rbegin(); i != _activations.rend(); i++) 
+    *o << " " << _Target2RtnName(i->ip(), i->target());
 }
