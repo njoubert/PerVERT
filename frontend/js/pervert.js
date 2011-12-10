@@ -169,24 +169,29 @@
       ctx.putImageData(imageData, ex-$("#pv_memmap_canvas").position().left, ey-$("#pv_memmap_canvas").position().top);
     }
     function create_controls_view() {
-      __state = false;
-      $(__div_controls).html("<div id='pv_ctx_view'></div>");
-      __vS.addEvent("controls_click")
-        .addEvent("controls_range")
-      $("#pv_ctx_view")
-        .css("width", 400)
-        .css("height", 100)
-        .css("background", "#ddd")
-        .mousedown(function(eventObj) {__state = eventObj;})
-        .mouseup(function(eventObj) {
-          var start = eventObj.pageX - $("#pv_ctx_view").position().left;
-          var range = eventObj.pageX - __state.pageX;
-          if (range > 0) {
-            __vS.fireEvent("controls_range", [start,eventObj.pageX], range, this);
-          } else {
-            __vS.fireEvent("controls_click", start, this);
-          }
-          });
+      
+      
+      //var s = $("__div_controls").slider();
+      
+      
+      // __state = false;
+      // $(__div_controls).html("<div id='pv_ctx_view'></div>");
+      // __vS.addEvent("controls_click")
+      //   .addEvent("controls_range")
+      // $("#pv_ctx_view")
+      //   .css("width", 400)
+      //   .css("height", 100)
+      //   .css("background", "#ddd")
+      //   .mousedown(function(eventObj) {__state = eventObj;})
+      //   .mouseup(function(eventObj) {
+      //     var start = eventObj.pageX - $("#pv_ctx_view").position().left;
+      //     var range = eventObj.pageX - __state.pageX;
+      //     if (range > 0) {
+      //       __vS.fireEvent("controls_range", [start,eventObj.pageX], range, this);
+      //     } else {
+      //       __vS.fireEvent("controls_click", start, this);
+      //     }
+      //     });
     }
     
     function create_mem_view() {
