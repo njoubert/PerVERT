@@ -31,6 +31,8 @@ public:
 	bool update(string logs);
 	bool status();
 
+  Trace* getTrace() const { return _trace; } 
+
 private:
 	Log& _log;
 	string _exec;

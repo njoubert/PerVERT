@@ -39,7 +39,8 @@ private:
 	void pp_update(Server::Request* req, Server::Response* res);
 	void pp_list(Server::Request* req, Server::Response* res);
 	void f_status(Server::Request* req, Server::Response* res);
-	
+  void f_mem_status(Server::Request* req, Server::Response* res);	
+  void f_counts(Server::Request* req, Server::Response* res);
 
 };
 

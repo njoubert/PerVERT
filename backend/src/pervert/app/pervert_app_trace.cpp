@@ -254,6 +254,7 @@ void Trace::parseContext(const string& s)
 
 void Trace::indexTraceFile()
 {
+  map<uint64_t, Event*> validRegions;
   for ( vector<Event>::iterator i = events_.begin(), ie = events_.end(); i != ie; ++i )
   {
     Event& event = *i;
@@ -263,9 +264,12 @@ void Trace::indexTraceFile()
     {
       case Trace::Event::MALLOC:
         byType_[Event::MALLOC].push_back(&event);
+        assert(validRegions.find(event.arg1) == validRegions.end() && "Duplicate malloc!");
+        validRegions[event.arg1] = &event;
         break;
       case Trace::Event::FREE:
         byType_[Event::FREE].push_back(&event);
+        validRegions.erase(event.arg1);
         break;
       case Trace::Event::READ:
         byType_[Event::READ].push_back(&event);
@@ -278,6 +282,10 @@ void Trace::indexTraceFile()
         assert(false && "Control should never reach here!");
         break;
     }
+
+    validRegions_.resize(validRegions_.size()+1);
+    for ( map<uint64_t, Event*>::iterator i = validRegions.begin(), ie = validRegions.end(); i != ie; ++i )
+      validRegions_.back().push_back((*i).second);
   }
 }
 
