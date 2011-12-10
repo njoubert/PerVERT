@@ -82,6 +82,7 @@
   *   The UI itself registers event-listeners to this
   */
   var ViewState = function(pv) {
+    var self = this;
     var __pv = pv;
     var __listeners = {};
     
@@ -91,23 +92,25 @@
     }
 
     //EVENT architecture:
-    var fireEvent = function(event,caller) {
-      $.each(__listeners[event], function(idx,func) {
-        func(event,caller);
+    var fireEvent = function(eventname,event,caller) {
+      $.each(__listeners[eventname], function(idx,func) {
+        func(eventname,event,caller);
       })
     }
-    var addEvent = function(event) {
-      if (!__listeners[event]) {
-        __listeners[event] = [];        
+    var addEvent = function(eventname) {
+      if (!__listeners[eventname]) {
+        __listeners[eventname] = [];
+        __listeners[eventname].push(function(eventname,event,caller) {__pv.log(eventname + " fired " + event)});
+        __pv.log(eventname + " added.");
       }
       return this;
     }
     //calls func(event,caller) when event fires
-    var addListener = function(event,func) {
-      if (!__listeners[event]) {
-        addEvent(event);
+    var addListener = function(eventname,func) {
+      if (!__listeners[eventname]) {
+        addEvent(eventname);
       }
-      __listeners[event].push(func);
+      __listeners[eventname].push(func);
       return this;
     }
     return {
@@ -120,6 +123,7 @@
 
 
   var Pervert = function(exec) {
+    var hi = "hihih";
     var self = this;
     var __exec = exec;
     var __toggleBusy = function() {return;};
@@ -130,12 +134,17 @@
     var __div_memscatter = null;
     var __div_debug = null;
     
-    var __vS = ViewState(this);
+    var __vS = null;
     var __db = null;
-    
+  
+    function construct(obj) {
+      __vS = ViewState(obj);
+    }
     //private functions:
+  
 
     function create_controls_view() {
+      __state = false;
       $(__div_controls).html("<div id='pv_ctx_view'></div>");
       __vS
         .addEvent("controls_click")
@@ -144,7 +153,16 @@
         .css("width", 400)
         .css("height", 100)
         .css("background", "#ddd")
-        .click(function() {__vS.fireEvent("controls_click", this)});
+        .mousedown(function(eventObj) {__state = eventObj;})
+        .mouseup(function(eventObj) {
+          var start = eventObj.pageX - $("#pv_ctx_view").position().left;
+          var range = eventObj.pageX - __state.pageX;
+          if (range > 0) {
+            __vS.fireEvent("controls_range", [start,eventObj.pageX], range, this);
+          } else {
+            __vS.fireEvent("controls_click", start, this);
+          }
+          });
     }
     
     function create_mem_view() {
@@ -166,9 +184,7 @@
         __db.abort();
       log("Initializing PerVert...");
       __db = DB(this); //create a new DB
-      
-      __vS.addListener("controls_click", function() { log("event Controls_Click"); })
-      
+            
       __db.init(function() {__toggleBusy(false);});
     }
     
@@ -182,7 +198,7 @@
     var log = function log(msg) {
       if (__div_debug) {
         var d1 = new Date();
-        var ds = d1.getHours() + ":" + d1.getMinutes() + ":" + d1.getSeconds() + "  "
+        var ds = d1.getHours() + ":" + d1.getMinutes() + ":" + d1.getSeconds() + "  ";
         $(__div_debug).prepend("<p>" + ds + msg + "</p>");
         
       }
@@ -223,7 +239,7 @@
     }
     
     // Exports the public api:
-    return {
+    var obj = {
       init: init,
       clean: clean,
       log: log,
@@ -232,10 +248,11 @@
       bindContextView: bindContextView,
       bindControlsView: bindControlsView,
       bindMemScatterView: bindMemScatterView,
-      bindDebugView: bindDebugView,
-      
-      
-    }
+      bindDebugView: bindDebugView
+    };
+    construct(obj);
+    
+    return obj;
     
   }
   
