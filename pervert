@@ -74,7 +74,7 @@ mkdir -p $OUTPATH
 
 NAME=`date +%s`
 OBJDUMP_OUT=$OUTPATH/$NAME.line
-PIN_OUT=$OUTPATH/$NAME.pin
+PIN_OUT=$OUTPATH/$NAME.trace
 
 # Run tools
 
@@ -83,7 +83,7 @@ $PIN -t $PIN_PLUGIN -o $PIN_OUT -- $@
 
 # Tell the server what it needs to hear
 
-URL="localhost:8083/pp/update?exec="$PROGRAM"&logs="$OUTPATH
+URL="localhost:8083/pp/update?exec="$PROGRAM"&logs="$OUTPATH"/"$NAME
 $CURL $URL > /dev/null 2>&1
 
 if [ $? -ne 0 ];
