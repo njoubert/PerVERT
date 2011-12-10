@@ -106,18 +106,18 @@ $(document).ready(function() {
   $("#errorspinner").hide();
 
   var exec = getParameterByName("exec");
-  pv = pervert(exec)
-        .bindBusy(function(isBusy) { 
+  pv = pervert(exec);
+  pv.bindBusy(function(isBusy) { 
           if (isBusy) { 
             //$("#content").html("Processing data..."); 
           } else { 
             //$("#content").html(""); 
           };})
-        .bindMemView($("#pv_memmap"))
-        .bindContextView($("#pv_context"))
-        .bindControlsView($("#pv_controls"))
-        .bindMemScatterView($("#pv_memscat"))
-        .bindDebugView($("#pv_debug"));
+        .bindMemView("#pv_memmap")
+        .bindContextView("#pv_context")
+        .bindControlsView("#pv_controls")
+        .bindMemScatterView("#pv_memscat")
+        .bindDebugView("#pv_debug");
         
   doPoll();
 });

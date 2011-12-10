@@ -2,7 +2,7 @@
 
 .container {
 	background: white;
-	min-width: 780px;
+	min-width: 1664px;
 	margin: 10px auto;
 }
 .container #inside {
@@ -13,6 +13,7 @@
 	padding-right: 600px;
 	padding-top: 5px;
 	min-height: 450px;
+	min-width: 1024px;
 }
 	
 #header {

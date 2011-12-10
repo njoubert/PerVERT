@@ -82,20 +82,48 @@
   *   The UI itself registers event-listeners to this
   */
   var ViewState = function(pv) {
+    var self = this;
     var __pv = pv;
+    var __listeners = {};
     
     //Public API
     var reset = function() {
       //reset to the original view state;
     }
-    
+
+    //EVENT architecture:
+    var fireEvent = function(eventname,event,caller) {
+      $.each(__listeners[eventname], function(idx,func) {
+        func(eventname,event,caller);
+      })
+    }
+    var addEvent = function(eventname) {
+      if (!__listeners[eventname]) {
+        __listeners[eventname] = [];
+        __listeners[eventname].push(function(eventname,event,caller) {__pv.log(eventname + " fired " + event)});
+        __pv.log(eventname + " added.");
+      }
+      return this;
+    }
+    //calls func(event,caller) when event fires
+    var addListener = function(eventname,func) {
+      if (!__listeners[eventname]) {
+        addEvent(eventname);
+      }
+      __listeners[eventname].push(func);
+      return this;
+    }
     return {
       reset: reset,
+      addListener: addListener,
+      addEvent: addEvent,
+      fireEvent: fireEvent
     }
   }
 
 
   var Pervert = function(exec) {
+    var hi = "hihih";
     var self = this;
     var __exec = exec;
     var __toggleBusy = function() {return;};
@@ -106,17 +134,73 @@
     var __div_memscatter = null;
     var __div_debug = null;
     
-    var __viewState = ViewState(this);
+    var __vS = null;
     var __db = null;
-    
+  
+    function construct(obj) {
+      __vS = ViewState(obj);
+    }
     //private functions:
+  
 
-    function create_controls_view() {
+    function drawshit(ex,ey) {
+      var canvas = document.getElementById("pv_memmap_canvas");
       
+      var ctx = canvas.getContext("2d");
+      var canvasWidth  = canvas.width;
+      var canvasHeight = canvas.height;
+      var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+
+      var data = imageData.data;
+
+      for (var y = 0; y < canvasHeight; ++y) {
+          for (var x = 0; x < canvasWidth; ++x) {
+              var index = (y * canvasWidth + x) * 4;
+
+              var value = x * y & 0xff;
+
+              data[index]   = value;    // red
+              data[++index] = value;    // green
+              data[++index] = value;    // blue
+              data[++index] = 255;      // alpha
+          }
+      }
+
+      ctx.putImageData(imageData, ex-$("#pv_memmap_canvas").position().left, ey-$("#pv_memmap_canvas").position().top);
+    }
+    function create_controls_view() {
+      __state = false;
+      $(__div_controls).html("<div id='pv_ctx_view'></div>");
+      __vS.addEvent("controls_click")
+        .addEvent("controls_range")
+      $("#pv_ctx_view")
+        .css("width", 400)
+        .css("height", 100)
+        .css("background", "#ddd")
+        .mousedown(function(eventObj) {__state = eventObj;})
+        .mouseup(function(eventObj) {
+          var start = eventObj.pageX - $("#pv_ctx_view").position().left;
+          var range = eventObj.pageX - __state.pageX;
+          if (range > 0) {
+            __vS.fireEvent("controls_range", [start,eventObj.pageX], range, this);
+          } else {
+            __vS.fireEvent("controls_click", start, this);
+          }
+          });
     }
     
     function create_mem_view() {
+      var width = 1024;
+      var height = 1024;
+      $(__div_memmap).css("width", width);
+      $(__div_memmap).css("height", width);
+      $(__div_memmap).html("<canvas id='pv_memmap_canvas' width='"+width+"' height='"+height+"'></canvas>");
+      __vS.addEvent("memmap_click");
+      $("#pv_memmap_canvas").click(function(eventObj) {__vS.fireEvent("memmap_click", eventObj, this);})
       
+      __vS.addListener("memmap_click", function(eventname,event,caller) { drawshit(event.pageX, event.pageY)});
+      
+
     }
     
     function create_context_view() {
@@ -124,7 +208,7 @@
     }
     
     function create_scatter_view() {
-      
+      //d3.select(__div_memscatter).text("CREATE SCATTER VIEW");
     }
      
     // Public API:  
@@ -134,7 +218,7 @@
         __db.abort();
       log("Initializing PerVert...");
       __db = DB(this); //create a new DB
-      
+            
       __db.init(function() {__toggleBusy(false);});
     }
     
@@ -148,8 +232,8 @@
     var log = function log(msg) {
       if (__div_debug) {
         var d1 = new Date();
-        var ds = d1.getHours() + ":" + d1.getMinutes() + ":" + d1.getSeconds() + "  "
-        __div_debug.prepend("<p>" + ds + msg + "</p>");
+        var ds = d1.getHours() + ":" + d1.getMinutes() + ":" + d1.getSeconds() + "  ";
+        $(__div_debug).prepend("<p>" + ds + msg + "</p>");
         
       }
     }
@@ -189,7 +273,7 @@
     }
     
     // Exports the public api:
-    return {
+    var obj = {
       init: init,
       clean: clean,
       log: log,
@@ -198,10 +282,11 @@
       bindContextView: bindContextView,
       bindControlsView: bindControlsView,
       bindMemScatterView: bindMemScatterView,
-      bindDebugView: bindDebugView,
-      
-      
-    }
+      bindDebugView: bindDebugView
+    };
+    construct(obj);
+    
+    return obj;
     
   }
   
