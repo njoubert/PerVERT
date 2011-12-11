@@ -292,10 +292,6 @@
 
       var dt = imageData.data;
       
-      var biggest = 50;
-      var value = 255;
-      var alpha = 255;
-      
       var fixed_index_offset = (1024*50);
       var bs = 255 / (f_counts.malloc);
       var b = 255;
@@ -316,6 +312,11 @@
         
       }
       
+      var biggest = 50;
+      var value = 255;
+      var alpha = 255;
+      var decay = 0.8;
+      
       for (var idx = 0; idx < data.addr.length; idx++) {
         var ob = data.addr[idx];
 
@@ -327,12 +328,20 @@
   
             
             if (data.events[idx] == "r") {
-              dt[index];    // red
-              dt[index+1] = dt[index+1]*0.5 + value*0.5;    // green
+              dt[index] *= decay;    // red
+              if (dt[index+1] != 0) {
+                dt[index+1] = Math.max(dt[index+1]*decay, 0);    // green
+              } else {
+                dt[index+1] = value;    // green
+              }
               dt[index+2] = 0;//dt[index+2] + 1;    // blue              
             } else {
-              dt[index]   = dt[index]*0.5 + value*0.5;    // red
-              dt[index+1];    // green
+              if (dt[index] != 0) {
+                dt[index] = Math.max(dt[index]*decay, 0);    // green
+              } else {
+                dt[index] = value;    // green
+              }
+              dt[index+1] *= decay;    // green
               dt[index+2] = 0;//dt[index+2] + 1;    // blue              
             }     
             dt[index+3] = alpha;      // alpha
