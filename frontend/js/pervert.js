@@ -50,6 +50,8 @@
     var __ajaxqueue = new jqXHRQueue();
     
     var __f_counts = null;
+    var __f_counts_pending = false;
+    var __f_counts_continuations = [];
     
         
     function getListOfExecs(cont) {
@@ -73,12 +75,21 @@
     var f_counts = function(cont) { 
       if (__f_counts) {
         cont(__f_counts);
-      } else {        
-        __ajaxqueue.ajax('/f/counts?exec='+__exec, 
-        {
-          success: function(data) { __pv.log(data); __f_counts = data; cont(__f_counts); },
-          error: function() { __pv.log("/f/counts FAILED!"); }
-         });
+      } else {
+        __f_counts_continuations.push(cont);
+        if (!__f_counts_pending) {
+          __f_counts_pending = true;
+          __ajaxqueue.ajax('/f/counts?exec='+__exec, 
+          {
+            success: function(data) { 
+              __pv.log(data); 
+              __f_counts = data; 
+              $.each(__f_counts_continuations, function(idx,el) { el(__f_counts); }); 
+            },
+            error: function() { __pv.log("/f/counts FAILED!"); },
+            complete: function() { __f_counts_continuations = []; __f_counts_pending = false; }
+           });          
+        }
       }
     }
     
