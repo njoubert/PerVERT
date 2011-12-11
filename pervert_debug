@@ -7,7 +7,18 @@ then
   exit 1
 fi
 
-URL="localhost:8083/pp/update?exec="$EXEC"&logs="$PATH
+HERE=$(dirname $0)
+SERVER=$HERE/backend/server
+CURL=/usr/bin/curl
+
+RESPONSE=`$CURL localhost:8083/ping 2>/dev/null`
+if [ "$RESPONSE" != "pong" ];
+then
+  $SERVER --daemon 
+  # TODO: Check that server has come up?
+fi
+
+URL="localhost:8083/pp/update?exec="$1"&logs="$2
 $CURL $URL > /dev/null 2>&1
 
 if [ $? -ne 0 ];
