@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ $# -ne 2 ];
+then
+  echo "Incorrect usage!"
+  echo $0" <exec> <path>"
+  exit 1
+fi
+
+URL="localhost:8083/pp/update?exec="$EXEC"&logs="$PATH
+$CURL $URL > /dev/null 2>&1
+
+if [ $? -ne 0 ];
+then
+  echo "Error sending update message to server!"
+  exit 1
+fi
+
+exit 0
+
