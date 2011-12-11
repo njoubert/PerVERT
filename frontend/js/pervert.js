@@ -102,11 +102,11 @@
       }
     }
     
-    var f_context = function(frame, windw, cont) {
+    var f_context = function(frame, cont) {
       if (__f_context[frame]) {
         return cont(__f_context[frame]);
       } else {
-        __ajaxqueue.ajax('/f/context?exec='+__exec+'&frame='+frame, {
+        __ajaxqueue.ajax('/f/context_stack?exec='+__exec+'&frame='+frame, {
           success: function(data) { 
             __pv.log("f_context returned: " + data); 
             __f_context[frame] = data;
@@ -435,7 +435,14 @@
     }
     
     function create_context_view() {
-      
+      $(__div_context).css("border", "solid black 1px"); 
+      __vS.addListener("frameslider_change", function(eventname, event, caller) { __db.f_context(event, function(data) {
+          $(__div_context).html("");
+          $.each(data.stack, function(idx, val) { 
+            $(__div_context).append(idx + ": " + val.file + " " + val.line + "<br/>");
+          });
+        })
+      });
     }
     
     function create_scatter_view() {

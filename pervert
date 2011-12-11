@@ -12,10 +12,11 @@ fi
 # Check paths to component programs
 
 HERE=$(dirname $0)
+SERVER_PATH=$HERE/backend
 
 PIN=$HERE/pintool/pin
-PIN_PLUGIN=$HERE/pintool/source/tools/Pervert/obj-intel64/pervert.so
-SERVER=$HERE/backend/server
+PIN_PLUGIN=$HERE/pintool/source/tools/Pervert/obj-ia32/pervert.so
+SERVER=$SERVER_PATH/server
 
 CURL=/usr/bin/curl
 OBJDUMP=/usr/bin/objdump
@@ -55,12 +56,19 @@ then
   exit 6
 fi
 
+# TODO: Put this on a command line switch -- kill the server if it's running
+
+killall server
+
 # Bring up the server if it isn't already running
 
 RESPONSE=`$CURL localhost:8083/ping 2>/dev/null`
 if [ "$RESPONSE" != "pong" ];
 then
-  $SERVER --daemon 
+  cd $SERVER_PATH
+  ./server --daemon 
+  cd -
+
   # TODO: Check that server has come up?
 fi
 
