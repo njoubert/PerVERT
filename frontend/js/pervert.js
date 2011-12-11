@@ -139,7 +139,7 @@
       abort: abort,
       f_counts: f_counts,
       f_context: f_context,
-      f_mem_status: f_mem_status
+      f_mem_status: f_mem_status,
       f_memscatter: f_memscatter,
     }
   }
