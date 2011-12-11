@@ -269,6 +269,10 @@
     
     var __vS = null;
     var __db = null;
+    
+
+    var data_x_offset = 2;  //on both sides
+    var data_y_offset = 2;  //on both sides
   
     function construct(obj) {
       __vS = ViewState(obj);
@@ -285,20 +289,48 @@
 
       //let's calculate global offsets;
       
+      var dataWidth = canvasWidth - 2*data_x_offset;
+      var dataHeight = canvasHeight - 2*data_y_offset;
+      var dataLastX = canvasWidth - data_x_offset;
+      var dataLastY = canvasHeight - data_y_offset;
+
+      var fixed_index_offset = (canvasWidth*data_y_offset) + data_x_offset;      
       var total_lines = (f_counts.max_addr / (canvasWidth-100));
-      var offset_between_lines = Math.floor(((canvasHeight-100) / total_lines) + 1);
+      var offset_between_lines = 8;//Math.floor(((canvasHeight-100) / total_lines) + 1);
+      
       
       var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-
       var dt = imageData.data;
       
-      var fixed_index_offset = (1024*50);
+      
+      /* Draw the Grid */
+      for (var y = data_y_offset - 2; y < dataLastY+2; y+=4) {
+        for (var x = data_x_offset-2; x < dataLastX+2; x+=1) {
+          var index =  (y*canvasWidth + x)*4
+          dt[index] =   200;
+          dt[++index] = 200;
+          dt[++index] = 200;
+          dt[++index] = 255;
+        }
+      }
+      for (var y = data_y_offset - 2; y < dataLastY+2; y+=1) {
+        for (var x = data_x_offset-2; x < dataLastX+2; x+=4) {
+          var index =  (y*canvasWidth + x)*4
+          dt[index] =   200;
+          dt[++index] = 200;
+          dt[++index] = 200;
+          dt[++index] = 255;
+        }
+      }
+      
+      
       var bs = 255 / (f_counts.malloc);
       var b = 255;
       for (var idx = 0; idx < data.regions.length; idx++) {
         var r = data.regions[idx];
         
         for (var s = r.begin; s < r.end; s++) {
+          
           var y = Math.floor(s/canvasWidth);
           var x = s%canvasWidth;
           var index = (fixed_index_offset + y*offset_between_lines*canvasWidth + x)*4;
@@ -306,10 +338,9 @@
           dt[++index] = 0;
           dt[++index] = b;
           dt[++index] = 255;
+          
         }
-        
         b -= bs;
-        
       }
       
       var biggest = 50;
@@ -407,8 +438,8 @@
     }
     
     function create_mem_view() {
-      var width = 1024;
-      var height = 550;
+      var width = 1024 + 2*data_x_offset;
+      var height = 550 + 2*data_y_offset;
       $(__div_memmap).css("width", width);
       $(__div_memmap).css("height", width);
       $(__div_memmap).html("<canvas id='pv_memmap_canvas' width='"+width+"' height='"+height+"'></canvas>");
@@ -423,10 +454,7 @@
           __db.f_counts(function(f_counts) {
             drawmockup(data, f_counts);
           })
-          
         })
-        
-        
       })
 
     }
