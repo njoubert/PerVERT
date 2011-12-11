@@ -206,7 +206,10 @@
       
       }
     }
-
+    
+    var stepCurrentFrame = function(amt) {
+      setCurrentFrame(__currentFrame + amt);
+    }
     var togglePlaying = function() {
       setPlaying(!__playing);
     }
@@ -240,6 +243,7 @@
     var obj = {
       reset: reset,
       setCurrentFrame: setCurrentFrame,
+      stepCurrentFrame: stepCurrentFrame,
       setFrameRange: setFrameRange,
       setPlaying: setPlaying,
       togglePlaying: togglePlaying,
@@ -270,75 +274,8 @@
       __vS = ViewState(obj);
     }
     //private functions:
-  
 
-    function drawshit(ex,ey) {
-      var canvas = document.getElementById("pv_memmap_canvas");
-      
-      var ctx = canvas.getContext("2d");
-      var canvasWidth  = canvas.width;
-      var canvasHeight = canvas.height;
-      var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-
-      var data = imageData.data;
-
-      for (var y = 0; y < canvasHeight; ++y) {
-          for (var x = 0; x < canvasWidth; ++x) {
-              var index = (y * canvasWidth + x) * 4;
-
-              var value = x * y & 0xff;
-
-              data[index]   = value;    // red
-              data[++index] = value;    // green
-              data[++index] = value;    // blue
-              data[++index] = 255;      // alpha
-          }
-      }
-
-      ctx.putImageData(imageData, ex-$("#pv_memmap_canvas").position().left, ey-$("#pv_memmap_canvas").position().top);
-    }
-    
-    var __x = 0;
-    var __y = 0;
-    
-    function drawanim() {
-      var canvas = document.getElementById("pv_memmap_canvas");
-      
-      var ctx = canvas.getContext("2d");
-      var canvasWidth  = canvas.width;
-      var canvasHeight = canvas.height;
-      var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-
-      var data = imageData.data;
-
-      __x += 1;
-      __y += 1;
-      if (__x > canvasWidth)
-        __x = 0;
-      if (__y > canvasHeight)
-        __y = 0;
-                
-        
-      for (var y = __y; y < __y+10; ++y) {
-          for (var x = __x; x < __x+10; ++x) {
-
-              var index = (y * canvasWidth + x) * 4;
-
-              var value = 100;
-
-              data[index]   = value;    // red
-              data[++index] = value;    // green
-              data[++index] = value;    // blue
-              data[++index] = 255;      // alpha
-
-          }
-      }
-
-      ctx.putImageData(imageData, 0, 0);
-
-    }
-
-    function drawmockup(data) {
+    function drawmockup(data,f_counts) {
       var canvas = document.getElementById("pv_memmap_canvas");
       
       var ctx = canvas.getContext("2d");
@@ -346,6 +283,11 @@
       var canvasHeight = canvas.height;
       ctx.clearRect ( 0 , 0 , canvasWidth , canvasHeight );
 
+      //let's calculate global offsets;
+      
+      var total_lines = (f_counts.max_addr / (canvasWidth-100));
+      var offset_between_lines = Math.floor(((canvasHeight-100) / total_lines) + 1);
+      
       var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
 
       var dt = imageData.data;
@@ -354,22 +296,44 @@
       var value = 255;
       var alpha = 255;
       
+      var fixed_index_offset = (1024*50);
+      var bs = 255 / (f_counts.malloc);
+      var b = 255;
+      for (var idx = 0; idx < data.regions.length; idx++) {
+        var r = data.regions[idx];
+        
+        for (var s = r.begin; s < r.end; s++) {
+          var y = Math.floor(s/canvasWidth);
+          var x = s%canvasWidth;
+          var index = (fixed_index_offset + y*offset_between_lines*canvasWidth + x)*4;
+          dt[index] = 0;
+          dt[++index] = 0;
+          dt[++index] = b;
+          dt[++index] = 255;
+        }
+        
+        b -= bs;
+        
+      }
+      
       for (var idx = 0; idx < data.addr.length; idx++) {
         var ob = data.addr[idx];
 
         for (var y = biggest/2; y >= -(biggest/2); y--) {
           for (var x = biggest/2; x >= -(biggest/2); x--) {
-            var index = (1024*50)*4 + (ob + y * canvasWidth + x) * 4;
+            
+            var obji = (Math.floor(ob/canvasWidth)*offset_between_lines*canvasWidth + ob%canvasWidth);
+            var index = (fixed_index_offset + obji + y * canvasWidth + x) * 4;
   
-  
+            
             if (data.events[idx] == "r") {
               dt[index];    // red
               dt[index+1] = dt[index+1]*0.5 + value*0.5;    // green
-              dt[index+2] = dt[index+2] + 1;    // blue              
+              dt[index+2] = 0;//dt[index+2] + 1;    // blue              
             } else {
               dt[index]   = dt[index]*0.5 + value*0.5;    // red
               dt[index+1];    // green
-              dt[index+2] = dt[index+2] + 1;    // blue              
+              dt[index+2] = 0;//dt[index+2] + 1;    // blue              
             }     
             dt[index+3] = alpha;      // alpha
           
@@ -428,12 +392,14 @@
       __vS.addListener("frameslider_pause", function(eventname, event, caller) { $("#pv_controls_playpause").html("4"); });
       
       KeyboardJS.bind.key("p", function() { __vS.togglePlaying(); }, function() {});
+      KeyboardJS.bind.key("s", function() { __vS.stepCurrentFrame(1); }, function() {});
+      KeyboardJS.bind.key("a", function() { __vS.stepCurrentFrame(-1); }, function() {});
       
     }
     
     function create_mem_view() {
       var width = 1024;
-      var height = 1024;
+      var height = 550;
       $(__div_memmap).css("width", width);
       $(__div_memmap).css("height", width);
       $(__div_memmap).html("<canvas id='pv_memmap_canvas' width='"+width+"' height='"+height+"'></canvas>");
@@ -445,8 +411,9 @@
       
       __vS.addListener("frameslider_change", function(eventname, event, caller) {
         __db.f_mem_status(event,255,function(data) {
-          
-          drawmockup(data);
+          __db.f_counts(function(f_counts) {
+            drawmockup(data, f_counts);
+          })
           
         })
         
