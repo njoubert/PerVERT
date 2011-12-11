@@ -99,8 +99,21 @@ h4 { font-size: 3em; line-height: 1; margin-bottom: 0.5em; }
   color: #D8000C;
 }
 
-
 /* PERVERT */
+
+path.dot {
+  fill: white;
+  stroke-width: 1.5px;
+}
+rect {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+.x line, .y line {
+  stroke: #ccc;
+  shape-rendering: crispEdges;
+}
 
 #pv_controls {
   width: 100%;
