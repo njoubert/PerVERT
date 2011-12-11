@@ -350,13 +350,13 @@
 
       var dt = imageData.data;
       
-      var biggest = 50
+      var biggest = 50;
       var value = 255;
       var alpha = 255;
       
       for (var idx = 0; idx < data.addr.length; idx++) {
         var ob = data.addr[idx];
-        
+
         for (var y = biggest/2; y >= -(biggest/2); y--) {
           for (var x = biggest/2; x >= -(biggest/2); x--) {
             var index = (1024*50)*4 + (ob + y * canvasWidth + x) * 4;
@@ -375,7 +375,7 @@
           
           }
         }
-        if (biggest > 1) {
+        if (biggest > 2) {
           biggest -= 2;
         }
         if (value > 0)
