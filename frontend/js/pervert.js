@@ -344,48 +344,46 @@
       var ctx = canvas.getContext("2d");
       var canvasWidth  = canvas.width;
       var canvasHeight = canvas.height;
+      ctx.clearRect ( 0 , 0 , canvasWidth , canvasHeight );
+
       var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
 
       var dt = imageData.data;
-      ctx.clearRect ( 0 , 0 , canvasWidth , canvasHeight );
       
-      var howmany = data.addr.length;
+      var biggest = 50
+      var value = 255;
+      var alpha = 255;
       
-      $.each(data.addr, function(idx,ob) {
+      for (var idx = 0; idx < data.addr.length; idx++) {
+        var ob = data.addr[idx];
         
-        for (var y = sqrt(howmany); x > 0; x--) {
-          for (var x = sqrt(howmany); x > 0; x--) {
-            var index = (ob + y * canvasWidth + x) * 4;
-            
-            var index = ob * 4;
-            var value = 0;
-        
-            dt[index]   = value;    // red
-            dt[++index] = value;    // green
-            dt[++index] = value;    // blue
-            dt[++index] = 255;      // alpha
+        for (var y = biggest/2; y >= -(biggest/2); y--) {
+          for (var x = biggest/2; x >= -(biggest/2); x--) {
+            var index = (1024*50)*4 + (ob + y * canvasWidth + x) * 4;
+  
+  
+            if (data.events[idx] == "r") {
+              dt[index];    // red
+              dt[index+1] = dt[index+1]*0.5 + value*0.5;    // green
+              dt[index+2] = dt[index+2] + 1;    // blue              
+            } else {
+              dt[index]   = dt[index]*0.5 + value*0.5;    // red
+              dt[index+1];    // green
+              dt[index+2] = dt[index+2] + 1;    // blue              
+            }     
+            dt[index+3] = alpha;      // alpha
           
           }
         }
+        if (biggest > 1) {
+          biggest -= 2;
+        }
+        if (value > 0)
+          value--;
+        if (alpha < 255)
+          alpha++;
         
-        
-      });
-            // 
-            // for (var y = __y; y < __y+10; ++y) {
-            //     for (var x = __x; x < __x+10; ++x) {
-            // 
-            //         var index = (y * canvasWidth + x) * 4;
-            // 
-            //         var value = 100;
-            // 
-            //         data[index]   = value;    // red
-            //         data[++index] = value;    // green
-            //         data[++index] = value;    // blue
-            //         data[++index] = 255;      // alpha
-            // 
-            //     }
-            // }
-
+      }
       ctx.putImageData(imageData, 0, 0);
 
     }
@@ -407,6 +405,7 @@
             max: counts.event-1,
             value: 0,
             create: function() { __vS.setCurrentFrame(0,this); return true;},
+            slide: function() { __vS.setCurrentFrame($("#pv_controls_slider").slider("value"),this); return true;},
             stop: function() { __vS.setCurrentFrame($("#pv_controls_slider").slider("value"),this); return true;}
           });
         });
@@ -445,7 +444,7 @@
       //__vS.addListener("memmap_click", function(eventname,event,caller) { drawanim();});
       
       __vS.addListener("frameslider_change", function(eventname, event, caller) {
-        __db.f_mem_status(event,200,function(data) {
+        __db.f_mem_status(event,255,function(data) {
           
           drawmockup(data);
           
