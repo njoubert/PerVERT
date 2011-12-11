@@ -32,7 +32,7 @@
     self.abort = function() { $.each(self.__data, function(id,xhr) { xhr.abort(); }); self.__data = []; };
     self.ajax = function(path, settings) {
       var oldcomplete = settings["complete"];
-      settings["complete"] = function() { self.complete(); oldcomplete(); }
+      settings["complete"] = function() { self.complete(); if (oldcomplete) { oldcomplete(); } }
       var t = $.ajax(path, settings);
       self.add(t);
       return t; 
@@ -57,18 +57,8 @@
 
     var __f_context = {};
         
-    function getListOfExecs(cont) {
-      __ajaxqueue.ajax('/pp/list', {
-        success: function(data) { $("#pv_bullshit").html(JSON.stringify(data)); },
-        complete: function() { cont(); }
-       });
-    }
-    
     var init = function(cont) {
-      __pv.log("initting DB");
-      getListOfExecs(cont);
-
-      
+      __pv.log("initting DB");      
     }
     
     var abort = function() {
@@ -131,6 +121,8 @@
       init: init,
       abort: abort,
       f_counts: f_counts,
+      f_context: f_context,
+      f_mem_status: f_mem_status
     }
   }
   
@@ -145,9 +137,56 @@
     var __pv = pv;
     var __listeners = {};
     
+    var __currentFrame = 0;
+    var __maxFrame = 0;
+    
+    var __playing = false;
+    var __playingTimer = null;
+    
+    function construct() {
+      addEvent("frameslider_change");
+      addEvent("frameslider_play");
+      addEvent("frameslider_pause");
+    }
+    
     //Public API
     var reset = function() {
-      //reset to the original view state;
+      setPlaying(false);
+      setCurrentFrame(0);
+    }
+
+    var setFrameRange = function(maxframe) {
+      __pv.log("Setting max frame to " + maxframe);
+      __maxFrame = maxframe;
+    }
+    
+    var setCurrentFrame = function(f) {
+      if (f > __maxFrame) {
+        setPlaying(false);
+      } else {
+        __currentFrame = f;
+        fireEvent("frameslider_change", f, this);         
+      }
+    }
+    
+    var setPlaying = function(v) {
+      __playing = v;
+      if (__playing) {
+        
+        fireEvent("frameslider_play", true, this);
+        if (__currentFrame == __maxFrame) {
+          setCurrentFrame(0);
+        }
+        __playingTimer = setInterval(function() {
+          setCurrentFrame(__currentFrame + 1);
+        },100);        
+        
+      } else {
+        
+        clearInterval(__playingTimer);
+        fireEvent("frameslider_pause", true, this);
+      
+      }
     }
 
     //EVENT architecture:
@@ -176,12 +215,18 @@
       __listeners[eventname].push(func);
       return this;
     }
-    return {
+
+    var obj = {
       reset: reset,
+      setCurrentFrame: setCurrentFrame,
+      setFrameRange: setFrameRange,
+      setPlaying: setPlaying,
       addListener: addListener,
       addEvent: addEvent,
       fireEvent: fireEvent
     }
+    construct(obj)
+    return obj;
   }
 
 
@@ -273,24 +318,54 @@
 
     function create_controls_view() {
       __vS.addEvent("frameslider_change");
-      $(__div_controls).html("<div id='pv_controls_slider'></div>");
-
+      $(__div_controls)
+        .append("<div id='pv_controls_playpause'>4</div>")
+        .append("<div id='pv_controls_slider_container'><div id='pv_controls_slider'></div></div>");
+      
       __vS.addListener("init", function(eventname, event, caller) {
-        
-        __db.f_counts(function(counts) {          
+                
+        __db.f_counts(function(counts) {
+          
+          __vS.setFrameRange(counts.event-1);
+
           log("Creating pv_controls_slider");
           $("#pv_controls_slider").slider("destroy");
-            $("#pv_controls_slider").slider({
-              range: false,
-              min: 0,
-              max: counts.event-1,
-              value: 0,
-              create: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.fireEvent("frameslider_change", pr, this); return true;},
-              change: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.fireEvent("frameslider_change", pr, this); return true;}
-            });
+          $("#pv_controls_slider").slider({
+            range: false,
+            min: 0,
+            max: counts.event-1,
+            value: 0,
+            create: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.setCurrentFrame(pr,this); return true;},
+            stop: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.setCurrentFrame(pr,this); return true;}
+          });
         });
+      
       });
+      __vS.addListener("frameslider_change", function(eventname, event, caller) {
+        var pr = $("#pv_controls_slider").slider("value");
+        if (pr != event) {
+          $("#pv_controls_slider").slider("value", event);
+        }        
+      })
+      
+      __vS.addEvent("frameslider_play");
+      __vS.addEvent("frameslider_pause");
+      
+      $("#pv_controls_playpause").click(function() { 
+        var v = $("#pv_controls_playpause").html();
+        if (v == "4") {
+          __vS.setPlaying(true);
+        } else if (v == "5") {
+          __vS.setPlaying(false);
+        }
+      })
 
+      __vS.addListener("frameslider_play", function(eventname, event, caller) {
+          $("#pv_controls_playpause").html("5");        
+      })
+      __vS.addListener("frameslider_pause", function(eventname, event, caller) {
+          $("#pv_controls_playpause").html("4");        
+      })
       
     }
     
@@ -304,7 +379,13 @@
       $("#pv_memmap_canvas").click(function(eventObj) {__vS.fireEvent("memmap_click", eventObj, this);})
       
       __vS.addListener("memmap_click", function(eventname,event,caller) { drawanim();});
-      
+      __vS.addListener("frameslider_change", function(eventname, event, caller) {
+        __db.f_mem_status(event,200,function(data) {
+          
+        })
+        
+        
+      })
 
     }
     
