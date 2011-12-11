@@ -320,6 +320,55 @@
 
     }
 
+    function drawmockup(data) {
+      var canvas = document.getElementById("pv_memmap_canvas");
+      
+      var ctx = canvas.getContext("2d");
+      var canvasWidth  = canvas.width;
+      var canvasHeight = canvas.height;
+      var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+
+      var dt = imageData.data;
+
+      __x += 1;
+      __y += 1;
+      if (__x > canvasWidth)
+        __x = 0;
+      if (__y > canvasHeight)
+        __y = 0;
+                
+      $.each(data.addr, function(idx,ob) {
+        
+        var index = ob * 4;
+        var value = 0;
+
+        dt[index]   = value;    // red
+        dt[++index] = value;    // green
+        dt[++index] = value;    // blue
+        dt[++index] = 255;      // alpha
+        
+      });
+            // 
+            // for (var y = __y; y < __y+10; ++y) {
+            //     for (var x = __x; x < __x+10; ++x) {
+            // 
+            //         var index = (y * canvasWidth + x) * 4;
+            // 
+            //         var value = 100;
+            // 
+            //         data[index]   = value;    // red
+            //         data[++index] = value;    // green
+            //         data[++index] = value;    // blue
+            //         data[++index] = 255;      // alpha
+            // 
+            //     }
+            // }
+
+      ctx.putImageData(imageData, 0, 0);
+
+    }
+
+
     function create_controls_view() {
       $(__div_controls)
         .append("<div id='pv_controls_playpause'>4</div>")
@@ -368,11 +417,15 @@
       $(__div_memmap).css("height", width);
       $(__div_memmap).html("<canvas id='pv_memmap_canvas' width='"+width+"' height='"+height+"'></canvas>");
       __vS.addEvent("memmap_click");
+      
       $("#pv_memmap_canvas").click(function(eventObj) {__vS.fireEvent("memmap_click", eventObj, this);})
       
-      __vS.addListener("memmap_click", function(eventname,event,caller) { drawanim();});
+      //__vS.addListener("memmap_click", function(eventname,event,caller) { drawanim();});
+      
       __vS.addListener("frameslider_change", function(eventname, event, caller) {
         __db.f_mem_status(event,200,function(data) {
+          
+          drawmockup(data);
           
         })
         
