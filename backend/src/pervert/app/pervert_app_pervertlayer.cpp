@@ -268,6 +268,48 @@ void PervertLayer::f_context_events(Server::Request* req, Server::Response* res)
   writeJSONResponse(req,res,root);
 }
 
+void PervertLayer::f_context_deriv(Server::Request* req, Server::Response* res) {
+  Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+	if (query == NULL || !query->exists("exec") || !query->exists("frame")) 
+		return writeStatusAndEnd(req,res,500);
+
+  string exec = query->get("exec");
+  if ( _dms.find(exec) == _dms.end() )
+    return writeStatusAndEnd(req,res,500);
+
+  DataManager* dm = _dms[exec];
+  Trace* trace = dm->getTrace();
+
+  int frame = atoi(query->get("frame").c_str());   
+  if ( (unsigned int) frame >= trace->events_.size() )
+    return writeStatusAndEnd(req,res,500);
+
+  Json::Value root;
+  Json::Value events(Json::arrayValue);
+
+  Trace::Event::Type type = trace->events_[frame].type;
+  Trace::Context* context = trace->events_[frame].context;
+
+  int lastLine = 0;
+  if ( type == Trace::Event::READ || type == Trace::Event::WRITE )
+    for ( vector<Trace::Event*>::iterator i = trace->byContext_[context].begin(), ie = trace->byContext_[context].end(); i != ie; ++i )
+    {
+      Json::Value event;
+
+      // TODO: I'm inlining the value of a cache line here since we're likely not going to change it
+      int line = (*i)->arg1 / 1024;
+
+      event["index"] = (int) (*i)->index;
+      event["delta"] = (int) abs(line-lastLine);
+
+      events.append(event); 
+
+      lastLine = line;
+    }
+  root["events"] = events;
+
+  writeJSONResponse(req,res,root);
+}
 
 void PervertLayer::handle(Server::Request* req, Server::Response* res) {
 	const struct mg_request_info *request_info = req->request_info;
@@ -288,6 +330,8 @@ void PervertLayer::handle(Server::Request* req, Server::Response* res) {
     return f_context_stack(req,res);
   } else if (strcmp(request_info->uri, "/f/context_events") == 0 ) {
     return f_context_events(req,res);
+  } else if (strcmp(request_info->uri, "/f/context_deriv") == 0 ) {
+    return f_context_deriv(req,res);
 	} else {
 		next(req,res);
 	}
