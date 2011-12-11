@@ -255,7 +255,7 @@
     }
 
     function create_controls_view() {
-      __vS.addEvent("frameslider_stop");
+      __vS.addEvent("frameslider_change");
       $(__div_controls).html("<div id='pv_controls_slider'></div>");
 
       __vS.addListener("init", function(eventname, event, caller) {
@@ -268,8 +268,9 @@
               min: 0,
               max: counts.event-1,
               value: 0,
+              start: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.fireEvent("frameslider_change", pr, this); return true;}
               // slide: function(e,u) {var pr = $("#pv_controls_slider").slider("value");  __vS.fireEvent("slider_slide", pr, this); return true;},
-              stop: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.fireEvent("frameslider_stop", pr, this); return true;}
+              change: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.fireEvent("frameslider_change", pr, this); return true;}
             });
         });
       });
