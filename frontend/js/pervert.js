@@ -321,7 +321,6 @@
     }
 
     function create_controls_view() {
-      __vS.addEvent("frameslider_change");
       $(__div_controls)
         .append("<div id='pv_controls_playpause'>4</div>")
         .append("<div id='pv_controls_slider_container'><div id='pv_controls_slider'></div></div>");
@@ -329,47 +328,34 @@
       __vS.addListener("init", function(eventname, event, caller) {
                 
         __db.f_counts(function(counts) {
-          
           __vS.setFrameRange(counts.event-1);
-
-          log("Creating pv_controls_slider");
           $("#pv_controls_slider").slider("destroy");
           $("#pv_controls_slider").slider({
             range: false,
             min: 0,
             max: counts.event-1,
             value: 0,
-            create: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.setCurrentFrame(pr,this); return true;},
-            stop: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.setCurrentFrame(pr,this); return true;}
+            create: function() { __vS.setCurrentFrame(0,this); return true;},
+            stop: function() { __vS.setCurrentFrame($("#pv_controls_slider").slider("value"),this); return true;}
           });
         });
-      
+        
       });
+      
       __vS.addListener("frameslider_change", function(eventname, event, caller) {
         var pr = $("#pv_controls_slider").slider("value");
-        if (pr != event) {
-          $("#pv_controls_slider").slider("value", event);
-        }        
-      })
+        if (pr != event) { $("#pv_controls_slider").slider("value", event); }
+      });
       
       __vS.addEvent("frameslider_play");
       __vS.addEvent("frameslider_pause");
       
       $("#pv_controls_playpause").click(function() { 
         var v = $("#pv_controls_playpause").html();
-        if (v == "4") {
-          __vS.setPlaying(true);
-        } else if (v == "5") {
-          __vS.setPlaying(false);
-        }
-      })
-
-      __vS.addListener("frameslider_play", function(eventname, event, caller) {
-          $("#pv_controls_playpause").html("5");        
-      })
-      __vS.addListener("frameslider_pause", function(eventname, event, caller) {
-          $("#pv_controls_playpause").html("4");        
-      })
+        if (v == "4") { __vS.setPlaying(true); } else { __vS.setPlaying(false); }
+      });
+      __vS.addListener("frameslider_play",  function(eventname, event, caller) { $("#pv_controls_playpause").html("5"); });
+      __vS.addListener("frameslider_pause", function(eventname, event, caller) { $("#pv_controls_playpause").html("4"); });
       
       KeyboardJS.bind.key("p", function() { __vS.togglePlaying(); }, function() {});
       
