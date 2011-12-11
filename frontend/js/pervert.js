@@ -47,7 +47,9 @@
   var DB = function(pv, exec) {
     var __pv = pv;
     var __exec = exec;
-    var __ajaxqueue = new jqXHRQueue(); 
+    var __ajaxqueue = new jqXHRQueue();
+    
+    var __f_counts = null;
     
         
     function getListOfExecs(cont) {
@@ -68,10 +70,22 @@
       __ajaxqueue.abort();
     }
     
+    var f_counts = function(cont) { 
+      if (__f_counts) {
+        cont(__f_counts);
+      } else {        
+        __ajaxqueue.ajax('/f/counts?exec='+__exec, 
+        {
+          success: function(data) { __pv.log(data); __f_counts = data; cont(__f_counts); },
+          error: function() { __pv.log("/f/counts FAILED!"); }
+         });
+      }
+    }
+    
     return {
       init: init,
       abort: abort,
-      
+      f_counts: f_counts,
     }
   }
   
@@ -93,9 +107,13 @@
 
     //EVENT architecture:
     var fireEvent = function(eventname,event,caller) {
-      $.each(__listeners[eventname], function(idx,func) {
-        func(eventname,event,caller);
-      })
+      if (__listeners[eventname]) {
+        $.each(__listeners[eventname], function(idx,func) {
+          func(eventname,event,caller);
+        })        
+      } else {
+        __pv.log("Fired an undefined event: " + eventname);
+      }
     }
     var addEvent = function(eventname) {
       if (!__listeners[eventname]) {
@@ -123,7 +141,6 @@
 
 
   var Pervert = function(exec) {
-    var hi = "hihih";
     var self = this;
     var __exec = exec;
     var __toggleBusy = function() {return;};
@@ -210,29 +227,26 @@
     }
 
     function create_controls_view() {
+      __vS.addEvent("frameslider_stop");
+      $(__div_controls).html("<div id='pv_controls_slider'></div>");
+
+      __vS.addListener("init", function(eventname, event, caller) {
+        
+        __db.f_counts(function(counts) {          
+          log("Creating pv_controls_slider");
+          $("#pv_controls_slider").slider("destroy");
+            $("#pv_controls_slider").slider({
+              range: false,
+              min: 0,
+              max: counts.event-1,
+              value: 0,
+              // slide: function(e,u) {var pr = $("#pv_controls_slider").slider("value");  __vS.fireEvent("slider_slide", pr, this); return true;},
+              stop: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.fireEvent("frameslider_stop", pr, this); return true;}
+            });
+        });
+      });
+
       
-      
-      //var s = $("__div_controls").slider();
-      
-      
-      // __state = false;
-      // $(__div_controls).html("<div id='pv_ctx_view'></div>");
-      // __vS.addEvent("controls_click")
-      //   .addEvent("controls_range")
-      // $("#pv_ctx_view")
-      //   .css("width", 400)
-      //   .css("height", 100)
-      //   .css("background", "#ddd")
-      //   .mousedown(function(eventObj) {__state = eventObj;})
-      //   .mouseup(function(eventObj) {
-      //     var start = eventObj.pageX - $("#pv_ctx_view").position().left;
-      //     var range = eventObj.pageX - __state.pageX;
-      //     if (range > 0) {
-      //       __vS.fireEvent("controls_range", [start,eventObj.pageX], range, this);
-      //     } else {
-      //       __vS.fireEvent("controls_click", start, this);
-      //     }
-      //     });
     }
     
     function create_mem_view() {
@@ -254,7 +268,7 @@
     }
     
     function create_scatter_view() {
-      //d3.select(__div_memscatter).text("CREATE SCATTER VIEW");
+      d3.select(__div_memscatter).text("CREATE SCATTER VIEW");
     }
      
     // Public API:  
@@ -263,9 +277,11 @@
       if (__db)
         __db.abort();
       log("Initializing PerVert...");
-      __db = DB(this); //create a new DB
+      __db = DB(this,__exec); //create a new DB
             
       __db.init(function() {__toggleBusy(false);});
+      __vS.addEvent("init");
+      __vS.fireEvent("init", null, this);
     }
     
     var clean = function() {
