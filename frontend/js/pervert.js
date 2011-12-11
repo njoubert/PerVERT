@@ -486,7 +486,7 @@
                 .attr("stroke", function(d, i) { return data.type == "w" ? "red" : "blue"; })
                 .attr("transform", function(d) { return "translate(" + x(d.index) + "," + y(d.addr) + ")"; })
                 .attr("d", d3.svg.symbol());
-              points.transition().duration(1000)
+              points.transition().duration(0)
                 .attr("class", "dot")
                 .attr("stroke", function(d, i) { return data.type == "w" ? "red" : "blue"; })
                 .attr("transform", function(d) { return "translate(" + x(d.index) + "," + y(d.addr) + ")"; })
