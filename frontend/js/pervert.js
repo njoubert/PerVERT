@@ -189,6 +189,9 @@
       }
     }
 
+    var togglePlaying = function() {
+      setPlaying(!__playing);
+    }
     //EVENT architecture:
     var fireEvent = function(eventname,event,caller) {
       if (__listeners[eventname]) {
@@ -221,6 +224,7 @@
       setCurrentFrame: setCurrentFrame,
       setFrameRange: setFrameRange,
       setPlaying: setPlaying,
+      togglePlaying: togglePlaying,
       addListener: addListener,
       addEvent: addEvent,
       fireEvent: fireEvent
@@ -366,6 +370,8 @@
       __vS.addListener("frameslider_pause", function(eventname, event, caller) {
           $("#pv_controls_playpause").html("4");        
       })
+      
+      KeyboardJS.bind.key("p", function() { __vS.togglePlaying(); }, function() {});
       
     }
     
