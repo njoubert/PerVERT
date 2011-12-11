@@ -53,6 +53,7 @@
     var __f_counts_pending = false;
     var __f_counts_continuations = [];
     
+    var __f_mem_status = {};
         
     function getListOfExecs(cont) {
       __ajaxqueue.ajax('/pp/list', {
@@ -72,6 +73,7 @@
       __ajaxqueue.abort();
     }
     
+    //safe to be called to your heart's delight
     var f_counts = function(cont) { 
       if (__f_counts) {
         cont(__f_counts);
@@ -82,7 +84,7 @@
           __ajaxqueue.ajax('/f/counts?exec='+__exec, 
           {
             success: function(data) { 
-              __pv.log(data); 
+              __pv.log("f_counts returned: " + data); 
               __f_counts = data; 
               $.each(__f_counts_continuations, function(idx,el) { el(__f_counts); }); 
             },
@@ -90,6 +92,21 @@
             complete: function() { __f_counts_continuations = []; __f_counts_pending = false; }
            });          
         }
+      }
+    }
+    
+    var f_mem_status = function(frame, windw, cont) {
+      if (__f_mem_status[frame]) {
+        return cont(__f_mem_status[frame]);
+      } else {
+        __ajaxqueue.ajax('/f/mem_status?exec='+__exec+'&frame='+frame+"&window="+windw, {
+          success: function(data) { 
+            __pv.log("f_mem_status returned: " + data); 
+            __f_mem_status[frame] = data;
+            cont(__f_mem_status[frame]);
+          },
+          error: function() { __pv.log("f_mem_status FAILED!"); },
+         });          
       }
     }
     
