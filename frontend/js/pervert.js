@@ -54,6 +54,8 @@
     var __f_counts_continuations = [];
     
     var __f_mem_status = {};
+
+    var __f_context = {};
         
     function getListOfExecs(cont) {
       __ajaxqueue.ajax('/pp/list', {
@@ -106,6 +108,21 @@
             cont(__f_mem_status[frame]);
           },
           error: function() { __pv.log("f_mem_status FAILED!"); },
+         });          
+      }
+    }
+    
+    var f_context = function(frame, windw, cont) {
+      if (__f_context[frame]) {
+        return cont(__f_context[frame]);
+      } else {
+        __ajaxqueue.ajax('/f/context?exec='+__exec+'&frame='+frame, {
+          success: function(data) { 
+            __pv.log("f_context returned: " + data); 
+            __f_context[frame] = data;
+            cont(__f_context[frame]);
+          },
+          error: function() { __pv.log("f_context FAILED!"); },
          });          
       }
     }
