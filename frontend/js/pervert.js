@@ -285,8 +285,7 @@
               min: 0,
               max: counts.event-1,
               value: 0,
-              start: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.fireEvent("frameslider_change", pr, this); return true;}
-              // slide: function(e,u) {var pr = $("#pv_controls_slider").slider("value");  __vS.fireEvent("slider_slide", pr, this); return true;},
+              start: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.fireEvent("frameslider_change", pr, this); return true;},
               change: function() {  var pr = $("#pv_controls_slider").slider("value"); __vS.fireEvent("frameslider_change", pr, this); return true;}
             });
         });
