@@ -92,13 +92,13 @@ function doPoll() {
   var exec = getParameterByName("exec");
   if (exec == "") {
     handlePollFail();
-    setTimeout(doPoll,200);
+    setTimeout(doPoll,2000);
   } else {
     $.ajax('/f/status?exec='+exec,
       {
-        timeout: 500,
-        success: function(d,t,j) { if (handlePollResult(exec, d,t,j)) { setTimeout(doPoll,500); } },
-        error: function(d,t,j) { if (handlePollResult(exec, d,t,j)) { setTimeout(doPoll,500); } }
+        timeout: 3000,
+        success: function(d,t,j) { if (handlePollResult(exec, d,t,j)) { setTimeout(doPoll,2000); } },
+        error: function(d,t,j) { if (handlePollResult(exec, d,t,j)) { setTimeout(doPoll,2000); } }
       });    
   }
 }
