@@ -15,7 +15,7 @@ HERE=$(dirname $0)
 SERVER_PATH=$HERE/backend
 
 PIN=$HERE/pintool/pin
-PIN_PLUGIN=$HERE/pintool/source/tools/Pervert/obj-ia32/pervert.so
+PIN_PLUGIN=$HERE/pintool/source/tools/Pervert/obj-intel64/pervert.so
 SERVER=$SERVER_PATH/server
 
 CURL=/usr/bin/curl
@@ -87,7 +87,7 @@ PIN_OUT=$OUTPATH/$NAME.trace
 # Run tools
 
 $OBJDUMP -WL $1 > $OBJDUMP_OUT
-$PIN -t $PIN_PLUGIN -o $PIN_OUT -- $@ 
+$PIN -injection child -t $PIN_PLUGIN -o $PIN_OUT -- $@ 
 
 # Tell the server what it needs to hear
 
