@@ -56,8 +56,8 @@
     var __f_mem_status = {};
 
     var __f_context = {};
-
     var __f_memscatter = {};
+    var __f_memderiv = {};
         
     var init = function(cont) {
       __pv.log("initting DB");      
@@ -134,6 +134,21 @@
       }
     }
     
+    var f_memderiv = function(frame, cont) {
+      if (__f_memderiv[frame]) {
+        return cont(__f_memderiv[frame]);
+      } else {
+        __ajaxqueue.ajax('/f/context_deriv?exec='+__exec+'&frame='+frame, {
+          success: function(data) { 
+            __pv.log("f_memderiv returned: " + data); 
+            __f_memderiv[frame] = data;
+            cont(__f_memderiv[frame]);
+          },
+          error: function() { __pv.log("f_memderiv FAILED!"); },
+         });          
+      }
+    }
+    
     return {
       init: init,
       abort: abort,
@@ -141,6 +156,7 @@
       f_context: f_context,
       f_mem_status: f_mem_status,
       f_memscatter: f_memscatter,
+      f_memderiv: f_memderiv,
     }
   }
   
@@ -271,6 +287,7 @@
     var __div_memmap = null;
     var __div_context = null;
     var __div_memscatter = null;
+    var __div_memderiv = null;
     var __div_debug = null;
     
     var __vS = null;
@@ -552,14 +569,11 @@
       });
     }
     
-    var vis = null;
-    var x = null;
-    var y = null;
-
     function create_scatter_view() {
+      var scatter_vis = null;
+      var scatter_x = null;
+      var scatter_y = null;
       $(__div_memscatter).css("border", "solid red 1px"); 
-
-
       __vS.addListener("init", function(eventname, event, caller) {
         __db.f_counts(function(counts) {          
           var xmax = counts.event-1,
@@ -568,52 +582,51 @@
               h = 450,
               p = 20;
 
-          x = d3.scale.linear().domain([0,xmax]).range([0, w]);
-          y = d3.scale.linear().domain([0,ymax]).range([h, 0]);
-          vis = d3.select(__div_memscatter)
-            .append("svg")
+          scatter_x = d3.scale.linear().domain([0,xmax]).range([0, w]);
+          scatter_y = d3.scale.linear().domain([0,ymax]).range([h, 0]);
+          scatter_vis = d3.select(__div_memscatter).append("svg")
                .attr("width", w + p * 2)
               .attr("height", h + p * 2)
             .append("g")
               .attr("transform", "translate(" + p + "," + p + ")");
 
-          var xrule = vis.selectAll("g.x")
-              .data(x.ticks(10))
+          var xrule = scatter_vis.selectAll("g.x")
+              .data(scatter_x.ticks(10))
             .enter().append("g")
               .attr("class", "x");
 
           xrule.append("line")
-              .attr("x1", x)
-              .attr("x2", x)
+              .attr("x1", scatter_x)
+              .attr("x2", scatter_x)
               .attr("y1", 0)
               .attr("y2", h);
-
+/*
           xrule.append("text")
-              .attr("x", x)
+              .attr("x", scatter_x)
               .attr("y", h + 3)
               .attr("dy", ".71em")
               .attr("text-anchor", "middle")
-              .text(x.tickFormat(10));
-
-          var yrule = vis.selectAll("g.y")
-              .data(y.ticks(10))
+              .text(scatter_x.tickFormat(10));
+*/
+          var yrule = scatter_vis.selectAll("g.y")
+              .data(scatter_y.ticks(10))
             .enter().append("g")
               .attr("class", "y");
 
           yrule.append("line")
               .attr("x1", 0)
               .attr("x2", w)
-              .attr("y1", y)
-              .attr("y2", y);
+              .attr("y1", scatter_y)
+              .attr("y2", scatter_y);
 
           yrule.append("text")
               .attr("x", -3)
-              .attr("y", y)
+              .attr("y", scatter_y)
               .attr("dy", ".35em")
               .attr("text-anchor", "end")
-              .text(y.tickFormat(10));
+              .text(scatter_y.tickFormat(10));
 
-          vis.append("rect")
+          scatter_vis.append("rect")
               .attr("width", w)
               .attr("height", h);
         });
@@ -621,19 +634,112 @@
 
       __vS.addListener("frameslider_change", function(eventname, event, caller) { 
         __db.f_memscatter(event, function(data) {
-              var points = vis.selectAll("path.dot")
+              var points = scatter_vis.selectAll("path.dot")
                 .data(data.events);
               points.enter().append("path")
                 .attr("class", "dot")
                 .attr("stroke", function(d, i) { return data.type == "w" ? "red" : "blue"; })
-                .attr("transform", function(d) { return "translate(" + x(d.index) + "," + y(d.addr) + ")"; })
+                .attr("transform", function(d) { return "translate(" + scatter_x(d.index) + "," + scatter_y(d.addr) + ")"; })
                 .attr("d", d3.svg.symbol());
               points.transition().duration(0)
                 .attr("class", "dot")
                 .attr("stroke", function(d, i) { return data.type == "w" ? "red" : "blue"; })
-                .attr("transform", function(d) { return "translate(" + x(d.index) + "," + y(d.addr) + ")"; })
+                .attr("transform", function(d) { return "translate(" + scatter_x(d.index) + "," + scatter_y(d.addr) + ")"; })
                 .attr("d", d3.svg.symbol());
               points.exit().remove();
+        });
+      });
+    }
+
+    function create_deriv_view() {
+      var deriv_vis = null;
+      var deriv_x = null;
+      var deriv_y = null;
+      $(__div_memderiv).css("border", "solid green 2px"); 
+      __vS.addListener("init", function(eventname, event, caller) {
+        __db.f_counts(function(counts) {          
+          var xmax = counts.event-1,
+              ymax = Math.round(counts.max_addr / 1024),
+              w = 450,
+              h = 450,
+              p = 20;
+
+          deriv_x = d3.scale.linear().domain([0,xmax]).range([0, w]);
+          deriv_y = d3.scale.linear().domain([0,ymax]).range([h, 0]);
+          deriv_vis = d3.select(__div_memderiv).append("svg")
+              .attr("width", w + p * 2)
+              .attr("height", h + p * 2)
+            .append("g")
+              .attr("transform", "translate(" + p + "," + p + ")");
+
+          var xrule = deriv_vis.selectAll("g.x")
+              .data(deriv_x.ticks(10))
+            .enter().append("g")
+              .attr("class", "x");
+
+          xrule.append("line")
+              .attr("x1", deriv_x)
+              .attr("x2", deriv_x)
+              .attr("y1", 0)
+              .attr("y2", h);
+/*
+          xrule.append("text")
+              .attr("x", deriv_x)
+              .attr("y", h + 3)
+              .attr("dy", ".71em")
+              .attr("text-anchor", "middle")
+              .text(deriv_x.tickFormat(10));
+*/
+          var yrule = deriv_vis.selectAll("g.y")
+              .data(deriv_y.ticks(10))
+            .enter().append("g")
+              .attr("class", "y");
+
+          yrule.append("line")
+              .attr("x1", 0)
+              .attr("x2", w)
+              .attr("y1", deriv_y)
+              .attr("y2", deriv_y);
+
+          yrule.append("text")
+              .attr("x", -3)
+              .attr("y", deriv_y)
+              .attr("dy", ".35em")
+              .attr("text-anchor", "end")
+              .text(deriv_y.tickFormat(10));
+
+          deriv_vis.append("rect")
+              .attr("width", w)
+              .attr("height", h);
+        });
+      });
+
+      __vS.addListener("frameslider_change", function(eventname, event, caller) { 
+        __db.f_memderiv(event, function(data) {
+          deriv_vis.data(data.events).append("path")
+            .attr("class", "line")
+            .attr("d", d3.svg.line()
+              .x(function(d) { return deriv_x(d.index); })
+              .y(function(d) { return deriv_y(d.delta); }));
+          /*lines.transition().duration(0)
+            .attr("class", "line")
+            .attr("d", d3.svg.line()
+            .x(function(d) { return deriv_x(d.index); })
+            .y(function(d) { return deriv_y(d.delta); }));*/
+
+          var points = deriv_vis.selectAll("circle.line")
+              .data(data.events);
+          points.enter().append("circle")
+              .attr("class", "line")
+              .attr("cx", function(d) { return deriv_x(d.index); })
+              .attr("cy", function(d) { return deriv_y(d.delta); })
+              .attr("r", 3.5)
+          points.transition().duration(0)
+              .attr("class", "line")
+              .attr("cx", function(d) { return deriv_x(d.index); })
+              .attr("cy", function(d) { return deriv_y(d.delta); })
+              .attr("r", 3.5)
+          points.exit().remove();
         });
       });
     }
@@ -696,6 +802,12 @@
       return this;
     }
 
+    var bindMemDerivView = function(div_memderiv) {
+      __div_memderiv = div_memderiv;
+      create_deriv_view();
+      return this;
+    }
+
     var bindDebugView = function(div_debug) {
       __div_debug = div_debug;
       return this;
@@ -715,8 +827,10 @@
       bindContextView: bindContextView,
       bindControlsView: bindControlsView,
       bindMemScatterView: bindMemScatterView,
+      bindMemDerivView: bindMemDerivView,
       bindDebugView: bindDebugView,
       getInfo: getInfo
+      bindDebugView: bindDebugView
     };
     construct(obj);
     

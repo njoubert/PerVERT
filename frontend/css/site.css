@@ -115,6 +115,24 @@ rect {
   shape-rendering: crispEdges;
 }
 
+.rule line {
+  stroke: #eee;
+  shape-rendering: crispEdges;
+}
+
+.rule line.axis {
+  stroke: #000;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+circle.line {
+  fill: #fff;
+}
 #pv_controls {
   width: 100%;
   height: 28px;
