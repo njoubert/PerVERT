@@ -829,7 +829,7 @@
       bindMemScatterView: bindMemScatterView,
       bindMemDerivView: bindMemDerivView,
       bindDebugView: bindDebugView,
-      getInfo: getInfo
+      getInfo: getInfo,
       bindDebugView: bindDebugView
     };
     construct(obj);
