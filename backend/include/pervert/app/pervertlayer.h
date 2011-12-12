@@ -44,6 +44,7 @@ private:
   void f_context_stack(Server::Request* req, Server::Response* res);
   void f_context_events(Server::Request* req, Server::Response* res);
   void f_context_deriv(Server::Request* req, Server::Response* res);
+  void f_context_histo(Server::Request* req, Server::Response* res);
 };
 
 

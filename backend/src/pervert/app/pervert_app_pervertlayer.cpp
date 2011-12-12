@@ -311,6 +311,55 @@ void PervertLayer::f_context_deriv(Server::Request* req, Server::Response* res) 
   writeJSONResponse(req,res,root);
 }
 
+void PervertLayer::f_context_histo(Server::Request* req, Server::Response* res) {
+  Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+	if (query == NULL || !query->exists("exec") || !query->exists("frame")) 
+		return writeStatusAndEnd(req,res,500);
+
+  string exec = query->get("exec");
+  if ( _dms.find(exec) == _dms.end() )
+    return writeStatusAndEnd(req,res,500);
+
+  DataManager* dm = _dms[exec];
+  Trace* trace = dm->getTrace();
+
+  int frame = atoi(query->get("frame").c_str());   
+  if ( (unsigned int) frame >= trace->events_.size() )
+    return writeStatusAndEnd(req,res,500);
+
+  map<int, int> histogram;
+
+  Trace::Event::Type type = trace->events_[frame].type;
+  Trace::Context* context = trace->events_[frame].context;
+
+  if ( type == Trace::Event::READ || type == Trace::Event::WRITE )
+    for ( vector<Trace::Event*>::iterator i = trace->byContext_[context].begin(), ie = trace->byContext_[context].end(); i != ie; ++i )
+    {
+      // XXX: I'm lining the size of a cache line here.
+      int line = (*i)->arg1 / 1024;
+      if ( histogram.find(line) == histogram.end() )
+        histogram[line] = 1;
+      else
+        histogram[line]++;
+    }
+
+
+  Json::Value root;
+  Json::Value histo(Json::arrayValue);
+  for ( map<int, int>::iterator i = histogram.begin(), ie = histogram.end(); i != ie; ++i )
+  {
+      Json::Value bucket;
+
+      bucket["line"] = (*i).first;
+      bucket["count"] = (*i).second;
+
+      histo.append(bucket); 
+    }
+  root["histo"] = histo;
+
+  writeJSONResponse(req,res,root);
+}
+
 void PervertLayer::handle(Server::Request* req, Server::Response* res) {
 	const struct mg_request_info *request_info = req->request_info;
 	
@@ -332,6 +381,8 @@ void PervertLayer::handle(Server::Request* req, Server::Response* res) {
     return f_context_events(req,res);
   } else if (strcmp(request_info->uri, "/f/context_deriv") == 0 ) {
     return f_context_deriv(req,res);
+  } else if (strcmp(request_info->uri, "/f/context_histo") == 0 ) {
+    return f_context_histo(req,res);
 	} else {
 		next(req,res);
 	}
