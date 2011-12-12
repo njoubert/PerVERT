@@ -338,8 +338,8 @@
     var data_y_offset = 25;  //on both sides
     
     var show_zoom = true;
-    //var zoom_scalefnc = make_quadratic_scale(20, -0.2, 1);
-    var zoom_scalefnc = make_linear_scale(25, -1, 1);
+    var zoom_scalefnc = make_quadratic_scale(20, -0.5, 1);
+    //var zoom_scalefnc = make_linear_scale(25, -1, 1);
     
     function construct(obj) {
       __vS = ViewState(obj);
@@ -399,6 +399,16 @@
       function index_plus_y(i,y) {
         return i + y*(canvasWidth)*4;
       }
+      
+      function newFilledArray(len, val) {
+          var a = [];
+          while(len--){
+              a.push(val);
+          }
+          return a;
+      }
+
+      var griddata = new Array(dt.length, false);
       
       
     
@@ -488,6 +498,9 @@
         
       } else {
 
+        var decay = 0.8;
+        var value = 255;
+        
         for (var idx = data.addr.length - 1; idx >= 0 ; idx--) {
           var ob = data.addr[idx];
           var gxgy = addr_gxgy(ob);
@@ -497,18 +510,57 @@
           
           for (var x = -hw; x <= hw; x++) {
             for (var y = -hw; y <= hw; y++) {
-              var i = index_shift(index,x,y);            
-              if (data.events[idx] == "r") {
+              var i = index_shift(index,x,y);
+              
+              
+              if (data.events[idx] == "r") { //READS
                 
-                dt[i] = 0;
-                dt[i+1] = 255;
-                dt[i+2] = 0;
+                if (hw > 2 && x > -2 && x < 2 && y > -2 && y < 2) {
+
+                  dt[i] = 0;
+                  dt[i+1] = 0;
+                  dt[i+2] = 0;
+                  
+                } else {
+                  
+                  if (dt[i] == gridcolor) {
+                    dt[i] = 0;
+                  } else {
+                    dt[i] *= decay;                  
+                  }
+                  if (dt[i+1] == 0 || dt[i+1] == gridcolor) {
+                    dt[i+1] = value;
+                  } else {
+                    dt[i+1] = Math.max(dt[i+1]*decay, 0);                
+                  }
+                  dt[i+2] = 0;
+                  
+                }
+                
               
-              } else {
-              
-                dt[i] = 255;
-                dt[i+1] = 0;
-                dt[i+2] = 0;
+              } else {  //WRITES
+                
+                if (hw > 2 && x > -2 && x < 2 && y > -2 && y < 2) {
+
+                  dt[i] = 0;
+                  dt[i+1] = 0;
+                  dt[i+2] = 0;                  
+                  
+                } else {
+                
+                  if (dt[i] == 0)  {
+                    dt[i] = value;
+                  } else {                  
+                    dt[i] = Math.max(dt[i]*decay, 0);
+                  }
+                  // if (dt[i+1] == gridcolor) {
+                  //   dt[i+1] = 0;
+                  // } else {
+                  //  dt[i+1] *= decay;                  
+                  // }
+                  dt[i+2] = 0;
+                
+                }
               
               }
               
