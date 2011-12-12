@@ -11,7 +11,7 @@ HERE=$(dirname $0)
 SERVER=$HERE/backend/server
 CURL=/usr/bin/curl
 
-killall server
+#killall server
 
 RESPONSE=`$CURL localhost:8083/ping 2>/dev/null`
 if [ "$RESPONSE" != "pong" ];
