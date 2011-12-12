@@ -563,7 +563,7 @@
       __vS.addListener("frameslider_change", function(eventname, event, caller) { __db.f_context(event, function(data) {
           $(__div_context).html("");
           $.each(data.stack, function(idx, val) { 
-            $(__div_context).append(idx + ": " + val.file + " " + val.line + "<br/>");
+            $(__div_context).append((data.stack.length-idx) + ": " + val.file + " " + val.line + "<br/>");
           });
         })
       });
