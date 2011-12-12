@@ -122,8 +122,9 @@ $(document).ready(function() {
         .bindContextView("#pv_context")
         .bindControlsView("#pv_controls")
 //        .bindDebugView("#pv_debug")
-        .bindMemScatterView("#pv_memscat")
-        .bindMemDerivView("#pv_memderiv");
+//        .bindMemScatterView("#pv_memscat")
+//        .bindMemDerivView("#pv_memderiv");
+        .bindMemHistoView("#pv_memhisto");
         
   doPoll();
 });
@@ -152,6 +153,7 @@ $(document).ready(function() {
     <div id="right-sidebar">
       <div id="pv_memscat"></div>
       <div id="pv_memderiv"></div>
+      <div id="pv_memhisto"></div>
       <div id="pv_context"></div>
       <div id="pv_bullshit"></div>
       <div id="pv_debug"></div>
