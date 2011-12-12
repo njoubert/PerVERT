@@ -58,6 +58,7 @@
     var __f_context = {};
     var __f_memscatter = {};
     var __f_memderiv = {};
+    var __f_memhisto = {};
         
     var init = function(cont) {
       __pv.log("initting DB");      
@@ -149,6 +150,21 @@
       }
     }
     
+    var f_memhisto = function(frame, cont) {
+      if (__f_memhisto[frame]) {
+        return cont(__f_memhisto[frame]);
+      } else {
+        __ajaxqueue.ajax('/f/context_histo?exec='+__exec+'&frame='+frame, {
+          success: function(data) { 
+            __pv.log("f_memhisto returned: " + data); 
+            __f_memhisto[frame] = data;
+            cont(__f_memhisto[frame]);
+          },
+          error: function() { __pv.log("f_memhisto FAILED!"); },
+         });          
+      }
+    }
+    
     return {
       init: init,
       abort: abort,
@@ -157,6 +173,7 @@
       f_mem_status: f_mem_status,
       f_memscatter: f_memscatter,
       f_memderiv: f_memderiv,
+      f_memhisto: f_memhisto,
     }
   }
   
@@ -288,11 +305,11 @@
     var __div_context = null;
     var __div_memscatter = null;
     var __div_memderiv = null;
+    var __div_memhisto = null;
     var __div_debug = null;
     
     var __vS = null;
     var __db = null;
-    
 
     var data_x_offset = 12;  //on both sides
     var data_y_offset = 12;  //on both sides
@@ -744,6 +761,15 @@
       });
     }
      
+    function create_histo_view() {
+      $(__div_memhisto).css("border", "solid yellow 1px"); 
+      __vS.addListener("frameslider_change", function(eventname, event, caller) { 
+        __db.f_memhisto(event, function(data) {
+          $(__div_memhisto).html("SLIDER CHANGED");
+        });
+      });
+    }
+
     // Public API:  
     var init = function() {
       __toggleBusy(true);
@@ -808,6 +834,12 @@
       return this;
     }
 
+    var bindMemHistoView = function(div_memhisto) {
+      __div_memhisto = div_memhisto;
+      create_histo_view();
+      return this;
+    }
+
     var bindDebugView = function(div_debug) {
       __div_debug = div_debug;
       return this;
@@ -828,6 +860,7 @@
       bindControlsView: bindControlsView,
       bindMemScatterView: bindMemScatterView,
       bindMemDerivView: bindMemDerivView,
+      bindMemHistoView: bindMemHistoView,
       bindDebugView: bindDebugView,
       getInfo: getInfo,
       bindDebugView: bindDebugView
@@ -835,7 +868,6 @@
     construct(obj);
     
     return obj;
-    
   }
   
   pervert.VERSION = '0.0.1';
