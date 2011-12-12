@@ -1,37 +1,19 @@
+#include <cstdlib>
 #include <iostream>
 #include <list>
-
 using namespace std;
 
-struct S
+int main(int argc, char** argv)
 {
-	int x;
-	double y;
-	char c;
-};
+  int size = atoi(argv[1]);
 
-int main()
-{
-	list<int> l1;
-	for ( unsigned int i = 0; i < 1024 * 16; ++i )
-		l1.push_back(i);
+  list<int> xs;
 
-	for ( list<int>::iterator i = l1.begin(), ie = l1.end(); i != ie; ++i )
-		cout << (*i) << endl;
+  for ( unsigned int i = 0; i < size; ++i )
+    xs.push_back(i);
 
-	list<S> l2;
-	for ( unsigned int i = 0; i < 1024 * 16; ++i )
-	{
-		S s;
-		s.x = i;
-		s.y = .2 * i;
-		s.c = 'a' + (i % 26);
-		l2.push_back(s);
-	}
+  for ( list<int>::iterator i = xs.begin(), ie = xs.end(); i != ie; ++i )
+    cout << *i << endl;
 
-	for ( list<S>::iterator i = l2.begin(), ie = l2.end(); i != ie; ++i )
-		cout << (*i).x << " " << (*i).y << " " << (*i).c << endl;
-
-	return 0;
+  return 0;
 }
-		
