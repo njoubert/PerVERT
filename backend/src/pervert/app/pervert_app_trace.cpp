@@ -251,6 +251,10 @@ void Trace::parseContext(const string& s)
       context.push_back(&locations_[0]);
   }
 
+  // Remove leading UNKNOWNS from stack
+  while ( *(context.back()->file) == "UNKNOWN" )
+    context.pop_back();
+
   contexts_[s] = context;
 }
 
