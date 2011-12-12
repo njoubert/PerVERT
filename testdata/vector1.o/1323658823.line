@@ -1,0 +1,381 @@
+
+./vector1.o:     file format elf64-x86-64
+
+Decoded dump of debug contents of section .debug_line:
+
+CU: /usr/include/c++/4.6/new:
+File name                            Line number    Starting address
+new                                          103            0x400c89
+
+new                                          103            0x400c95
+
+./vector1.cc:[++]
+vector1.cc                                     7            0x400b54
+vector1.cc                                     8            0x400b64
+vector1.cc                                    10            0x400b7a
+vector1.cc                                    12            0x400b86
+vector1.cc                                    13            0x400b8f
+vector1.cc                                    12            0x400ba8
+UNKNOWN: length 2
+vector1.cc                                    12            0x400bac
+vector1.cc                                    15            0x400bb9
+vector1.cc                                    16            0x400bc2
+vector1.cc                                    15            0x400bef
+UNKNOWN: length 2
+vector1.cc                                    15            0x400bf3
+vector1.cc                                    18            0x400c00
+vector1.cc                                    10            0x400c05
+vector1.cc                                    19            0x400c13
+vector1.cc                                    10            0x400c1d
+vector1.cc                                    19            0x400c34
+vector1.cc                                    19            0x400c42
+UNKNOWN: length 2
+vector1.cc                                    19            0x400c48
+
+/usr/include/c++/4.6/iostream:
+iostream                                      75            0x400c51
+
+./vector1.cc:[++]
+vector1.cc                                    19            0x400c72
+vector1.cc                                    19            0x400c74
+vector1.cc                                    19            0x400c78
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 217            0x400c9c
+
+stl_vector.h                                 218            0x400ca8
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 349            0x400cb6
+
+stl_vector.h                                 350            0x400cc3
+stl_vector.h                                 351            0x400cec
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 826            0x400d1a
+
+stl_vector.h                                 828            0x400d2a
+stl_vector.h                                 830            0x400d3f
+stl_vector.h                                 831            0x400d5a
+stl_vector.h                                 834            0x400d70
+stl_vector.h                                 835            0x400d92
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 695            0x400d94
+
+stl_vector.h                                 696            0x400da0
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                  75            0x400db4
+
+stl_vector.h                                  75            0x400dc0
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 106            0x400dce
+
+stl_vector.h                                 107            0x400dda
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 141            0x400de8
+
+stl_vector.h                                 142            0x400df5
+stl_vector.h                                 143            0x400e2d
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                  95            0x400e5a
+
+stl_vector.h                                  96            0x400e62
+
+/usr/include/c++/4.6/bits/stl_construct.h:
+stl_construct.h                              150            0x400e68
+
+stl_construct.h                              153            0x400e7c
+stl_construct.h                              154            0x400e8f
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                              107            0x400e92
+
+new_allocator.h                              108            0x400ea6
+UNKNOWN: length 2
+new_allocator.h                              108            0x400ebc
+new_allocator.h                              108            0x400ec4
+
+/usr/include/c++/4.6/bits/vector.tcc:
+vector.tcc                                   297            0x400ec6
+
+vector.tcc                                   301            0x400edd
+vector.tcc                                   303            0x400ef6
+vector.tcc                                   306            0x400f19
+vector.tcc                                   308            0x400f2d
+vector.tcc                                   310            0x400f36
+vector.tcc                                   314            0x400f6b
+vector.tcc                                   370            0x400f7c
+vector.tcc                                   322            0x400f81
+vector.tcc                                   323            0x400f9b
+vector.tcc                                   324            0x400fc2
+vector.tcc                                   325            0x400fd9
+vector.tcc                                   332            0x400fe1
+vector.tcc                                   338            0x401003
+vector.tcc                                   340            0x40100b
+vector.tcc                                   344            0x401043
+vector.tcc                                   346            0x401048
+UNKNOWN: length 2
+vector.tcc                                   346            0x401080
+UNKNOWN: length 2
+vector.tcc                                   361            0x401084
+UNKNOWN: length 2
+vector.tcc                                   363            0x4010ad
+UNKNOWN: length 2
+vector.tcc                                   366            0x4010e5
+UNKNOWN: length 2
+vector.tcc                                   367            0x4010f0
+UNKNOWN: length 2
+vector.tcc                                   368            0x4010fc
+vector.tcc                                   352            0x40111b
+vector.tcc                                   354            0x401133
+vector.tcc                                   355            0x40113a
+vector.tcc                                   357            0x40115a
+vector.tcc                                   358            0x40117c
+vector.tcc                                   359            0x401193
+vector.tcc                                   370            0x401198
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 481            0x4011a2
+
+stl_vector.h                                 482            0x4011ae
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                  82            0x4011cc
+
+stl_vector.h                                  83            0x4011d8
+stl_vector.h                                  84            0x401207
+
+/usr/include/c++/4.6/bits/allocator.h:
+allocator.h                                  115            0x40120a
+
+allocator.h                                  115            0x401216
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 153            0x401224
+
+stl_vector.h                                 155            0x401238
+stl_vector.h                                 156            0x40123f
+stl_vector.h                                 157            0x401256
+
+/usr/include/c++/4.6/bits/stl_construct.h:
+stl_construct.h                              123            0x401258
+
+stl_construct.h                              127            0x401268
+stl_construct.h                              129            0x40127b
+
+/usr/include/c++/4.6/bits/stl_iterator.h:
+stl_iterator.h                               784            0x40127e
+
+stl_iterator.h                               785            0x401286
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               613            0x40128c
+
+stl_algobase.h                               625            0x4012a1
+stl_algobase.h                               626            0x4012cb
+
+/usr/include/c++/4.6/bits/stl_iterator.h:
+stl_iterator.h                               732            0x4012d2
+
+stl_iterator.h                               733            0x4012da
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                1239            0x4012e4
+
+stl_vector.h                                1241            0x4012f9
+stl_vector.h                                1242            0x401328
+stl_vector.h                                1244            0x401334
+stl_vector.h                                1245            0x401370
+UNKNOWN: length 2
+stl_vector.h                                1245            0x401382
+UNKNOWN: length 2
+stl_vector.h                                1245            0x401394
+UNKNOWN: length 2
+stl_vector.h                                1245            0x4013a2
+UNKNOWN: length 2
+stl_vector.h                                1246            0x4013a6
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 463            0x4013ae
+
+stl_vector.h                                 464            0x4013ba
+
+/usr/include/c++/4.6/bits/stl_iterator.h:
+stl_iterator.h                               890            0x4013d3
+
+stl_iterator.h                               892            0x4013e4
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 149            0x40141a
+
+stl_vector.h                                 150            0x40142a
+UNKNOWN: length 2
+stl_vector.h                                 150            0x401431
+UNKNOWN: length 2
+stl_vector.h                                 150            0x40144b
+UNKNOWN: length 2
+stl_vector.h                                 150            0x401450
+
+/usr/include/c++/4.6/bits/stl_uninitialized.h:
+stl_uninitialized.h                          264            0x401452
+
+stl_uninitialized.h                          269            0x40146a
+stl_uninitialized.h                          270            0x401482
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                              118            0x401484
+
+new_allocator.h                              118            0x401490
+
+/usr/include/c++/4.6/bits/stl_iterator.h:
+stl_iterator.h                               720            0x401492
+
+stl_iterator.h                               720            0x40149e
+
+/usr/include/c++/4.6/bits/allocator.h:
+allocator.h                                  107            0x4014ae
+
+allocator.h                                  107            0x4014ba
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               76            0x4014c8
+
+new_allocator.h                               76            0x4014d0
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               97            0x4014d2
+
+new_allocator.h                               98            0x4014e6
+
+/usr/include/c++/4.6/bits/stl_construct.h:
+stl_construct.h                              113            0x4014f4
+
+stl_construct.h                              113            0x401500
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               282            0x401502
+
+stl_algobase.h                               283            0x40150e
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               586            0x40151c
+
+stl_algobase.h                               590            0x401533
+stl_algobase.h                               591            0x40156b
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 570            0x401574
+
+stl_vector.h                                 571            0x40157c
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                 575            0x40159e
+
+stl_vector.h                                 576            0x4015aa
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               210            0x4015c0
+
+stl_algobase.h                               215            0x4015cc
+stl_algobase.h                               216            0x4015df
+stl_algobase.h                               217            0x4015e5
+stl_algobase.h                               218            0x4015e9
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               87            0x4015ec
+
+new_allocator.h                               89            0x401600
+new_allocator.h                               90            0x401617
+new_allocator.h                               92            0x40161c
+new_allocator.h                               93            0x40162c
+
+/usr/include/c++/4.6/bits/stl_uninitialized.h:
+stl_uninitialized.h                          257            0x40162e
+
+stl_uninitialized.h                          259            0x401646
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               69            0x401660
+
+new_allocator.h                               69            0x401668
+
+/usr/include/c++/4.6/bits/stl_iterator_base_types.h:
+stl_iterator_base_types.h                    213            0x40166a
+
+stl_iterator_base_types.h                    214            0x401672
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               271            0x401678
+
+stl_algobase.h                               272            0x401684
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               568            0x401692
+
+stl_algobase.h                               576            0x4016a6
+stl_algobase.h                               581            0x4016aa
+stl_algobase.h                               582            0x4016c1
+
+/usr/include/c++/4.6/bits/stl_vector.h:
+stl_vector.h                                  99            0x4016c4
+
+stl_vector.h                                 100            0x4016cc
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                              101            0x4016d2
+
+new_allocator.h                              102            0x4016da
+
+/usr/include/c++/4.6/bits/stl_uninitialized.h:
+stl_uninitialized.h                          109            0x4016e6
+
+stl_uninitialized.h                          119            0x4016fa
+stl_uninitialized.h                          120            0x401711
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               557            0x401713
+
+stl_algobase.h                               559            0x401727
+stl_algobase.h                               560            0x401740
+stl_algobase.h                               561            0x401747
+stl_algobase.h                               562            0x401771
+stl_algobase.h                               563            0x401780
+
+/usr/include/c++/4.6/bits/stl_uninitialized.h:
+stl_uninitialized.h                           93            0x401782
+
+stl_uninitialized.h                           95            0x401796
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               444            0x4017af
+
+stl_algobase.h                               454            0x4017c4
+stl_algobase.h                               455            0x4017ee
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               418            0x4017f5
+
+stl_algobase.h                               422            0x40180c
+stl_algobase.h                               423            0x401844
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               373            0x40184d
+
+stl_algobase.h                               381            0x401861
+stl_algobase.h                               384            0x401865
+stl_algobase.h                               385            0x40187c
+
+/usr/include/c++/4.6/bits/stl_algobase.h:
+stl_algobase.h                               362            0x40187e
+
+stl_algobase.h                               364            0x401892
+stl_algobase.h                               365            0x4018ab
+stl_algobase.h                               366            0x4018b2
+stl_algobase.h                               367            0x4018d1
+stl_algobase.h                               368            0x4018dd
+

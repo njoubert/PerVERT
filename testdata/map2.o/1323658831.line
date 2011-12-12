@@ -1,0 +1,507 @@
+
+./map2.o:     file format elf64-x86-64
+
+Decoded dump of debug contents of section .debug_line:
+
+CU: /usr/include/c++/4.6/new:
+File name                            Line number    Starting address
+new                                          103            0x400f30
+
+new                                          103            0x400f3c
+
+/usr/include/c++/4.6/bits/stl_map.h:
+stl_map.h                                     88            0x400f42
+
+stl_map.h                                     88            0x400f4e
+
+./map2.cc:[++]
+map2.cc                                       14            0x400cd4
+
+map2.cc                                       15            0x400ce7
+map2.cc                                       17            0x400cfd
+map2.cc                                       19            0x400d09
+map2.cc                                       21            0x400d15
+map2.cc                                       22            0x400d33
+UNKNOWN: length 2
+map2.cc                                       22            0x400d4c
+UNKNOWN: length 2
+map2.cc                                       23            0x400d84
+UNKNOWN: length 2
+map2.cc                                       19            0x400dc0
+
+map2.cc                                       26            0x400dd5
+map2.cc                                       27            0x400de1
+UNKNOWN: length 2
+map2.cc                                       27            0x400e1a
+map2.cc                                       26            0x400e8f
+UNKNOWN: length 2
+map2.cc                                       26            0x400e93
+map2.cc                                       29            0x400ea4
+map2.cc                                       17            0x400ea9
+map2.cc                                       30            0x400eb7
+map2.cc                                       17            0x400ec4
+map2.cc                                       30            0x400edb
+map2.cc                                       30            0x400ee9
+UNKNOWN: length 2
+map2.cc                                       30            0x400eef
+
+/usr/include/c++/4.6/iostream:
+iostream                                      75            0x400ef8
+
+./map2.cc:[++]
+map2.cc                                       30            0x400f19
+map2.cc                                       30            0x400f1b
+map2.cc                                       30            0x400f1f
+
+/usr/include/c++/4.6/bits/stl_map.h:
+stl_map.h                                    152            0x400f5c
+
+stl_map.h                                    153            0x400f68
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   437            0x400f76
+
+stl_tree.h                                   437            0x400f82
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   638            0x400f90
+
+stl_tree.h                                   639            0x400f9d
+UNKNOWN: length 2
+stl_tree.h                                   639            0x400fbb
+stl_tree.h                                   639            0x400fd1
+
+/usr/include/c++/4.6/bits/stl_map.h:
+stl_map.h                                    445            0x400fe8
+
+stl_map.h                                    450            0x400ff9
+stl_map.h                                    452            0x401010
+UNKNOWN: length 2
+stl_map.h                                    452            0x401037
+UNKNOWN: length 2
+stl_map.h                                    452            0x40106c
+UNKNOWN: length 2
+stl_map.h                                    452            0x401073
+UNKNOWN: length 2
+stl_map.h                                    452            0x401078
+stl_map.h                                    453            0x40107c
+stl_map.h                                    454            0x4010c2
+stl_map.h                                    455            0x4010d2
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   616            0x4010da
+
+stl_tree.h                                   616            0x4010e6
+
+/usr/include/c++/4.6/bits/allocator.h:
+allocator.h                                  115            0x4010f4
+
+allocator.h                                  115            0x401100
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                  1058            0x40110e
+
+stl_tree.h                                  1062            0x40111e
+stl_tree.h                                  1064            0x401120
+stl_tree.h                                  1065            0x40113e
+stl_tree.h                                  1066            0x40114e
+stl_tree.h                                  1067            0x401161
+UNKNOWN: length 2
+stl_tree.h                                  1062            0x401169
+stl_tree.h                                  1069            0x401175
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   492            0x401178
+
+stl_tree.h                                   493            0x401180
+
+/usr/include/c++/4.6/bits/stl_map.h:
+stl_map.h                                    778            0x40118a
+
+stl_map.h                                    779            0x40119a
+
+/usr/include/c++/4.6/bits/stl_map.h:
+stl_map.h                                    712            0x4011b0
+
+stl_map.h                                    713            0x4011bd
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   177            0x4011d2
+
+stl_tree.h                                   178            0x4011da
+
+/usr/include/c++/4.6/bits/stl_function.h:
+stl_function.h                               235            0x4011e8
+
+stl_function.h                               236            0x4011f8
+
+/usr/include/c++/4.6/bits/stl_map.h:
+stl_map.h                                    327            0x40120c
+
+stl_map.h                                    328            0x401218
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   216            0x401226
+
+stl_tree.h                                   217            0x401232
+
+/usr/include/c++/4.6/bits/stl_pair.h:
+stl_pair.h                                   103            0x401248
+
+stl_pair.h                                   104            0x401258
+
+/usr/include/c++/4.6/bits/stl_map.h:
+stl_map.h                                    569            0x401286
+
+stl_map.h                                    571            0x40129a
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   443            0x4012c6
+
+stl_tree.h                                   445            0x4012d2
+stl_tree.h                                   446            0x401319
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               76            0x401328
+
+new_allocator.h                               76            0x401330
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   527            0x401332
+
+stl_tree.h                                   528            0x40133a
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   519            0x401344
+
+stl_tree.h                                   520            0x40134c
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   392            0x401356
+
+stl_tree.h                                   394            0x401367
+stl_tree.h                                   395            0x4013a8
+stl_tree.h                                   396            0x4013bb
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   817            0x4013c2
+
+stl_tree.h                                   818            0x4013d3
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   646            0x40140e
+
+stl_tree.h                                   647            0x401416
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   664            0x401418
+
+stl_tree.h                                   665            0x401424
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   249            0x401442
+
+stl_tree.h                                   250            0x40144e
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                  1315            0x40145e
+
+stl_tree.h                                  1323            0x401473
+stl_tree.h                                  1325            0x401491
+UNKNOWN: length 2
+stl_tree.h                                  1325            0x4014a2
+UNKNOWN: length 2
+stl_tree.h                                  1325            0x4014e8
+UNKNOWN: length 2
+stl_tree.h                                  1325            0x4014ef
+UNKNOWN: length 2
+stl_tree.h                                  1325            0x4014f4
+stl_tree.h                                  1328            0x4014f8
+stl_tree.h                                  1330            0x401521
+stl_tree.h                                  1332            0x401559
+stl_tree.h                                  1336            0x401598
+stl_tree.h                                  1337            0x4015a0
+stl_tree.h                                  1339            0x4015bd
+stl_tree.h                                  1340            0x4015f6
+stl_tree.h                                  1343            0x40163c
+stl_tree.h                                  1345            0x401652
+stl_tree.h                                  1349            0x401670
+stl_tree.h                                  1352            0x40168d
+stl_tree.h                                  1354            0x4016c5
+stl_tree.h                                  1358            0x401704
+stl_tree.h                                  1359            0x40170c
+stl_tree.h                                  1361            0x401729
+stl_tree.h                                  1362            0x401752
+stl_tree.h                                  1365            0x401798
+stl_tree.h                                  1367            0x4017ae
+stl_tree.h                                  1370            0x4017c9
+stl_tree.h                                  1373            0x4017e3
+stl_tree.h                                  1377            0x401818
+stl_tree.h                                  1378            0x401824
+
+/usr/include/c++/4.6/bits/allocator.h:
+allocator.h                                  107            0x40182c
+
+allocator.h                                  107            0x401838
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   455            0x401846
+
+stl_tree.h                                   457            0x40184e
+stl_tree.h                                   458            0x401859
+stl_tree.h                                   459            0x401865
+stl_tree.h                                   460            0x401875
+stl_tree.h                                   461            0x401885
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   363            0x401888
+
+stl_tree.h                                   364            0x401898
+
+/usr/include/c++/4.6/bits/allocator.h:
+allocator.h                                  115            0x4018bc
+
+allocator.h                                  115            0x4018c8
+
+/usr/include/c++/4.6/bits/move.h:
+move.h                                        43            0x4018d6
+
+move.h                                        46            0x4018de
+move.h                                        47            0x4018e2
+
+/usr/include/c++/4.6/bits/stl_pair.h:
+stl_pair.h                                    87            0x4018e4
+
+stl_pair.h                                    87            0x4018ec
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                              118            0x4018ee
+
+new_allocator.h                              118            0x4018fe
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   372            0x40190c
+
+stl_tree.h                                   373            0x40191c
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   503            0x401936
+
+stl_tree.h                                   504            0x40193e
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                  1075            0x401948
+
+stl_tree.h                                  1079            0x401960
+stl_tree.h                                  1080            0x401962
+stl_tree.h                                  1081            0x40198b
+stl_tree.h                                  1083            0x4019a5
+UNKNOWN: length 2
+stl_tree.h                                  1079            0x4019b5
+stl_tree.h                                  1084            0x4019c1
+stl_tree.h                                  1085            0x4019d8
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   173            0x4019da
+
+stl_tree.h                                   174            0x4019e6
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   484            0x4019f4
+
+stl_tree.h                                   485            0x4019fc
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   539            0x401a06
+
+stl_tree.h                                   540            0x401a12
+
+/usr/include/c++/4.6/bits/stl_function.h:
+stl_function.h                               494            0x401a32
+
+stl_function.h                               495            0x401a3e
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   695            0x401a44
+
+stl_tree.h                                   696            0x401a4c
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   950            0x401a56
+
+stl_tree.h                                   959            0x401a6f
+UNKNOWN: length 2
+stl_tree.h                                   959            0x401a76
+UNKNOWN: length 2
+stl_tree.h                                   959            0x401a88
+UNKNOWN: length 2
+stl_tree.h                                   959            0x401ac3
+UNKNOWN: length 2
+stl_tree.h                                   959            0x401aca
+UNKNOWN: length 2
+stl_tree.h                                   959            0x401acf
+UNKNOWN: length 2
+stl_tree.h                                   961            0x401ad2
+UNKNOWN: length 2
+stl_tree.h                                   963            0x401ae9
+UNKNOWN: length 2
+stl_tree.h                                   966            0x401b04
+UNKNOWN: length 2
+stl_tree.h                                   967            0x401b18
+UNKNOWN: length 2
+stl_tree.h                                   968            0x401b2f
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                  1254            0x401b36
+
+stl_tree.h                                  1261            0x401b50
+stl_tree.h                                  1262            0x401b63
+stl_tree.h                                  1263            0x401b76
+stl_tree.h                                  1264            0x401b7a
+stl_tree.h                                  1266            0x401b7c
+stl_tree.h                                  1267            0x401b84
+stl_tree.h                                  1268            0x401bc4
+UNKNOWN: length 2
+stl_tree.h                                  1268            0x401bca
+UNKNOWN: length 2
+stl_tree.h                                  1268            0x401bd8
+UNKNOWN: length 2
+stl_tree.h                                  1268            0x401be4
+UNKNOWN: length 2
+stl_tree.h                                  1264            0x401be8
+stl_tree.h                                  1270            0x401bf4
+stl_tree.h                                  1271            0x401c07
+stl_tree.h                                  1273            0x401c11
+stl_tree.h                                  1275            0x401c3b
+stl_tree.h                                  1277            0x401c96
+stl_tree.h                                  1279            0x401ca2
+stl_tree.h                                  1281            0x401ce3
+stl_tree.h                                  1282            0x401d3b
+stl_tree.h                                  1283            0x401d6d
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   476            0x401d78
+
+stl_tree.h                                   477            0x401d80
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   282            0x401d8a
+
+stl_tree.h                                   284            0x401d96
+stl_tree.h                                   285            0x401dac
+stl_tree.h                                   286            0x401db0
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   531            0x401db2
+
+stl_tree.h                                   532            0x401dba
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   267            0x401dc4
+
+stl_tree.h                                   269            0x401dd0
+stl_tree.h                                   270            0x401de6
+stl_tree.h                                   271            0x401dea
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   253            0x401dec
+
+stl_tree.h                                   255            0x401df8
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               69            0x401e14
+
+new_allocator.h                               69            0x401e1c
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   359            0x401e1e
+
+stl_tree.h                                   360            0x401e26
+
+/usr/include/c++/4.6/bits/allocator.h:
+allocator.h                                  113            0x401e2c
+
+allocator.h                                  113            0x401e3c
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               76            0x401e4a
+
+new_allocator.h                               76            0x401e52
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               97            0x401e54
+
+new_allocator.h                               98            0x401e68
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   515            0x401e76
+
+stl_tree.h                                   516            0x401e82
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   535            0x401ea2
+
+stl_tree.h                                   536            0x401eaa
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   377            0x401eb4
+
+stl_tree.h                                   379            0x401ec5
+stl_tree.h                                   381            0x401ed5
+stl_tree.h                                   388            0x401f1a
+stl_tree.h                                   389            0x401f1e
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   650            0x401f26
+
+stl_tree.h                                   653            0x401f32
+stl_tree.h                                   654            0x401f4d
+
+/usr/include/c++/4.6/bits/stl_pair.h:
+stl_pair.h                                   103            0x401f50
+
+stl_pair.h                                   104            0x401f60
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   201            0x401f7e
+
+stl_tree.h                                   203            0x401f8a
+stl_tree.h                                   204            0x401fa0
+stl_tree.h                                   205            0x401fa4
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               69            0x401fa6
+
+new_allocator.h                               69            0x401fae
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   511            0x401fb0
+
+stl_tree.h                                   512            0x401fb8
+
+/usr/include/c++/4.6/bits/stl_tree.h:
+stl_tree.h                                   368            0x401fc2
+
+stl_tree.h                                   369            0x401fce
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                              107            0x401fe6
+
+new_allocator.h                              108            0x401ffa
+UNKNOWN: length 2
+new_allocator.h                              108            0x402010
+new_allocator.h                              108            0x402032
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               87            0x402034
+
+new_allocator.h                               89            0x402048
+new_allocator.h                               90            0x40205f
+new_allocator.h                               92            0x402064
+new_allocator.h                               93            0x402074
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                              101            0x402076
+
+new_allocator.h                              102            0x40207e
+

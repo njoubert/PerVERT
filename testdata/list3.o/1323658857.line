@@ -1,0 +1,268 @@
+
+./list3.o:     file format elf64-x86-64
+
+Decoded dump of debug contents of section .debug_line:
+
+CU: /usr/include/c++/4.6/new:
+File name                            Line number    Starting address
+new                                          103            0x400e2c
+
+new                                          103            0x400e38
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   429            0x400e3e
+
+stl_list.h                                   429            0x400e4a
+
+./list3.cc:[++]
+list3.cc                                      14            0x400b84
+
+list3.cc                                      15            0x400b94
+list3.cc                                      17            0x400baa
+list3.cc                                      19            0x400bb6
+list3.cc                                      21            0x400bc2
+list3.cc                                      22            0x400be3
+list3.cc                                      23            0x400bec
+UNKNOWN: length 2
+list3.cc                                      23            0x400bf8
+UNKNOWN: length 2
+list3.cc                                      24            0x400c25
+UNKNOWN: length 2
+list3.cc                                      26            0x400c49
+list3.cc                                      19            0x400c5c
+UNKNOWN: length 2
+list3.cc                                      19            0x400c60
+list3.cc                                      29            0x400c71
+UNKNOWN: length 2
+list3.cc                                      29            0x400c8d
+list3.cc                                      30            0x400c96
+UNKNOWN: length 2
+list3.cc                                      30            0x400cef
+list3.cc                                      29            0x400d20
+UNKNOWN: length 2
+list3.cc                                      29            0x400d2c
+list3.cc                                      32            0x400d47
+UNKNOWN: length 2
+list3.cc                                      32            0x400d63
+UNKNOWN: length 2
+list3.cc                                      33            0x400d69
+UNKNOWN: length 2
+list3.cc                                      32            0x400d80
+UNKNOWN: length 2
+list3.cc                                      32            0x400d8c
+list3.cc                                      35            0x400da3
+list3.cc                                      17            0x400da8
+list3.cc                                      36            0x400db6
+list3.cc                                      17            0x400dc0
+list3.cc                                      36            0x400dd7
+list3.cc                                      36            0x400de5
+UNKNOWN: length 2
+list3.cc                                      36            0x400deb
+
+/usr/include/c++/4.6/iostream:
+iostream                                      75            0x400df4
+
+./list3.cc:[++]
+list3.cc                                      36            0x400e15
+list3.cc                                      36            0x400e17
+list3.cc                                      36            0x400e1b
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   512            0x400e58
+
+stl_list.h                                   513            0x400e64
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   309            0x400e72
+
+stl_list.h                                   309            0x400e7e
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   371            0x400e8c
+
+stl_list.h                                   372            0x400e99
+UNKNOWN: length 2
+stl_list.h                                   372            0x400ea5
+stl_list.h                                   372            0x400ebb
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   987            0x400ed2
+
+stl_list.h                                   988            0x400ee2
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   730            0x400f06
+
+stl_list.h                                   731            0x400f12
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   748            0x400f2e
+
+stl_list.h                                   749            0x400f3a
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   186            0x400f54
+
+stl_list.h                                   187            0x400f60
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   152            0x400f76
+
+stl_list.h                                   154            0x400f7e
+stl_list.h                                   155            0x400f8f
+stl_list.h                                   156            0x400f93
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   144            0x400f96
+
+stl_list.h                                   145            0x400f9e
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   352            0x400fac
+
+stl_list.h                                   353            0x400fb8
+stl_list.h                                   354            0x400fc4
+
+/usr/include/c++/4.6/bits/allocator.h:
+allocator.h                                  115            0x400fd2
+
+allocator.h                                  115            0x400fde
+
+/usr/include/c++/4.6/bits/list.tcc:
+list.tcc                                      66            0x400fec
+
+list.tcc                                      70            0x400ff9
+list.tcc                                      71            0x401004
+list.tcc                                      73            0x401006
+list.tcc                                      74            0x40100e
+list.tcc                                      78            0x401019
+list.tcc                                      80            0x40105a
+UNKNOWN: length 2
+list.tcc                                      71            0x40106d
+list.tcc                                      82            0x40107c
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                  1513            0x401084
+
+stl_list.h                                  1515            0x401098
+stl_list.h                                  1516            0x4010af
+stl_list.h                                  1517            0x4010c2
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   139            0x4010c4
+
+stl_list.h                                   140            0x4010d0
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   314            0x4010de
+
+stl_list.h                                   315            0x4010ea
+stl_list.h                                   316            0x40110d
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   378            0x401110
+
+stl_list.h                                   380            0x401118
+stl_list.h                                   381            0x401123
+stl_list.h                                   382            0x40112f
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               76            0x401132
+
+new_allocator.h                               76            0x40113a
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   345            0x40113c
+
+stl_list.h                                   346            0x40114c
+
+/usr/include/c++/4.6/bits/allocator.h:
+allocator.h                                  115            0x401170
+
+allocator.h                                  115            0x40117c
+
+/usr/include/c++/4.6/bits/move.h:
+move.h                                        43            0x40118a
+
+move.h                                        46            0x401192
+move.h                                        47            0x401196
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                              118            0x401198
+
+new_allocator.h                              118            0x4011a4
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   330            0x4011a6
+
+stl_list.h                                   331            0x4011b6
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   471            0x4011d0
+
+stl_list.h                                   473            0x4011e1
+stl_list.h                                   476            0x4011f1
+stl_list.h                                   484            0x401236
+stl_list.h                                   485            0x40123a
+
+/usr/include/c++/4.6/bits/allocator.h:
+allocator.h                                  107            0x401242
+
+allocator.h                                  107            0x40124e
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   341            0x40125c
+
+stl_list.h                                   342            0x401264
+
+/usr/include/c++/4.6/bits/allocator.h:
+allocator.h                                  113            0x40126a
+
+allocator.h                                  113            0x40127a
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               76            0x401288
+
+new_allocator.h                               76            0x401290
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               97            0x401292
+
+new_allocator.h                               98            0x4012a6
+
+/usr/include/c++/4.6/bits/stl_list.h:
+stl_list.h                                   326            0x4012b4
+
+stl_list.h                                   327            0x4012c0
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                              107            0x4012d8
+
+new_allocator.h                              108            0x4012ec
+UNKNOWN: length 2
+new_allocator.h                              108            0x401302
+new_allocator.h                              108            0x40130c
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               69            0x40130e
+
+new_allocator.h                               69            0x401316
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               69            0x401318
+
+new_allocator.h                               69            0x401320
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                               87            0x401322
+
+new_allocator.h                               89            0x401336
+new_allocator.h                               90            0x40134d
+new_allocator.h                               92            0x401352
+new_allocator.h                               93            0x40136b
+
+/usr/include/c++/4.6/ext/new_allocator.h:
+new_allocator.h                              101            0x40136e
+
+new_allocator.h                              102            0x401376
+

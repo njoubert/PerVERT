@@ -1,0 +1,58 @@
+
+./array3.o:     file format elf64-x86-64
+
+Decoded dump of debug contents of section .debug_line:
+
+CU: /usr/include/c++/4.6/array3.cc:
+File name                            Line number    Starting address
+array3.cc                                     13            0x400a34
+
+array3.cc                                     14            0x400a44
+array3.cc                                     16            0x400a5a
+array3.cc                                     18            0x400a6f
+UNKNOWN: length 2
+array3.cc                                     20            0x400a7b
+UNKNOWN: length 2
+array3.cc                                     21            0x400a9c
+UNKNOWN: length 2
+array3.cc                                     22            0x400aa5
+UNKNOWN: length 2
+array3.cc                                     23            0x400ade
+UNKNOWN: length 2
+array3.cc                                     25            0x400b04
+UNKNOWN: length 2
+array3.cc                                     18            0x400b16
+UNKNOWN: length 2
+array3.cc                                     18            0x400b1a
+array3.cc                                     28            0x400b2b
+UNKNOWN: length 2
+array3.cc                                     29            0x400b37
+UNKNOWN: length 2
+array3.cc                                     28            0x400bbe
+UNKNOWN: length 2
+array3.cc                                     28            0x400bc2
+array3.cc                                     31            0x400bd3
+UNKNOWN: length 2
+array3.cc                                     32            0x400bdc
+UNKNOWN: length 2
+array3.cc                                     31            0x400bf2
+UNKNOWN: length 2
+array3.cc                                     31            0x400bf6
+array3.cc                                     34            0x400c03
+UNKNOWN: length 2
+array3.cc                                     34            0x400c0a
+array3.cc                                     36            0x400c16
+array3.cc                                     37            0x400c1b
+array3.cc                                     37            0x400c22
+array3.cc                                     37            0x400c30
+UNKNOWN: length 2
+array3.cc                                     37            0x400c36
+
+/usr/include/c++/4.6/iostream:
+iostream                                      75            0x400c3f
+
+./array3.cc:[++]
+array3.cc                                     37            0x400c60
+array3.cc                                     37            0x400c62
+array3.cc                                     37            0x400c66
+

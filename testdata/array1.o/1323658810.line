@@ -1,0 +1,42 @@
+
+./array1.o:     file format elf64-x86-64
+
+Decoded dump of debug contents of section .debug_line:
+
+CU: /usr/include/c++/4.6/array1.cc:
+File name                            Line number    Starting address
+array1.cc                                      6            0x400864
+array1.cc                                      7            0x400873
+array1.cc                                      9            0x400889
+array1.cc                                     11            0x40089e
+UNKNOWN: length 2
+array1.cc                                     12            0x4008a7
+UNKNOWN: length 2
+array1.cc                                     11            0x4008b7
+UNKNOWN: length 2
+array1.cc                                     11            0x4008bb
+array1.cc                                     14            0x4008c8
+UNKNOWN: length 2
+array1.cc                                     15            0x4008d1
+UNKNOWN: length 2
+array1.cc                                     14            0x4008f7
+UNKNOWN: length 2
+array1.cc                                     14            0x4008fb
+array1.cc                                     17            0x400908
+UNKNOWN: length 2
+array1.cc                                     17            0x40090f
+array1.cc                                     19            0x40091b
+array1.cc                                     20            0x400920
+array1.cc                                     20            0x400922
+array1.cc                                     20            0x400930
+UNKNOWN: length 2
+array1.cc                                     20            0x400936
+
+/usr/include/c++/4.6/iostream:
+iostream                                      75            0x40093f
+
+./array1.cc:[++]
+array1.cc                                     20            0x400960
+array1.cc                                     20            0x400962
+array1.cc                                     20            0x400966
+

@@ -1,0 +1,48 @@
+
+./array2.o:     file format elf64-x86-64
+
+Decoded dump of debug contents of section .debug_line:
+
+CU: /usr/include/c++/4.6/array2.cc:
+File name                            Line number    Starting address
+array2.cc                                     13            0x400994
+
+array2.cc                                     14            0x4009a4
+array2.cc                                     16            0x4009ba
+array2.cc                                     18            0x4009d9
+UNKNOWN: length 2
+array2.cc                                     20            0x4009e5
+UNKNOWN: length 2
+array2.cc                                     21            0x4009fe
+UNKNOWN: length 2
+array2.cc                                     22            0x400a4a
+UNKNOWN: length 2
+array2.cc                                     18            0x400a81
+
+UNKNOWN: length 2
+array2.cc                                     18            0x400a85
+array2.cc                                     25            0x400a96
+UNKNOWN: length 2
+array2.cc                                     26            0x400aa2
+UNKNOWN: length 2
+array2.cc                                     25            0x400b3b
+UNKNOWN: length 2
+array2.cc                                     25            0x400b3f
+array2.cc                                     28            0x400b50
+UNKNOWN: length 2
+array2.cc                                     28            0x400b57
+array2.cc                                     30            0x400b63
+array2.cc                                     31            0x400b68
+array2.cc                                     31            0x400b6f
+array2.cc                                     31            0x400b7d
+UNKNOWN: length 2
+array2.cc                                     31            0x400b83
+
+/usr/include/c++/4.6/iostream:
+iostream                                      75            0x400b8c
+
+./array2.cc:[++]
+array2.cc                                     31            0x400bad
+array2.cc                                     31            0x400baf
+array2.cc                                     31            0x400bb3
+

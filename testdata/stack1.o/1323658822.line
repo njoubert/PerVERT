@@ -1,0 +1,60 @@
+
+./stack1.o:     file format elf64-x86-64
+
+Decoded dump of debug contents of section .debug_line:
+
+CU: /usr/include/c++/4.6/stack1.cc:
+File name                            Line number    Starting address
+stack1.cc                                      5            0x400814
+stack1.cc                                      6            0x40081f
+stack1.cc                                      7            0x40082d
+stack1.cc                                      8            0x400836
+stack1.cc                                      9            0x40083f
+stack1.cc                                     11            0x40084b
+stack1.cc                                     12            0x400867
+stack1.cc                                     14            0x400869
+stack1.cc                                     14            0x40086d
+stack1.cc                                     15            0x400879
+stack1.cc                                     15            0x40087d
+stack1.cc                                     16            0x400889
+stack1.cc                                     16            0x40088d
+stack1.cc                                     17            0x400899
+stack1.cc                                     17            0x40089d
+stack1.cc                                     18            0x4008a9
+stack1.cc                                     18            0x4008ad
+stack1.cc                                     19            0x4008b9
+stack1.cc                                     19            0x4008bd
+stack1.cc                                     20            0x4008c9
+stack1.cc                                     20            0x4008cd
+stack1.cc                                     21            0x4008d9
+stack1.cc                                     21            0x4008dd
+stack1.cc                                     22            0x4008e9
+stack1.cc                                     22            0x4008ed
+stack1.cc                                     23            0x4008f9
+stack1.cc                                     23            0x4008fd
+stack1.cc                                     26            0x400909
+stack1.cc                                     27            0x40090d
+stack1.cc                                     28            0x400912
+stack1.cc                                     29            0x400917
+stack1.cc                                     30            0x40091c
+stack1.cc                                     31            0x400921
+stack1.cc                                     32            0x400926
+stack1.cc                                     33            0x40092b
+stack1.cc                                     34            0x400930
+stack1.cc                                     35            0x400935
+stack1.cc                                     36            0x40093a
+stack1.cc                                     38            0x40093f
+stack1.cc                                     39            0x400944
+stack1.cc                                     39            0x400946
+stack1.cc                                     39            0x400954
+UNKNOWN: length 2
+stack1.cc                                     39            0x40095a
+
+/usr/include/c++/4.6/iostream:
+iostream                                      75            0x400963
+
+./stack1.cc:[++]
+stack1.cc                                     39            0x400984
+stack1.cc                                     39            0x400986
+stack1.cc                                     39            0x40098a
+
