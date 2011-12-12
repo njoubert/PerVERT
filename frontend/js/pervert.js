@@ -310,10 +310,12 @@
     
     var __vS = null;
     var __db = null;
-
-    var data_x_offset = 12;  //on both sides
-    var data_y_offset = 12;  //on both sides
-  
+    
+    var data_x_offset = 25;  //on both sides
+    var data_y_offset = 25;  //on both sides
+    
+    var show_zoom = true;
+    
     function construct(obj) {
       __vS = ViewState(obj);
     }
@@ -364,14 +366,16 @@
           ((p.gy*4)*(dataWidth + data_y_offset*2) ));        
       }
       function index_shift(i,x,y) {
-        return i + (x + y*(dataWidth + data_y_offset*2))*4;
+        return i + (x + y*(canvasWidth))*4;
       }
       function index_plus_x(i,x) {
         return i + 4*x;
       }
       function index_plus_y(i,y) {
-        return i + y*(dataWidth + data_y_offset*2)*4;
+        return i + y*(canvasWidth)*4;
       }
+      
+      
     
       var gridcolor = 235;
       /* Draw the Grid */
@@ -432,16 +436,17 @@
       }
       
       /* Draw accesses */
-      for (var idx = data.addr.length - 1; idx >= 0 ; idx--) {
-        var ob = data.addr[idx];
-        var gxgy = addr_gxgy(ob);
-        var index = gxgy_index_tl(gxgy);
+      
+      if (!show_zoom) {
 
+        for (var idx = data.addr.length - 1; idx >= 0 ; idx--) {
+          var ob = data.addr[idx];
+          var gxgy = addr_gxgy(ob);
+          var index = gxgy_index_tl(gxgy);
 
           for (var x = 1; x < 4; x++) {
             for (var y = 1; y < 4; y++) {
-              var i = index_shift(index,x,y);
-            
+              var i = index_shift(index,x,y);            
               if (data.events[idx] == "r") {
                 dt[i] = 0;
                 dt[i+1] = 255;
@@ -452,9 +457,44 @@
                 dt[i+2] = 0;
               }
               dt[i+3] = 255;
-            
             }
           }
+        }
+        
+      } else {
+        
+        function scale_id_to_width(id) {
+          var w = 25 - id;
+          if (w < 2) 
+            w = 1;
+          return w;
+        }
+        
+        for (var idx = data.addr.length - 1; idx >= 0 ; idx--) {
+          var ob = data.addr[idx];
+          var gxgy = addr_gxgy(ob);
+          var index = gxgy_index_center(gxgy);
+          
+          var hw = scale_id_to_width(idx);
+          
+          for (var x = -hw; x <= hw; x++) {
+            for (var y = -hw; y <= hw; y++) {
+              var i = index_shift(index,x,y);            
+              if (data.events[idx] == "r") {
+                dt[i] = 0;
+                dt[i+1] = 255;
+                dt[i+2] = 0;
+              } else {
+                dt[i] = 255;
+                dt[i+1] = 0;
+                dt[i+2] = 0;
+              }
+              dt[i+3] = 255;
+            }
+          }
+        }
+        
+        
         
       }
       
