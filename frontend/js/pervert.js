@@ -39,6 +39,29 @@
     } 
   }
   
+  /* Scaling functions */
+  
+
+  function make_linear_scale(x, m, minclamp) {
+    return function(val) {
+      var r = x + m*val;
+      if (r < minclamp) {
+        r = minclamp;
+      }
+      return Math.floor(r);      
+    }
+  }
+  
+  function make_quadratic_scale(x, m, minclamp) {
+    return function(val) {
+      var r = x + m*(val*val);
+      if (r < minclamp) {
+        r = minclamp;
+      }
+      return Math.floor(r);      
+    }
+  }
+  
   /* 
   * Back-end Cache Helper Module 
   *   This class handles all the server data interaction and caching.
@@ -315,6 +338,8 @@
     var data_y_offset = 25;  //on both sides
     
     var show_zoom = true;
+    //var zoom_scalefnc = make_quadratic_scale(20, -0.2, 1);
+    var zoom_scalefnc = make_linear_scale(25, -1, 1);
     
     function construct(obj) {
       __vS = ViewState(obj);
@@ -462,33 +487,31 @@
         }
         
       } else {
-        
-        function scale_id_to_width(id) {
-          var w = 25 - id;
-          if (w < 2) 
-            w = 1;
-          return w;
-        }
-        
+
         for (var idx = data.addr.length - 1; idx >= 0 ; idx--) {
           var ob = data.addr[idx];
           var gxgy = addr_gxgy(ob);
           var index = gxgy_index_center(gxgy);
           
-          var hw = scale_id_to_width(idx);
+          var hw = zoom_scalefnc(idx);
           
           for (var x = -hw; x <= hw; x++) {
             for (var y = -hw; y <= hw; y++) {
               var i = index_shift(index,x,y);            
               if (data.events[idx] == "r") {
+                
                 dt[i] = 0;
                 dt[i+1] = 255;
                 dt[i+2] = 0;
+              
               } else {
+              
                 dt[i] = 255;
                 dt[i+1] = 0;
                 dt[i+2] = 0;
+              
               }
+              
               dt[i+3] = 255;
             }
           }
@@ -598,7 +621,11 @@
       var height = 550 + 2*data_y_offset;
       $(__div_memmap).css("width", width);
       $(__div_memmap).css("height", width);
+      
       $(__div_memmap).html("<canvas id='pv_memmap_canvas' width='"+width+"' height='"+height+"'></canvas>");
+      $("#pv_memmap_canvas").css("margin-left", -15);
+      $("#pv_memmap_canvas").css("margin-top", -15);
+      
       __vS.addEvent("memmap_click");
       
       $("#pv_memmap_canvas").click(function(eventObj) {__vS.fireEvent("memmap_click", eventObj, this);})
