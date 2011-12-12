@@ -341,8 +341,8 @@
     
       var gridcolor = 235;
       /* Draw the Grid */
-      for (var y = data_y_offset - boxside; y < dataLastY+boxside+1; y+=4) {
-        for (var x = data_x_offset-boxside; x < dataLastX+boxside+1; x+=1) {
+      for (var y = data_y_offset - boxside; y < dataLastY; y+=4) { //horizontal
+        for (var x = data_x_offset-boxside; x < dataLastX-1; x+=1) {
           var index =  (y*canvasWidth + x)*4
           dt[index] =   gridcolor;
           dt[++index] = gridcolor;
@@ -350,8 +350,8 @@
           dt[++index] = 255;
         }
       }
-      for (var y = data_y_offset - boxside; y < dataLastY+boxside+1; y+=1) {
-        for (var x = data_x_offset-boxside; x < dataLastX+boxside+1; x+=4) {
+      for (var y = data_y_offset - boxside; y < dataLastY; y+=1) {
+        for (var x = data_x_offset-boxside; x < dataLastX; x+=4) {
           var index =  (y*canvasWidth + x)*4
           dt[index] =   gridcolor;
           dt[++index] = gridcolor;
