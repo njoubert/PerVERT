@@ -348,15 +348,12 @@ void PervertLayer::f_context_histo(Server::Request* req, Server::Response* res) 
   Json::Value histo(Json::arrayValue);
   for ( map<int, int>::iterator i = histogram.begin(), ie = histogram.end(); i != ie; ++i )
   {
-      Json::Value bucket;
-
-      bucket["line"] = (*i).first;
-      bucket["count"] = (*i).second;
-
-      histo.append(bucket); 
-    }
+    Json::Value element;
+    element["line"] = (*i).first;
+    element["count"] = (*i).second;
+    histo.append(element);
+  }
   root["histo"] = histo;
-
   writeJSONResponse(req,res,root);
 }
 

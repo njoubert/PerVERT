@@ -762,10 +762,55 @@
     }
      
     function create_histo_view() {
+
+      var histo_vis = null;
+      var w = 400;
+      var h = 400;
+
       $(__div_memhisto).css("border", "solid yellow 1px"); 
+      __vS.addListener("init", function(eventname, event, caller) {
+        histo_vis = d3.select(__div_memhisto).append("svg")
+            .attr("width", w)
+            .attr("height", h)
+          .append("g")
+            .attr("transform", "translate(.5)");
+          
+        histo_vis.append("line")
+            .attr("class", "histo_line")
+            .attr("x1", 0)
+            .attr("x2", w)
+            .attr("y1", h)
+            .attr("y2", h);
+      });
+
       __vS.addListener("frameslider_change", function(eventname, event, caller) { 
         __db.f_memhisto(event, function(data) {
-          $(__div_memhisto).html("SLIDER CHANGED");
+          var x = d3.scale.ordinal()
+              .domain(d3.range(d3.max(data.histo, function(d) { return d.line; })))
+              .rangeBands([0, w]);
+
+          var y = d3.scale.linear()
+              .domain([0, d3.max(data.histo, function(d) { return d.count; })])
+              .range([0, h]);
+
+          var bars = histo_vis.selectAll("rect")
+              .data(data.histo);
+
+          bars.enter().append("rect")
+              .attr("class", "histo_bar")
+              .attr("x", function(d) { return x(d.line) + x.rangeBand()/2; })
+              .attr("height", function(d) { return y(d.count); })
+              .attr("width", x.rangeBand())
+              .attr("y", function(d) { return h - y(d.count); });
+
+          bars.exit().remove();
+
+          bars.transition()
+              .duration(0)
+              .attr("x", function(d) { return x(d.line) + x.rangeBand()/2; })
+              .attr("height", function(d) { return y(d.count); })
+              .attr("width", x.rangeBand())
+              .attr("y", function(d) { return h - y(d.count); });
         });
       });
     }

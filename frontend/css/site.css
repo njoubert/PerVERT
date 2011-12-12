@@ -101,6 +101,17 @@ h4 { font-size: 3em; line-height: 1; margin-bottom: 0.5em; }
 
 /* PERVERT */
 
+/* histogram */
+.histo_bar {
+  fill: steelblue;
+  stroke: white;
+  stroke-width: 2px;
+}
+.histo_line {
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
 path.dot {
   fill: white;
   stroke-width: 1.5px;
