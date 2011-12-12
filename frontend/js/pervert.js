@@ -181,10 +181,15 @@
     var setCurrentFrame = function(f) {
       if (f > __maxFrame) {
         setPlaying(false);
+      } else if (f < 0) {
+        setPlaying(false);
       } else {
         __currentFrame = f;
         fireEvent("frameslider_change", f, this);         
       }
+    }
+    var getCurrentFrame = function() {
+      return __currentFrame;
     }
     
     var setPlaying = function(v) {
@@ -242,6 +247,7 @@
 
     var obj = {
       reset: reset,
+      getCurrentFrame: getCurrentFrame,
       setCurrentFrame: setCurrentFrame,
       stepCurrentFrame: stepCurrentFrame,
       setFrameRange: setFrameRange,
@@ -271,8 +277,8 @@
     var __db = null;
     
 
-    var data_x_offset = 2;  //on both sides
-    var data_y_offset = 2;  //on both sides
+    var data_x_offset = 12;  //on both sides
+    var data_y_offset = 12;  //on both sides
   
     function construct(obj) {
       __vS = ViewState(obj);
@@ -294,6 +300,8 @@
       var dataLastX = canvasWidth - data_x_offset;
       var dataLastY = canvasHeight - data_y_offset;
 
+      var boxside = 2;
+      
       var fixed_index_offset = (canvasWidth*data_y_offset) + data_x_offset;      
       var total_lines = (f_counts.max_addr / (canvasWidth-100));
       var offset_between_lines = 8;//Math.floor(((canvasHeight-100) / total_lines) + 1);
@@ -302,92 +310,166 @@
       var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
       var dt = imageData.data;
       
+      function addr_gxgy(a) { return {
+        gx: (Math.floor(a/4)%256),
+        gy: Math.floor(Math.floor(a/4)/256)
+      }}
+      function alloc_gxgy(a) { return {
+        gx: (Math.ceil(a/4)%256),
+        gy: Math.floor(Math.ceil(a/4)/256)
+      }}
       
+      function gxgy_index_tl(p) {
+        return 4*(fixed_index_offset + 
+          Math.floor(p.gx*4 - boxside) + 
+          Math.floor((p.gy*4 - boxside)*(dataWidth + data_y_offset*2) ));        
+      }
+      function gxgy_index_center(p) { 
+        return 4*(fixed_index_offset + 
+          (p.gx*4) +
+          ((p.gy*4)*(dataWidth + data_y_offset*2) ));        
+      }
+      function index_shift(i,x,y) {
+        return i + (x + y*(dataWidth + data_y_offset*2))*4;
+      }
+      function index_plus_x(i,x) {
+        return i + 4*x;
+      }
+      function index_plus_y(i,y) {
+        return i + y*(dataWidth + data_y_offset*2)*4;
+      }
+    
+      var gridcolor = 235;
       /* Draw the Grid */
-      for (var y = data_y_offset - 2; y < dataLastY+2; y+=4) {
-        for (var x = data_x_offset-2; x < dataLastX+2; x+=1) {
+      for (var y = data_y_offset - boxside; y < dataLastY+boxside+1; y+=4) {
+        for (var x = data_x_offset-boxside; x < dataLastX+boxside+1; x+=1) {
           var index =  (y*canvasWidth + x)*4
-          dt[index] =   200;
-          dt[++index] = 200;
-          dt[++index] = 200;
+          dt[index] =   gridcolor;
+          dt[++index] = gridcolor;
+          dt[++index] = gridcolor;
           dt[++index] = 255;
         }
       }
-      for (var y = data_y_offset - 2; y < dataLastY+2; y+=1) {
-        for (var x = data_x_offset-2; x < dataLastX+2; x+=4) {
+      for (var y = data_y_offset - boxside; y < dataLastY+boxside+1; y+=1) {
+        for (var x = data_x_offset-boxside; x < dataLastX+boxside+1; x+=4) {
           var index =  (y*canvasWidth + x)*4
-          dt[index] =   200;
-          dt[++index] = 200;
-          dt[++index] = 200;
+          dt[index] =   gridcolor;
+          dt[++index] = gridcolor;
+          dt[++index] = gridcolor;
           dt[++index] = 255;
         }
       }
       
-      
-      var bs = 255 / (f_counts.malloc);
-      var b = 255;
+      /* Draw the regions */
+      var malloc_color = 175;
       for (var idx = 0; idx < data.regions.length; idx++) {
-        var r = data.regions[idx];
         
-        for (var s = r.begin; s < r.end; s++) {
-          
-          var y = Math.floor(s/canvasWidth);
-          var x = s%canvasWidth;
-          var index = (fixed_index_offset + y*offset_between_lines*canvasWidth + x)*4;
-          dt[index] = 0;
-          dt[++index] = 0;
-          dt[++index] = b;
-          dt[++index] = 255;
-          
-        }
-        b -= bs;
-      }
-      
-      var biggest = 50;
-      var value = 255;
-      var alpha = 255;
-      var decay = 0.8;
-      
-      for (var idx = 0; idx < data.addr.length; idx++) {
-        var ob = data.addr[idx];
-
-        for (var y = biggest/2; y >= -(biggest/2); y--) {
-          for (var x = biggest/2; x >= -(biggest/2); x--) {
-            
-            var obji = (Math.floor(ob/canvasWidth)*offset_between_lines*canvasWidth + ob%canvasWidth);
-            var index = (fixed_index_offset + obji + y * canvasWidth + x) * 4;
-  
-            
-            if (data.events[idx] == "r") {
-              dt[index] *= decay;    // red
-              if (dt[index+1] != 0) {
-                dt[index+1] = Math.max(dt[index+1]*decay, 0);    // green
-              } else {
-                dt[index+1] = value;    // green
-              }
-              dt[index+2] = 0;//dt[index+2] + 1;    // blue              
-            } else {
-              if (dt[index] != 0) {
-                dt[index] = Math.max(dt[index]*decay, 0);    // green
-              } else {
-                dt[index] = value;    // green
-              }
-              dt[index+1] *= decay;    // green
-              dt[index+2] = 0;//dt[index+2] + 1;    // blue              
-            }     
-            dt[index+3] = alpha;      // alpha
-          
+        var r = data.regions[idx];     
+        
+        var index = gxgy_index_tl(addr_gxgy(r.begin));
+        
+        function draw_vert(x,indx) {
+          for (var y = 0; y < 5; y++) {
+          var i = index_shift(indx, x, y);
+            dt[i] = malloc_color;
+            dt[++i] = malloc_color;
+            dt[++i] = malloc_color;
+            dt[++i] = 255;            
           }
         }
-        if (biggest > 2) {
-          biggest -= 2;
+        draw_vert(0,gxgy_index_tl(addr_gxgy(r.begin)));
+        draw_vert(0,gxgy_index_tl(alloc_gxgy(r.end)));
+           
+        for (var s = r.begin; s < r.end; s++) {
+          var gxgy = addr_gxgy(s);            
+          for (var row = 0; row < 2; row++) {
+            var index = gxgy_index_tl(gxgy);
+            for (var x = 0; x < 5; x++) {
+              var i = index_shift(index, x, 0);
+              dt[i] = malloc_color;
+              dt[++i] = malloc_color;
+              dt[++i] = malloc_color;
+              dt[++i] = 255;
+            }
+            gxgy.gy += 1;
+          }
         }
-        if (value > 0)
-          value--;
-        if (alpha < 255)
-          alpha++;
         
       }
+      
+      /* Draw accesses */
+      for (var idx = data.addr.length - 1; idx >= 0 ; idx--) {
+        var ob = data.addr[idx];
+        var gxgy = addr_gxgy(ob);
+        var index = gxgy_index_tl(gxgy);
+
+
+          for (var x = 1; x < 4; x++) {
+            for (var y = 1; y < 4; y++) {
+              var i = index_shift(index,x,y);
+            
+              if (data.events[idx] == "r") {
+                dt[i] = 0;
+                dt[i+1] = 255;
+                dt[i+2] = 0;
+              } else {
+                dt[i] = 255;
+                dt[i+1] = 0;
+                dt[i+2] = 0;
+              }
+              dt[i+3] = 255;
+            
+            }
+          }
+        
+      }
+      
+      
+      // var biggest = 50;
+      //       var value = 255;
+      //       var alpha = 255;
+      //       var decay = 0.8;
+      //       
+      //       for (var idx = 0; idx < data.addr.length; idx++) {
+      //         var ob = data.addr[idx];
+      // 
+      //         for (var y = biggest/2; y >= -(biggest/2); y--) {
+      //           for (var x = biggest/2; x >= -(biggest/2); x--) {
+      //             
+      //             var obji = (Math.floor(ob/canvasWidth)*offset_between_lines*dataWidth + ob%dataWidth);
+      //             var index = (fixed_index_offset + obji + y * canvasWidth + x) * 4;
+      //   
+      //             
+      //             if (data.events[idx] == "r") {
+      //               dt[index] *= decay;    // red
+      //               if (dt[index+1] != 0) {
+      //                 dt[index+1] = Math.max(dt[index+1]*decay, 0);    // green
+      //               } else {
+      //                 dt[index+1] = value;    // green
+      //               }
+      //               dt[index+2] = 0;//dt[index+2] + 1;    // blue              
+      //             } else {
+      //               if (dt[index] != 0) {
+      //                 dt[index] = Math.max(dt[index]*decay, 0);    // green
+      //               } else {
+      //                 dt[index] = value;    // green
+      //               }
+      //               dt[index+1] *= decay;    // green
+      //               dt[index+2] = 0;//dt[index+2] + 1;    // blue              
+      //             }     
+      //             dt[index+3] = alpha;      // alpha
+      //           
+      //           }
+      //         }
+      //         if (biggest > 2) {
+      //           biggest -= 2;
+      //         }
+      //         if (value > 0)
+      //           value--;
+      //         if (alpha < 255)
+      //           alpha++;
+      //         
+      //       }
       ctx.putImageData(imageData, 0, 0);
 
     }
@@ -619,6 +701,10 @@
       return this;
     }
     
+    var getInfo = function() {
+      return {vS : __vS, db : __db};
+    }
+    
     // Exports the public api:
     var obj = {
       init: init,
@@ -629,7 +715,8 @@
       bindContextView: bindContextView,
       bindControlsView: bindControlsView,
       bindMemScatterView: bindMemScatterView,
-      bindDebugView: bindDebugView
+      bindDebugView: bindDebugView,
+      getInfo: getInfo
     };
     construct(obj);
     
