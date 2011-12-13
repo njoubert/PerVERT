@@ -157,7 +157,12 @@ CallStack::ProcessReturn(ADDRINT ip, ADDRINT current_sp, bool prevIpDoesPush)
       return;
   }
 #else
-  ASSERTX(_activations.size());
+  // XXX: This might be a hack - but I think we're okay with tolerating bad stack traces for now
+  //ASSERTX(_activations.size());
+  if ( _activations.size() == 0 )
+  {
+    return;
+  }
 #endif
 
   // pop activation
