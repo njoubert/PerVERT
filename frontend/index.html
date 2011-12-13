@@ -85,9 +85,10 @@ function handlePollResult(exec, data, testStatus, jqXHR) {
   return true;
 }
 
-var execlist = [];
+var execlist = [""];
 function handleListPollResult(exec, data, testStatus, jqXHR) {
   if (data.execs) {
+    data.execs.push("")
     var n = false;
     $.each(data.execs, function(i,o) { 
       if (o != execlist[i]) {
@@ -117,7 +118,6 @@ function handlePollFail() {
 function doPoll() {
   var exec = getParameterByName("exec");
   if (exec == "") {
-    handlePollFail();
     setTimeout(doPoll,2000);
   } else {
     $.ajax('/f/status?exec='+exec,
@@ -126,13 +126,12 @@ function doPoll() {
         success: function(d,t,j) { if (handlePollResult(exec, d,t,j)) { setTimeout(doPoll,2000); } },
         error: function(d,t,j) { if (handlePollResult(exec, d,t,j)) { setTimeout(doPoll,2000); } }
       });    
-    $.ajax('/pp/list',
-      {
-        timeout: 3000,
-        success: function(d,t,j) { handleListPollResult(exec, d,t,j); }
-      });    
-
   }
+  $.ajax('/pp/list',
+    {
+      timeout: 3000,
+      success: function(d,t,j) { handleListPollResult(exec, d,t,j); }
+    });    
 }
 
 $(document).ready(function() {
