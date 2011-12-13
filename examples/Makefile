@@ -12,7 +12,8 @@ OBJ = array1.o \
 			map3.o \
 			vector3.o 
 
-HASKELL = haskell1			
+HASKELL = haskell1 \
+					haskell2
 
 SIZE = 512
 
@@ -53,6 +54,8 @@ testdata: $(OBJ) $(HASKELL)
 	g++ -g $< -o $@
 
 haskell1: haskell1.hs
+	ghc $< 
+haskell2: haskell2.hs
 	ghc $< 
 
 clean:
