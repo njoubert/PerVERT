@@ -10,12 +10,15 @@ OBJ = array1.o \
 			array3.o \
 			list3.o \
 			map3.o \
-			vector3.o
+			vector3.o 
+
+HASKELL = haskell1			
+
 SIZE = 512
 
-all: $(OBJ)
+all: $(OBJ) $(HASKELL)
 
-testdata: $(OBJ)
+testdata: $(OBJ) $(HASKELL)
 	mkdir -p testdata
 	../pervert ./array1.o $(SIZE)
 	cp -R /var/tmp/array1.o testdata/
@@ -43,10 +46,15 @@ testdata: $(OBJ)
 	cp -R /var/tmp/map3.o testdata/
 	../pervert ./vector3.o $(SIZE)
 	cp -R /var/tmp/vector3.o testdata/
+	../pervert ./haskell1
+	cp -r /var/tmp/haskell1 testdata/
 
 .cc.o:
 	g++ -g $< -o $@
 
+haskell1: haskell1.hs
+	ghc $< 
+
 clean:
-	rm -rf testdata *.o pin.log
+	rm -rf testdata *.hi pin.log $(HASKELL) $(OBJ)
 
