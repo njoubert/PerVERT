@@ -339,7 +339,16 @@
     
     var data_x_offset = 25;  //on both sides
     var data_y_offset = 25;  //on both sides
+    var boxside = 2;
+
+    var canvasWidth = 1024 + 2*data_x_offset;
+    var canvasHeight = 550 + 2*data_y_offset;
     
+    var dataWidth  = canvasWidth - 2*data_x_offset;
+    var dataHeight = canvasHeight - 2*data_y_offset;
+    var dataLastX  = canvasWidth - data_x_offset;
+    var dataLastY  = canvasHeight - data_y_offset;
+
     var show_zoom = true;
     var zoom_scalefnc = make_quadratic_scale(20, -0.5, 1);
     //var zoom_scalefnc = make_linear_scale(25, -1, 1);
@@ -349,22 +358,52 @@
     }
     //private functions:
 
+    function drawgrid(data,f_counts) {
+      var canvas_grid = document.getElementById("pv_memmap_canvas_grid");
+      var ctx_grid = canvas_grid.getContext("2d");
+      var canvasWidth  = canvas_grid.width;
+      var canvasHeight = canvas_grid.height;
+      ctx_grid.clearRect ( 0 , 0 , canvasWidth , canvasHeight );
+
+      var imageData_grid = ctx_grid.getImageData(0, 0, canvasWidth, canvasHeight);
+      var dtg = imageData_grid.data;
+                  
+      var gridcolor = 235;
+      /* Draw the Grid */
+      for (var y = data_y_offset - boxside; y < dataLastY; y+=4) { //horizontal
+        for (var x = data_x_offset-boxside; x < dataLastX-1; x+=1) {
+          var index =  (y*canvasWidth + x)*4
+          dtg[index] =   gridcolor;
+          dtg[++index] = gridcolor;
+          dtg[++index] = gridcolor;
+          dtg[++index] = 255;
+          
+        }
+      }
+      for (var y = data_y_offset - boxside; y < dataLastY; y+=1) {
+        for (var x = data_x_offset-boxside; x < dataLastX; x+=4) {
+          var index =  (y*canvasWidth + x)*4
+          dtg[index] =   gridcolor;
+          dtg[++index] = gridcolor;
+          dtg[++index] = gridcolor;
+          dtg[++index] = 255;
+        }
+      }
+      
+      ctx_grid.putImageData(imageData_grid, 0, 0);
+
+      
+    }
+
     function drawmockup(data,f_counts) {
+      
       var canvas = document.getElementById("pv_memmap_canvas");
       
       var ctx = canvas.getContext("2d");
-      var canvasWidth  = canvas.width;
-      var canvasHeight = canvas.height;
       ctx.clearRect ( 0 , 0 , canvasWidth , canvasHeight );
 
       //let's calculate global offsets;
       
-      var dataWidth = canvasWidth - 2*data_x_offset;
-      var dataHeight = canvasHeight - 2*data_y_offset;
-      var dataLastX = canvasWidth - data_x_offset;
-      var dataLastY = canvasHeight - data_y_offset;
-
-      var boxside = 2;
       
       var fixed_index_offset = (canvasWidth*data_y_offset) + data_x_offset;      
       var total_lines = (f_counts.max_addr / (canvasWidth-100));
@@ -373,7 +412,7 @@
       
       var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
       var dt = imageData.data;
-      
+
       function addr_gxgy(a) { return {
         gx: (Math.floor(a/4)%256),
         gy: Math.floor(Math.floor(a/4)/256)
@@ -411,33 +450,7 @@
           return a;
       }
 
-      var griddata = new Array(dt.length/4, false);
-      
-      
-    
-      var gridcolor = 235;
-      /* Draw the Grid */
-      for (var y = data_y_offset - boxside; y < dataLastY; y+=4) { //horizontal
-        for (var x = data_x_offset-boxside; x < dataLastX-1; x+=1) {
-          var index =  (y*canvasWidth + x)*4
-          griddata[index/4] = true;
-          dt[index] =   gridcolor;
-          dt[++index] = gridcolor;
-          dt[++index] = gridcolor;
-          dt[++index] = 255;
-          
-        }
-      }
-      for (var y = data_y_offset - boxside; y < dataLastY; y+=1) {
-        for (var x = data_x_offset-boxside; x < dataLastX; x+=4) {
-          var index =  (y*canvasWidth + x)*4
-          griddata[index/4] = true;
-          dt[index] =   gridcolor;
-          dt[++index] = gridcolor;
-          dt[++index] = gridcolor;
-          dt[++index] = 255;
-        }
-      }
+
       
       /* Draw the regions */
       var malloc_color = 175;
@@ -450,7 +463,6 @@
         function draw_vert(x,indx) {
           for (var y = 0; y < 5; y++) {
           var i = index_shift(indx, x, y);
-            griddata[i/4] = false;
             dt[i] = malloc_color;
             dt[++i] = malloc_color;
             dt[++i] = malloc_color;
@@ -466,7 +478,6 @@
             var index = gxgy_index_tl(gxgy);
             for (var x = 0; x < 5; x++) {
               var i = index_shift(index, x, 0);
-              griddata[i/4] = false;
               dt[i] = malloc_color;
               dt[++i] = malloc_color;
               dt[++i] = malloc_color;
@@ -519,16 +530,6 @@
           for (var x = -hw; x <= hw; x++) {
             for (var y = -hw; y <= hw; y++) {
               var i = index_shift(index,x,y);
-              
-              if (griddata[i/4]) {
-                
-                dt[i] = 0;
-                dt[i+1] = 0;
-                dt[i+2] = 0;
-                griddata[i/4]=false;
-                
-              }
-              
 
               if (hw > 2 && x > -2 && x < 2 && y > -2 && y < 2) {
 
@@ -555,11 +556,6 @@
                     dt[i] = Math.max(dt[i]*decay, 0);
                   }
                   dt[i+1] *= decay; 
-                  // if (dt[i+1] == gridcolor) {
-                  //   dt[i+1] = 0;
-                  // } else {
-                  //  dt[i+1] *= decay;                  
-                  // }
                   dt[i+2] = 0;
                 
               }
@@ -572,53 +568,7 @@
         
         
       }
-      
-      
-      // var biggest = 50;
-      //       var value = 255;
-      //       var alpha = 255;
-      //       var decay = 0.8;
-      //       
-      //       for (var idx = 0; idx < data.addr.length; idx++) {
-      //         var ob = data.addr[idx];
-      // 
-      //         for (var y = biggest/2; y >= -(biggest/2); y--) {
-      //           for (var x = biggest/2; x >= -(biggest/2); x--) {
-      //             
-      //             var obji = (Math.floor(ob/canvasWidth)*offset_between_lines*dataWidth + ob%dataWidth);
-      //             var index = (fixed_index_offset + obji + y * canvasWidth + x) * 4;
-      //   
-      //             
-      //             if (data.events[idx] == "r") {
-      //               dt[index] *= decay;    // red
-      //               if (dt[index+1] != 0) {
-      //                 dt[index+1] = Math.max(dt[index+1]*decay, 0);    // green
-      //               } else {
-      //                 dt[index+1] = value;    // green
-      //               }
-      //               dt[index+2] = 0;//dt[index+2] + 1;    // blue              
-      //             } else {
-      //               if (dt[index] != 0) {
-      //                 dt[index] = Math.max(dt[index]*decay, 0);    // green
-      //               } else {
-      //                 dt[index] = value;    // green
-      //               }
-      //               dt[index+1] *= decay;    // green
-      //               dt[index+2] = 0;//dt[index+2] + 1;    // blue              
-      //             }     
-      //             dt[index+3] = alpha;      // alpha
-      //           
-      //           }
-      //         }
-      //         if (biggest > 2) {
-      //           biggest -= 2;
-      //         }
-      //         if (value > 0)
-      //           value--;
-      //         if (alpha < 255)
-      //           alpha++;
-      //         
-      //       }
+
       ctx.putImageData(imageData, 0, 0);
 
     }
@@ -671,14 +621,12 @@
     }
     
     function create_mem_view() {
-      var width = 1024 + 2*data_x_offset;
-      var height = 550 + 2*data_y_offset;
-      $(__div_memmap).css("width", width);
-      $(__div_memmap).css("height", width);
+      $(__div_memmap).css("width", canvasWidth);
+      $(__div_memmap).css("height", canvasHeight);
       
-      $(__div_memmap).html("<canvas id='pv_memmap_canvas_grid' width='"+width+"' height='"+height+"'></canvas>");
-      $(__div_memmap).html("<canvas id='pv_memmap_canvas_alloc' width='"+width+"' height='"+height+"'></canvas>");
-      $(__div_memmap).html("<canvas id='pv_memmap_canvas' width='"+width+"' height='"+height+"'></canvas>");
+      $(__div_memmap).html("<canvas id='pv_memmap_canvas_grid' width='"+canvasWidth+"' height='"+canvasHeight+"'></canvas>");
+      $(__div_memmap).append("<canvas id='pv_memmap_canvas_alloc' width='"+canvasWidth+"' height='"+canvasHeight+"'></canvas>");
+      $(__div_memmap).append("<canvas id='pv_memmap_canvas' width='"+canvasWidth+"' height='"+canvasHeight+"'></canvas>");
 
       $(__div_memmap).css("position", "relative");
 
@@ -687,25 +635,38 @@
       $("#pv_memmap_canvas_grid").css("left", 0);      
       $("#pv_memmap_canvas_grid").css("margin-left", -15);
       $("#pv_memmap_canvas_grid").css("margin-top", -15);
-
+      $("#pv_memmap_canvas_grid").css("z-index", 1);
+      
       $("#pv_memmap_canvas_alloc").css("position", "absolute");
       $("#pv_memmap_canvas_alloc").css("top", 0);
       $("#pv_memmap_canvas_alloc").css("left", 0);      
       $("#pv_memmap_canvas_alloc").css("margin-left", -15);
       $("#pv_memmap_canvas_alloc").css("margin-top", -15);
+      $("#pv_memmap_canvas_alloc").css("z-index", 2);
 
       $("#pv_memmap_canvas").css("position", "absolute");
       $("#pv_memmap_canvas").css("top", 0);
       $("#pv_memmap_canvas").css("left", 0);      
       $("#pv_memmap_canvas").css("margin-left", -15);
       $("#pv_memmap_canvas").css("margin-top", -15);
+      $("#pv_memmap_canvas").css("z-index", 3);
       
       __vS.addEvent("memmap_click");
       
-      $("#pv_memmap_canvas").click(function(eventObj) {__vS.fireEvent("memmap_click", eventObj, this);})
+      //$("#pv_memmap_canvas").click(function(eventObj) {__vS.fireEvent("memmap_click", eventObj, this);})
       
       //__vS.addListener("memmap_click", function(eventname,event,caller) { drawanim();});
-      
+
+      //only draw the grid on init
+      __vS.addListener("init", function(eventname, event, caller) {
+        __db.f_mem_status(event,150,function(data) {
+          __db.f_counts(function(f_counts) {
+            drawgrid(data, f_counts);
+          })
+        })
+      });
+            
+      //draw the other things automatically.
       __vS.addListener("frameslider_change", function(eventname, event, caller) {
         __db.f_mem_status(event,50,function(data) {
           __db.f_counts(function(f_counts) {
