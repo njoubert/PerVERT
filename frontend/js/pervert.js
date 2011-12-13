@@ -668,17 +668,21 @@
     }
     
     function create_scatter_view() {
-      var scatter_vis = null;
+
       var scatter_x = null;
       var scatter_y = null;
+      var scatter_vis = null;
+
+      var w = 200;
+      var h = 200;
+      var p = 20;
+      
       $(__div_memscatter).css("border", "solid red 1px"); 
       __vS.addListener("init", function(eventname, event, caller) {
         __db.f_counts(function(counts) {          
-          var xmax = counts.event-1,
-              ymax = counts.max_addr,
-              w = 450,
-              h = 450,
-              p = 20;
+
+          var xmax = counts.event-1;
+          var ymax = counts.max_addr;
 
           scatter_x = d3.scale.linear().domain([0,xmax]).range([0, w]);
           scatter_y = d3.scale.linear().domain([0,ymax]).range([h, 0]);
@@ -734,21 +738,25 @@
         __db.f_memscatter(event, function(data) {
               var points = scatter_vis.selectAll("path.dot")
                 .data(data.events);
+
               points.enter().append("path")
                 .attr("class", "dot")
                 .attr("stroke", function(d, i) { return data.type == "w" ? "red" : "blue"; })
                 .attr("transform", function(d) { return "translate(" + scatter_x(d.index) + "," + scatter_y(d.addr) + ")"; })
                 .attr("d", d3.svg.symbol());
+              
               points.transition().duration(0)
                 .attr("class", "dot")
                 .attr("stroke", function(d, i) { return data.type == "w" ? "red" : "blue"; })
                 .attr("transform", function(d) { return "translate(" + scatter_x(d.index) + "," + scatter_y(d.addr) + ")"; })
                 .attr("d", d3.svg.symbol());
+              
               points.exit().remove();
         });
       });
     }
 
+    // TODO: This is broken (or never worked to begin with - take your pick)
     function create_deriv_view() {
       var deriv_vis = null;
       var deriv_x = null;
@@ -764,6 +772,7 @@
 
           deriv_x = d3.scale.linear().domain([0,xmax]).range([0, w]);
           deriv_y = d3.scale.linear().domain([0,ymax]).range([h, 0]);
+
           deriv_vis = d3.select(__div_memderiv).append("svg")
               .attr("width", w + p * 2)
               .attr("height", h + p * 2)
@@ -845,8 +854,8 @@
     function create_histo_view() {
 
       var histo_vis = null;
-      var w = 300;
-      var h = 300;
+      var w = 200;
+      var h = 200;
 
       $(__div_memhisto).css("border", "solid yellow 1px"); 
       __vS.addListener("init", function(eventname, event, caller) {
