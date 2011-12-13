@@ -82,6 +82,7 @@
     var __f_memscatter = {};
     var __f_memderiv = {};
     var __f_memhisto = {};
+    
         
     var init = function(cont) {
       __pv.log("initting DB");      
@@ -287,7 +288,7 @@
     var addEvent = function(eventname) {
       if (!__listeners[eventname]) {
         __listeners[eventname] = [];
-        __listeners[eventname].push(function(eventname,event,caller) {__pv.log(eventname + " fired " + event)});
+//        __listeners[eventname].push(function(eventname,event,caller) {__pv.log(eventname + " fired " + event)});
         __pv.log(eventname + " added.");
       }
       return this;
@@ -322,6 +323,8 @@
     var self = this;
     var __exec = exec;
     var __toggleBusy = function() {return;};
+    
+    var __good = false;
     
     var __div_controls = null;
     var __div_memmap = null;
@@ -408,7 +411,7 @@
           return a;
       }
 
-      var griddata = new Array(dt.length, false);
+      var griddata = new Array(dt.length/4, false);
       
       
     
@@ -417,15 +420,18 @@
       for (var y = data_y_offset - boxside; y < dataLastY; y+=4) { //horizontal
         for (var x = data_x_offset-boxside; x < dataLastX-1; x+=1) {
           var index =  (y*canvasWidth + x)*4
+          griddata[index/4] = true;
           dt[index] =   gridcolor;
           dt[++index] = gridcolor;
           dt[++index] = gridcolor;
           dt[++index] = 255;
+          
         }
       }
       for (var y = data_y_offset - boxside; y < dataLastY; y+=1) {
         for (var x = data_x_offset-boxside; x < dataLastX; x+=4) {
           var index =  (y*canvasWidth + x)*4
+          griddata[index/4] = true;
           dt[index] =   gridcolor;
           dt[++index] = gridcolor;
           dt[++index] = gridcolor;
@@ -444,6 +450,7 @@
         function draw_vert(x,indx) {
           for (var y = 0; y < 5; y++) {
           var i = index_shift(indx, x, y);
+            griddata[i/4] = false;
             dt[i] = malloc_color;
             dt[++i] = malloc_color;
             dt[++i] = malloc_color;
@@ -459,6 +466,7 @@
             var index = gxgy_index_tl(gxgy);
             for (var x = 0; x < 5; x++) {
               var i = index_shift(index, x, 0);
+              griddata[i/4] = false;
               dt[i] = malloc_color;
               dt[++i] = malloc_color;
               dt[++i] = malloc_color;
@@ -512,47 +520,41 @@
             for (var y = -hw; y <= hw; y++) {
               var i = index_shift(index,x,y);
               
-              
-              if (data.events[idx] == "r") { //READS
+              if (griddata[i/4]) {
                 
-                if (hw > 2 && x > -2 && x < 2 && y > -2 && y < 2) {
+                dt[i] = 0;
+                dt[i+1] = 0;
+                dt[i+2] = 0;
+                griddata[i/4]=false;
+                
+              }
+              
 
-                  dt[i] = 0;
-                  dt[i+1] = 0;
-                  dt[i+2] = 0;
+              if (hw > 2 && x > -2 && x < 2 && y > -2 && y < 2) {
+
+                  dt[i] = 1;
+                  dt[i+1] = 1;
+                  dt[i+2] = 1;
                   
-                } else {
-                  
-                  if (dt[i] == gridcolor) {
-                    dt[i] = 0;
-                  } else {
-                    dt[i] *= decay;                  
-                  }
-                  if (dt[i+1] == 0 || dt[i+1] == gridcolor) {
+              } else if (data.events[idx] == "r") { //READS
+                                  
+                  dt[i] *= decay;
+                  if (dt[i+1] == 0) {
                     dt[i+1] = value;
                   } else {
                     dt[i+1] = Math.max(dt[i+1]*decay, 0);                
                   }
                   dt[i+2] = 0;
                   
-                }
                 
-              
               } else {  //WRITES
-                
-                if (hw > 2 && x > -2 && x < 2 && y > -2 && y < 2) {
-
-                  dt[i] = 0;
-                  dt[i+1] = 0;
-                  dt[i+2] = 0;                  
-                  
-                } else {
                 
                   if (dt[i] == 0)  {
                     dt[i] = value;
-                  } else {                  
+                  } else {
                     dt[i] = Math.max(dt[i]*decay, 0);
                   }
+                  dt[i+1] *= decay; 
                   // if (dt[i+1] == gridcolor) {
                   //   dt[i+1] = 0;
                   // } else {
@@ -560,8 +562,6 @@
                   // }
                   dt[i+2] = 0;
                 
-                }
-              
               }
               
               dt[i+3] = 255;
@@ -656,15 +656,17 @@
       __vS.addEvent("frameslider_pause");
       
       $("#pv_controls_playpause").click(function() { 
-        var v = $("#pv_controls_playpause").html();
-        if (v == "4") { __vS.setPlaying(true); } else { __vS.setPlaying(false); }
+        if (__good) {
+          var v = $("#pv_controls_playpause").html();
+          if (v == "4") { __vS.setPlaying(true); } else { __vS.setPlaying(false); }          
+        }
       });
       __vS.addListener("frameslider_play",  function(eventname, event, caller) { $("#pv_controls_playpause").html("5"); });
       __vS.addListener("frameslider_pause", function(eventname, event, caller) { $("#pv_controls_playpause").html("4"); });
       
-      KeyboardJS.bind.key("p", function() { __vS.togglePlaying(); }, function() {});
-      KeyboardJS.bind.key("s", function() { __vS.stepCurrentFrame(1); }, function() {});
-      KeyboardJS.bind.key("a", function() { __vS.stepCurrentFrame(-1); }, function() {});
+      KeyboardJS.bind.key("p", function() { if (__good) { __vS.togglePlaying(); } }, function() {});
+      KeyboardJS.bind.key("s", function() { if (__good) { __vS.stepCurrentFrame(1); } }, function() {});
+      KeyboardJS.bind.key("a", function() { if (__good) { __vS.stepCurrentFrame(-1); } }, function() {});
       
     }
     
@@ -674,7 +676,27 @@
       $(__div_memmap).css("width", width);
       $(__div_memmap).css("height", width);
       
+      $(__div_memmap).html("<canvas id='pv_memmap_canvas_grid' width='"+width+"' height='"+height+"'></canvas>");
+      $(__div_memmap).html("<canvas id='pv_memmap_canvas_alloc' width='"+width+"' height='"+height+"'></canvas>");
       $(__div_memmap).html("<canvas id='pv_memmap_canvas' width='"+width+"' height='"+height+"'></canvas>");
+
+      $(__div_memmap).css("position", "relative");
+
+      $("#pv_memmap_canvas_grid").css("position", "absolute");
+      $("#pv_memmap_canvas_grid").css("top", 0);
+      $("#pv_memmap_canvas_grid").css("left", 0);      
+      $("#pv_memmap_canvas_grid").css("margin-left", -15);
+      $("#pv_memmap_canvas_grid").css("margin-top", -15);
+
+      $("#pv_memmap_canvas_alloc").css("position", "absolute");
+      $("#pv_memmap_canvas_alloc").css("top", 0);
+      $("#pv_memmap_canvas_alloc").css("left", 0);      
+      $("#pv_memmap_canvas_alloc").css("margin-left", -15);
+      $("#pv_memmap_canvas_alloc").css("margin-top", -15);
+
+      $("#pv_memmap_canvas").css("position", "absolute");
+      $("#pv_memmap_canvas").css("top", 0);
+      $("#pv_memmap_canvas").css("left", 0);      
       $("#pv_memmap_canvas").css("margin-left", -15);
       $("#pv_memmap_canvas").css("margin-top", -15);
       
@@ -685,7 +707,7 @@
       //__vS.addListener("memmap_click", function(eventname,event,caller) { drawanim();});
       
       __vS.addListener("frameslider_change", function(eventname, event, caller) {
-        __db.f_mem_status(event,255,function(data) {
+        __db.f_mem_status(event,50,function(data) {
           __db.f_counts(function(f_counts) {
             drawmockup(data, f_counts);
           })
@@ -943,14 +965,17 @@
       __db = DB(this,__exec); //create a new DB
             
       __db.init(function() {__toggleBusy(false);});
+      __good = true;
       __vS.addEvent("init");
       __vS.fireEvent("init", null, this);
     }
     
-    var clean = function() {
+    var clean = function(clean) {
       __toggleBusy(true);
-
-      __db.abort();
+      __good = false;
+      if (__db) {
+        __db.abort();
+      }
       __toggleBusy(false);
     }     
     

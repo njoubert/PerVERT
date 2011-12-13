@@ -68,7 +68,6 @@ var lastChangeID = -1;
 function handlePollResult(exec, data, testStatus, jqXHR) {
   if (testStatus != "success") {
     currentStatus = "Backend Unavailable";
-    pv.clean();
   } else {
     changeID = data.substr(0, data.indexOf(" "));
     currentStatus = data.substr(data.indexOf(" ")+1, data.length);
@@ -77,6 +76,8 @@ function handlePollResult(exec, data, testStatus, jqXHR) {
       lastChangeID = changeID;
       if (currentStatus == "GOOD") {
         pv.init();
+      } else {
+        pv.clean(currentStatus);
       }
     }
   }
@@ -114,17 +115,17 @@ $(document).ready(function() {
   pv = pervert(exec);
   pv.bindBusy(function(isBusy) { 
           if (isBusy) { 
-            //$("#content").html("Processing data..."); 
+            $("#bullshit").html("Processing data..."); 
           } else { 
-            //$("#content").html(""); 
+            $("#bullshit").html(""); 
           };})
         .bindMemView("#pv_memmap")
         .bindContextView("#pv_context")
         .bindControlsView("#pv_controls")
-//        .bindDebugView("#pv_debug")
-//        .bindMemScatterView("#pv_memscat")
-//        .bindMemDerivView("#pv_memderiv");
-//        .bindMemHistoView("#pv_memhisto");
+        //.bindDebugView("#pv_debug")
+        // .bindMemScatterView("#pv_memscat")
+        // .bindMemDerivView("#pv_memderiv")
+        // .bindMemHistoView("#pv_memhisto");
         
   doPoll();
 });
