@@ -122,6 +122,12 @@ bool Trace::parseLineFile(const char* file)
   getline(ifs, currentfile); // CU: <filename>:
   getline(ifs, ignore);      // File name [...] Line number [...] Starting address
 
+  // If we've run out of lines already, something has gone wrong.
+  // Just pull out.  
+  // Don't try indexing anything.
+  if ( ifs.eof() )
+    return true;
+
   // Discard leading and trailing characters from currentfile
   currentfile = currentfile.substr(4, currentfile.rfind(':')-4);
 
