@@ -1,2 +1,6 @@
+makelist :: Integer -> [Integer]
+makelist 0 = []
+makelist x = x : (makelist (x-1))
+
 main :: IO ()
-main = print [0..511]
+main = print $ makelist 512
