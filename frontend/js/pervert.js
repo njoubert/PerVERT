@@ -927,11 +927,11 @@
       __vS.addListener("frameslider_change", function(eventname, event, caller) { 
         __db.f_memhisto(event, function(data) {
           var x = d3.scale.ordinal()
-              .domain(d3.range(d3.max(data.histo, function(d) { return d.line; })))
-              .rangeBands([0, w]);
+              .domain([0,1,2,3,4,5,6,7,8,9])
+              .rangeRoundBands([0, w]);
 
           var y = d3.scale.linear()
-              .domain([0, d3.max(data.histo, function(d) { return d.count; })])
+              .domain([0, d3.max(data.histo)])
               .range([0, h]);
 
           var bars = histo_vis.selectAll("rect")
@@ -939,19 +939,19 @@
 
           bars.enter().append("rect")
               .attr("class", "histo_bar")
-              .attr("x", function(d) { return x(d.line) + x.rangeBand()/2; })
-              .attr("height", function(d) { return y(d.count); })
+              .attr("x", function(d,i) { return x(i); })
+              .attr("height", y)
               .attr("width", x.rangeBand())
-              .attr("y", function(d) { return h - y(d.count); });
+              .attr("y", function(d) { return h - y(d); });
 
           bars.exit().remove();
 
           bars.transition()
               .duration(0)
-              .attr("x", function(d) { return x(d.line) + x.rangeBand()/2; })
-              .attr("height", function(d) { return y(d.count); })
+              .attr("x", function(d,i) { return x(i); })
+              .attr("height", y)
               .attr("width", x.rangeBand())
-              .attr("y", function(d) { return h - y(d.count); });
+              .attr("y", function(d) { return h - y(d); });
         });
       });
     }
