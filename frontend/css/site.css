@@ -39,6 +39,12 @@
 #title {
   float: left;
   padding-right:5px;
+
+}
+#execselector {
+  margin-top: -2px;
+  float: left;
+  margin-right: 5px;
 }
 #statusspinner {
   padding-top: 3px;
@@ -47,6 +53,10 @@
   float:left;
   font-weight: normal; font-style: normal; line-height: normal; font-family: 'Pictos', sans-serif;
   font-size: 1.4em;
+}
+#execdropdown {
+  margin-left: 2px;
+  width: 100px;
 }
 .msgbox {
   float: left;

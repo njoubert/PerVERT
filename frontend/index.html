@@ -85,6 +85,31 @@ function handlePollResult(exec, data, testStatus, jqXHR) {
   return true;
 }
 
+var execlist = [];
+function handleListPollResult(exec, data, testStatus, jqXHR) {
+  if (data.execs) {
+    var n = false;
+    $.each(data.execs, function(i,o) { 
+      if (o != execlist[i]) {
+        n = true;
+      }
+    });
+    if (n) {
+      execlist = data.execs;
+      $("#execselector").html("<select id='execdropdown'></select>");
+      var dd = $("#execdropdown");
+      $.each(execlist, function(i,e) { dd.append("<option value='"+e+"'>"+e+"</option>")});
+      dd.val(exec);
+  
+      dd.change(function() {
+        window.location = '/?exec='+dd.val();
+      })
+      
+    }
+  }
+  
+}
+
 function handlePollFail() {
   showSpinner("No executable specified...\n");
 }
@@ -101,6 +126,12 @@ function doPoll() {
         success: function(d,t,j) { if (handlePollResult(exec, d,t,j)) { setTimeout(doPoll,2000); } },
         error: function(d,t,j) { if (handlePollResult(exec, d,t,j)) { setTimeout(doPoll,2000); } }
       });    
+    $.ajax('/pp/list',
+      {
+        timeout: 3000,
+        success: function(d,t,j) { handleListPollResult(exec, d,t,j); }
+      });    
+
   }
 }
 
@@ -122,7 +153,7 @@ $(document).ready(function() {
         .bindMemView("#pv_memmap")
         .bindContextView("#pv_context")
         .bindControlsView("#pv_controls")
-        //.bindDebugView("#pv_debug")
+        // .bindDebugView("#pv_debug")
         // .bindMemScatterView("#pv_memscat")
         // .bindMemDerivView("#pv_memderiv")
         // .bindMemHistoView("#pv_memhisto");
@@ -139,6 +170,9 @@ $(document).ready(function() {
     <div id="header">
       <div id="title">
         <h1>PERVERT VISUALIZER</h1>
+      </div>
+      <div id="execselector">
+          <select id="execdropdown"></select>
       </div>
       <div id="statusspinner">
         <span id="loadingspinner"><img src="img/ajax-loader.gif"></img></span>

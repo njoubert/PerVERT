@@ -638,7 +638,7 @@
 
       //only draw the grid on init
       __vS.addListener("init", function(eventname, event, caller) {
-        __db.f_mem_status(event,150,function(data) {
+        __db.f_mem_status(0,150,function(data) {
           __db.f_counts(function(f_counts) {
             drawgrid(data, f_counts);
           })
