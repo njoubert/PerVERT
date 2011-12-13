@@ -62,7 +62,7 @@
 
 %%% Replace ``PAPER TEMPLATE TITLE'' with the title of your paper or abstract.
 
-\title{PAPER TEMPLATE TITLE}
+\title{PerVERT: The Performance Visualization and Error Remediation Toolkit}
 
 %%% The ``\author{}'' command takes the names and affiliations of each of the
 %%% authors of your paper or abstract. The ``\thanks{}'' command takes the
@@ -70,19 +70,18 @@
 %%% For multiple authors, separate each author's information by the ``\and''
 %%% command.
 
-\author{Roy G. Biv\thanks{e-mail: roy.g.biv@aol.com}\\ Starbucks Research %
-\and Ed Grimley\thanks{e-mail:ed.grimley@aol.com}\\Nigel Mansell\thanks{nigelf1@msn.com}\\ Grimley Widgets, Inc. %
-\and Martha Stewart\thanks{e-mail:martha.stewart@marthastewart.com}\\ Martha Stewart Enterprises \\ Microsoft Research}
+\author{Niels Joubert\thanks{e-mail:njoubert@cs.stanford.edu}\\ Stanford University %
+\and Eric Schkufza\thanks{e-mail:eschkufz@cs.stanford.edu}\\ Stanford University}
 
 %%% The ``pdfauthor'' command accepts the authors of the work,
 %%% comma-delimited, and adds this information to the PDF metadata.
 
-\pdfauthor{Roy G. Biv, Ed Grimley, Nigel Mansell, Martha Stewart}
+\pdfauthor{Niels Joubert, Eric Schkufza}
 
 %%% Keywords that describe your work. The ``\keywordlist'' command will print
 %%% them out.
 
-\keywords{radiosity, global illumination, constant time}
+\keywords{performance visualization, JIT, compiler, instrumentation}
 
 %%% The ``\begin{document}'' command is the start of the document.
 
@@ -98,10 +97,10 @@
 %%% If you choose to have a ``teaser'' image, it needs to be placed between
 %%% ``\begin{document}'' and ``\maketitle.''
 
-%\teaser{
-%   \includegraphics[height=1.5in]{images/sampleteaser}
-%   \caption{Spring Training 2009, Peoria, AZ.}
-%}
+\teaser{
+   \includegraphics[height=3in]{images/pervert.png}
+   \caption{Spring Training 2009, Peoria, AZ.}
+}
 
 %%% The ``\maketitle'' command must appear after ``\begin{document}'' and,
 %%% if you have one, after the definition of your ``teaser'' image, and
@@ -113,25 +112,18 @@
 
 \begin{abstract}
 
-Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse
-molestie consequat, vel illum dolore eu feugiat nulla facilisis at 
-vero eros et accumsan et iusto odio dignissim qui blandit praesent
-luptatum zzril delenit augue duis dolore te feugait nulla
-facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
-aliquam erat volutpat.
+Performance tuning is an important step in the development large software systems. 
+Examples include web-servers which must handle thousands of simultaneous content requests, 
+  and petaflop supercomputers which routinely perform physical simulations that span tens of thousands of cpu cores. 
+As improvements in clock frequency slow and hardware becomes increasingly parallel, 
+  the performance of such systems becomes ever more a function of memory efficiency. 
+However the ability to effectively reason about such behavior using existing tools such as valgrind or gdb, 
+  through a text-based interface, 
+  is limited and tedious at best.
 
-Citations can be done this way~\cite{Jobs95} or this more concise 
-way~\shortcite{Jobs95}, depending upon the application.
-
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper
-suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem
-vel eum iriure dolor in hendrerit~\cite{Pellacini:2005:LAH}
-in vulputate velit esse molestie~\cite{notes2002} 
-consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et
-accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
-delenit augue duis dolore te feugait nulla facilisi.~\cite{Park:2006:DSI}
-
+We present PerVERT, an instrumentation framework for logging a process's virtual memory traffic and a visualization suite for reasoning about common memory performance bugs: 
+  Are memory accesses organized coherently in both spatial and temporal dimensions? 
+  To what extent do these patterns differ based on program inputs or changes in source code?
 \end{abstract}
 
 %%% ACM Computing Review (CR) categories.
