@@ -866,8 +866,8 @@
     function create_histo_view() {
 
       var histo_vis = null;
-      var w = 400;
-      var h = 400;
+      var w = 300;
+      var h = 300;
 
       $(__div_memhisto).css("border", "solid yellow 1px"); 
       __vS.addListener("init", function(eventname, event, caller) {
