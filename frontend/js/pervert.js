@@ -677,7 +677,6 @@
       var h = 200;
       var p = 20;
       
-      $(__div_memscatter).css("border", "solid red 1px"); 
       __vS.addListener("init", function(eventname, event, caller) {
         __db.f_counts(function(counts) {          
 
@@ -686,8 +685,9 @@
 
           scatter_x = d3.scale.linear().domain([0,xmax]).range([0, w]);
           scatter_y = d3.scale.linear().domain([0,ymax]).range([h, 0]);
-          scatter_vis = d3.select(__div_memscatter).append("svg")
-               .attr("width", w + p * 2)
+          scatter_vis = d3.select(__div_memscatter)
+            .append("svg")
+              .attr("width", w + p * 2)
               .attr("height", h + p * 2)
             .append("g")
               .attr("transform", "translate(" + p + "," + p + ")");
@@ -720,38 +720,50 @@
               .attr("x2", w)
               .attr("y1", scatter_y)
               .attr("y2", scatter_y);
-
+/*
           yrule.append("text")
               .attr("x", -3)
               .attr("y", scatter_y)
               .attr("dy", ".35em")
               .attr("text-anchor", "end")
               .text(scatter_y.tickFormat(10));
-
+*/
           scatter_vis.append("rect")
               .attr("width", w)
               .attr("height", h);
+
+          scatter_vis.append("svg:path")
+              .attr("class", "line");
         });
       });
 
       __vS.addListener("frameslider_change", function(eventname, event, caller) { 
         __db.f_memscatter(event, function(data) {
-              var points = scatter_vis.selectAll("path.dot")
+              var points = scatter_vis.selectAll("circle.line")
                 .data(data.events);
 
-              points.enter().append("path")
-                .attr("class", "dot")
-                .attr("stroke", function(d, i) { return data.type == "w" ? "red" : "blue"; })
-                .attr("transform", function(d) { return "translate(" + scatter_x(d.index) + "," + scatter_y(d.addr) + ")"; })
-                .attr("d", d3.svg.symbol());
+              points.enter().append("circle")
+                .attr("class", "line")
+                //.attr("stroke", function(d, i) { return data.type == "w" ? "red" : "green"; })
+                .attr("cx", function(d) { return scatter_x(d.index); })
+                .attr("cy", function(d) { return scatter_y(d.addr); })
+                .attr("r", 3);
               
               points.transition().duration(0)
-                .attr("class", "dot")
-                .attr("stroke", function(d, i) { return data.type == "w" ? "red" : "blue"; })
-                .attr("transform", function(d) { return "translate(" + scatter_x(d.index) + "," + scatter_y(d.addr) + ")"; })
-                .attr("d", d3.svg.symbol());
+                .attr("class", "line")
+                //.attr("stroke", function(d, i) { return data.type == "w" ? "red" : "green"; })
+                .attr("cx", function(d) { return scatter_x(d.index); })
+                .attr("cy", function(d) { return scatter_y(d.addr); })
+                .attr("r", 3);
               
               points.exit().remove();
+
+              scatter_vis.select("path.line")
+                .data([data.events])
+                .attr("class", "line")
+                .attr("d", d3.svg.line()
+                .x(function(d) { return scatter_x(d.index); })
+                .y(function(d) { return scatter_y(d.addr); }));
         });
       });
     }
@@ -778,7 +790,7 @@
               .attr("height", h + p * 2)
             .append("g")
               .attr("transform", "translate(" + p + "," + p + ")");
-
+/*
           var xrule = deriv_vis.selectAll("g.x")
               .data(deriv_x.ticks(10))
             .enter().append("g")
@@ -789,7 +801,7 @@
               .attr("x2", deriv_x)
               .attr("y1", 0)
               .attr("y2", h);
-/*
+
           xrule.append("text")
               .attr("x", deriv_x)
               .attr("y", h + 3)
@@ -856,21 +868,26 @@
       var histo_vis = null;
       var w = 200;
       var h = 200;
+      var p = 20;
 
-      $(__div_memhisto).css("border", "solid yellow 1px"); 
       __vS.addListener("init", function(eventname, event, caller) {
-        histo_vis = d3.select(__div_memhisto).append("svg")
-            .attr("width", w)
-            .attr("height", h)
+        histo_vis = d3.select(__div_memhisto)
+          .append("svg")
+            .attr("width", w + p * 2)
+            .attr("height", h + p * 2)
           .append("g")
-            .attr("transform", "translate(.5)");
+            .attr("transform", "translate(" + p + "," + p + ")");
           
         histo_vis.append("line")
-            .attr("class", "histo_line")
-            .attr("x1", 0)
-            .attr("x2", w)
-            .attr("y1", h)
-            .attr("y2", h);
+          .attr("class", "histo_line")
+          .attr("x1", 0)
+          .attr("x2", w)
+          .attr("y1", h)
+          .attr("y2", h);
+
+        histo_vis.append("rect")
+          .attr("width", w)
+          .attr("height", h);
       });
 
       __vS.addListener("frameslider_change", function(eventname, event, caller) { 

@@ -253,16 +253,21 @@ void PervertLayer::f_context_events(Server::Request* req, Server::Response* res)
       break;
   }
 
+  int total = trace->byContext_[context].size();
+  int delta = total / 32 + 1;
+  int count = 0;
+
   Json::Value events(Json::arrayValue);
   if ( type == Trace::Event::READ || type == Trace::Event::WRITE )
     for ( vector<Trace::Event*>::iterator i = trace->byContext_[context].begin(), ie = trace->byContext_[context].end(); i != ie; ++i )
-    {
-      Json::Value event;
-      event["addr"]  = (int) (*i)->arg1;
-      event["index"] = (int) (*i)->index;
+      if ( count++ % delta == 0 )
+      {
+        Json::Value event;
+        event["addr"]  = (int) (*i)->arg1;
+        event["index"] = (int) (*i)->index;
 
-      events.append(event); 
-    }
+        events.append(event); 
+      }
   root["events"] = events;
 
   writeJSONResponse(req,res,root);
@@ -327,32 +332,42 @@ void PervertLayer::f_context_histo(Server::Request* req, Server::Response* res) 
   if ( (unsigned int) frame >= trace->events_.size() )
     return writeStatusAndEnd(req,res,500);
 
-  map<int, int> histogram;
+  vector<int> histogram;
+  histogram.resize(10);
 
   Trace::Event::Type type = trace->events_[frame].type;
   Trace::Context* context = trace->events_[frame].context;
 
+  int lastAddr = -1;
   if ( type == Trace::Event::READ || type == Trace::Event::WRITE )
     for ( vector<Trace::Event*>::iterator i = trace->byContext_[context].begin(), ie = trace->byContext_[context].end(); i != ie; ++i )
     {
-      // XXX: I'm lining the size of a cache line here.
-      int line = (*i)->arg1 / 1024;
-      if ( histogram.find(line) == histogram.end() )
-        histogram[line] = 1;
-      else
-        histogram[line]++;
-    }
+      if ( lastAddr == -1 )
+      {
+        lastAddr = (int) (*i)->arg1;
+        continue;
+      }
 
+      int addr = (int) (*i)->arg1;
+      int delta = abs(addr - lastAddr);
+
+      for ( unsigned int i = 0; i < 10; ++i )
+        if ( delta <= 4 )
+        {
+          histogram[i]++;
+          break;
+        }
+        else
+          delta >>= 2;
+
+      lastAddr = addr;
+    }
 
   Json::Value root;
   Json::Value histo(Json::arrayValue);
-  for ( map<int, int>::iterator i = histogram.begin(), ie = histogram.end(); i != ie; ++i )
-  {
-    Json::Value element;
-    element["line"] = (*i).first;
-    element["count"] = (*i).second;
-    histo.append(element);
-  }
+  for ( unsigned int i = 0; i < 10; ++i )
+    histo.append(histogram[i]);
+
   root["histo"] = histo;
   writeJSONResponse(req,res,root);
 }
