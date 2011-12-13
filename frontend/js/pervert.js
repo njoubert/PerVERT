@@ -673,9 +673,9 @@
       var scatter_y = null;
       var scatter_vis = null;
 
-      var w = 200;
-      var h = 200;
-      var p = 20;
+      var w = 250;
+      var h = 250;
+      var r = 5;
       
       __vS.addListener("init", function(eventname, event, caller) {
         __db.f_counts(function(counts) {          
@@ -687,19 +687,17 @@
           scatter_y = d3.scale.linear().domain([0,ymax]).range([h, 0]);
           scatter_vis = d3.select(__div_memscatter)
             .append("svg")
-              .attr("width", w + p * 2)
-              .attr("height", h + p * 2)
-            .append("g")
-              .attr("transform", "translate(" + p + "," + p + ")");
+              .attr("width", w)
+              .attr("height", h)
+            .append("g");
 
           var xrule = scatter_vis.selectAll("g.x")
-              .data(scatter_x.ticks(10))
+              .data(d3.range(0,w,r))
             .enter().append("g")
-              .attr("class", "x");
-
-          xrule.append("line")
-              .attr("x1", scatter_x)
-              .attr("x2", scatter_x)
+              .attr("class", "x")
+            .append("line")
+              .attr("x1", function(d) { return d; })
+              .attr("x2", function(d) { return d; })
               .attr("y1", 0)
               .attr("y2", h);
 /*
@@ -711,15 +709,14 @@
               .text(scatter_x.tickFormat(10));
 */
           var yrule = scatter_vis.selectAll("g.y")
-              .data(scatter_y.ticks(10))
+              .data(d3.range(0,h,r))
             .enter().append("g")
-              .attr("class", "y");
-
-          yrule.append("line")
+              .attr("class", "y")
+            .append("line")
               .attr("x1", 0)
               .attr("x2", w)
-              .attr("y1", scatter_y)
-              .attr("y2", scatter_y);
+              .attr("y1", function(d) { return d; })
+              .attr("y2", function(d) { return d; });
 /*
           yrule.append("text")
               .attr("x", -3)
@@ -866,26 +863,39 @@
     function create_histo_view() {
 
       var histo_vis = null;
-      var w = 200;
-      var h = 200;
-      var p = 20;
+      var w = 250; 
+      var h = 250;
+      var r = 5;
 
       __vS.addListener("init", function(eventname, event, caller) {
         histo_vis = d3.select(__div_memhisto)
           .append("svg")
-            .attr("width", w + p * 2)
-            .attr("height", h + p * 2)
-          .append("g")
-            .attr("transform", "translate(" + p + "," + p + ")");
+            .attr("width", w)
+            .attr("height", h)
+          .append("g");
           
-        histo_vis.append("line")
-          .attr("class", "histo_line")
-          .attr("x1", 0)
-          .attr("x2", w)
-          .attr("y1", h)
-          .attr("y2", h);
+        var xrule = histo_vis.selectAll("g.x")
+            .data(d3.range(0,w,r))
+          .enter().append("g")
+            .attr("class", "x")
+          .append("line")
+            .attr("x1", function(d) { return d; })
+            .attr("x2", function(d) { return d; })
+            .attr("y1", 0)
+            .attr("y2", h);
+        
+        var yrule = histo_vis.selectAll("g.y")
+            .data(d3.range(0,h,r))
+          .enter().append("g")
+            .attr("class", "y")
+          .append("line")
+            .attr("x1", 0)
+            .attr("x2", w)
+            .attr("y1", function(d) { return d; })
+            .attr("y2", function(d) { return d; });
 
         histo_vis.append("rect")
+          .attr("class", "border")
           .attr("width", w)
           .attr("height", h);
       });
@@ -900,7 +910,7 @@
               .domain([0, d3.max(data.histo)])
               .range([0, h]);
 
-          var bars = histo_vis.selectAll("rect")
+          var bars = histo_vis.selectAll("rect.histo_bar")
               .data(data.histo);
 
           bars.enter().append("rect")

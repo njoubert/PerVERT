@@ -112,8 +112,8 @@ h4 { font-size: 3em; line-height: 1; margin-bottom: 0.5em; }
 /* histogram */
 .histo_bar {
   fill: steelblue;
-  stroke: white;
-  stroke-width: 1px;
+  stroke: #ccc;
+  stroke-width: 0px;
 }
 .histo_line {
   stroke: black;
@@ -126,11 +126,11 @@ path.dot {
 }
 rect {
   fill: none;
-  stroke: black;
+  stroke: #ccc;
   shape-rendering: crispEdges;
 }
 .x line, .y line {
-  stroke: #ccc;
+  stroke: #eee;
   shape-rendering: crispEdges;
 }
 
