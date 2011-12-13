@@ -348,6 +348,8 @@
     var dataHeight = canvasHeight - 2*data_y_offset;
     var dataLastX  = canvasWidth - data_x_offset;
     var dataLastY  = canvasHeight - data_y_offset;
+    
+    var fixed_index_offset = (canvasWidth*data_y_offset) + data_x_offset;      
 
     var show_zoom = true;
     var zoom_scalefnc = make_quadratic_scale(20, -0.5, 1);
@@ -357,6 +359,35 @@
       __vS = ViewState(obj);
     }
     //private functions:
+
+    function addr_gxgy(a) { return {
+      gx: (Math.floor(a/4)%256),
+      gy: Math.floor(Math.floor(a/4)/256)
+    }}
+    function alloc_gxgy(a) { return {
+      gx: (Math.ceil(a/4)%256),
+      gy: Math.floor(Math.ceil(a/4)/256)
+    }}
+    
+    function gxgy_index_tl(p) {
+      return 4*(fixed_index_offset + 
+        Math.floor(p.gx*4 - boxside) + 
+        Math.floor((p.gy*4 - boxside)*(dataWidth + data_y_offset*2) ));        
+    }
+    function gxgy_index_center(p) { 
+      return 4*(fixed_index_offset + 
+        (p.gx*4) +
+        ((p.gy*4)*(dataWidth + data_y_offset*2) ));        
+    }
+    function index_shift(i,x,y) {
+      return i + (x + y*(canvasWidth))*4;
+    }
+    function index_plus_x(i,x) {
+      return i + 4*x;
+    }
+    function index_plus_y(i,y) {
+      return i + y*(canvasWidth)*4;
+    }
 
     function drawgrid(data,f_counts) {
       var canvas_grid = document.getElementById("pv_memmap_canvas_grid");
@@ -396,68 +427,17 @@
     }
 
     function drawmockup(data,f_counts) {
-      
       var canvas = document.getElementById("pv_memmap_canvas");
-      
       var ctx = canvas.getContext("2d");
       ctx.clearRect ( 0 , 0 , canvasWidth , canvasHeight );
-
-      //let's calculate global offsets;
-      
-      
-      var fixed_index_offset = (canvasWidth*data_y_offset) + data_x_offset;      
-      var total_lines = (f_counts.max_addr / (canvasWidth-100));
-      var offset_between_lines = 8;//Math.floor(((canvasHeight-100) / total_lines) + 1);
-      
       
       var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
       var dt = imageData.data;
-
-      function addr_gxgy(a) { return {
-        gx: (Math.floor(a/4)%256),
-        gy: Math.floor(Math.floor(a/4)/256)
-      }}
-      function alloc_gxgy(a) { return {
-        gx: (Math.ceil(a/4)%256),
-        gy: Math.floor(Math.ceil(a/4)/256)
-      }}
-      
-      function gxgy_index_tl(p) {
-        return 4*(fixed_index_offset + 
-          Math.floor(p.gx*4 - boxside) + 
-          Math.floor((p.gy*4 - boxside)*(dataWidth + data_y_offset*2) ));        
-      }
-      function gxgy_index_center(p) { 
-        return 4*(fixed_index_offset + 
-          (p.gx*4) +
-          ((p.gy*4)*(dataWidth + data_y_offset*2) ));        
-      }
-      function index_shift(i,x,y) {
-        return i + (x + y*(canvasWidth))*4;
-      }
-      function index_plus_x(i,x) {
-        return i + 4*x;
-      }
-      function index_plus_y(i,y) {
-        return i + y*(canvasWidth)*4;
-      }
-      
-      function newFilledArray(len, val) {
-          var a = [];
-          while(len--){
-              a.push(val);
-          }
-          return a;
-      }
-
-
       
       /* Draw the regions */
       var malloc_color = 175;
       for (var idx = 0; idx < data.regions.length; idx++) {
-        
         var r = data.regions[idx];     
-        
         var index = gxgy_index_tl(addr_gxgy(r.begin));
         
         function draw_vert(x,indx) {
@@ -486,7 +466,7 @@
             gxgy.gy += 1;
           }
         }
-        
+
       }
       
       /* Draw accesses */
@@ -517,7 +497,7 @@
         
       } else {
 
-        var decay = 0.8;
+        var decay = 0.9;
         var value = 255;
         
         for (var idx = data.addr.length - 1; idx >= 0 ; idx--) {
@@ -531,23 +511,22 @@
             for (var y = -hw; y <= hw; y++) {
               var i = index_shift(index,x,y);
 
-              if (hw > 2 && x > -2 && x < 2 && y > -2 && y < 2) {
+              if (hw > 2 && x > -2 && x < 2 && y > -2 && y < 2) {  //inner dot
 
                   dt[i] = 1;
-                  dt[i+1] = 1;
-                  dt[i+2] = 1;
+                  dt[++i] = 1;
+                  dt[++i] = 1;
                   
               } else if (data.events[idx] == "r") { //READS
                                   
                   dt[i] *= decay;
-                  if (dt[i+1] == 0) {
-                    dt[i+1] = value;
+                  if (dt[++i] == 0) {
+                    dt[i] = value;
                   } else {
-                    dt[i+1] = Math.max(dt[i+1]*decay, 0);                
+                    dt[i] = Math.max(dt[i]*decay, 0);                
                   }
-                  dt[i+2] = 0;
+                  dt[++i] = 0;
                   
-                
               } else {  //WRITES
                 
                   if (dt[i] == 0)  {
@@ -555,12 +534,12 @@
                   } else {
                     dt[i] = Math.max(dt[i]*decay, 0);
                   }
-                  dt[i+1] *= decay; 
-                  dt[i+2] = 0;
+                  dt[++i] *= decay; 
+                  dt[++i] = 0;
                 
               }
               
-              dt[i+3] = 255;
+              dt[++i] = 255;
             }
           }
         }

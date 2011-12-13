@@ -1,6 +1,6 @@
 /* Layout */
 .container {
-	min-width: 1670px;
+	width: 1670px;
 	margin: 10px auto;
 }
 .container #inside {
