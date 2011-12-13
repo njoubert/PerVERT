@@ -657,7 +657,6 @@
     }
     
     function create_context_view() {
-      $(__div_context).css("border", "solid black 1px"); 
       __vS.addListener("frameslider_change", function(eventname, event, caller) { __db.f_context(event, function(data) {
           $(__div_context).html("");
           $.each(data.stack, function(idx, val) { 
