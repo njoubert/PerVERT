@@ -59,5 +59,5 @@ haskell2: haskell2.hs
 	ghc $< 
 
 clean:
-	rm -rf testdata *.hi pin.log $(HASKELL) $(OBJ)
+	rm -rf testdata *.hi *.o pin.log $(HASKELL) $(OBJ)
 
