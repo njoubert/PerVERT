@@ -337,12 +337,13 @@
     var __vS = null;
     var __db = null;
     
-    var data_x_offset = 25;  //on both sides
-    var data_y_offset = 25;  //on both sides
+    var data_x_offset = 24;  //on both sides
+    var data_y_offset = 24;  //on both sides
     var boxside = 2;
 
-    var canvasWidth = 1024 + 2*data_x_offset;
-    var canvasHeight = 550 + 2*data_y_offset;
+    var bytes_in_line = 512;
+    var canvasWidth = bytes_in_line + 2*data_x_offset;
+    var canvasHeight = 690 + data_y_offset;
     
     var dataWidth  = canvasWidth - 2*data_x_offset;
     var dataHeight = canvasHeight - 2*data_y_offset;
@@ -361,8 +362,8 @@
     //private functions:
 
     function addr_gxgy(a) { return {
-      gx: (Math.floor(a/4)%256),
-      gy: Math.floor(Math.floor(a/4)/256)
+      gx: (Math.floor(a/4)%(bytes_in_line/4)),
+      gy: Math.floor(Math.floor(a/4)/(bytes_in_line/4))
     }}
     function alloc_gxgy(a) { return {
       gx: (Math.ceil(a/4)%256),
@@ -392,8 +393,6 @@
     function drawgrid(data,f_counts) {
       var canvas_grid = document.getElementById("pv_memmap_canvas_grid");
       var ctx_grid = canvas_grid.getContext("2d");
-      var canvasWidth  = canvas_grid.width;
-      var canvasHeight = canvas_grid.height;
       ctx_grid.clearRect ( 0 , 0 , canvasWidth , canvasHeight );
 
       var imageData_grid = ctx_grid.getImageData(0, 0, canvasWidth, canvasHeight);
@@ -449,8 +448,8 @@
             dt[++i] = 255;            
           }
         }
-        draw_vert(0,gxgy_index_tl(addr_gxgy(r.begin)));
-        draw_vert(0,gxgy_index_tl(alloc_gxgy(r.end)));
+        //draw_vert(0,gxgy_index_tl(addr_gxgy(r.begin)));
+        //draw_vert(0,gxgy_index_tl(alloc_gxgy(r.end)));
            
         for (var s = r.begin; s < r.end; s++) {
           var gxgy = addr_gxgy(s);            
@@ -544,8 +543,6 @@
           }
         }
         
-        
-        
       }
 
       ctx.putImageData(imageData, 0, 0);
@@ -601,7 +598,7 @@
     
     function create_mem_view() {
       $(__div_memmap).css("width", canvasWidth);
-      $(__div_memmap).css("height", canvasHeight);
+      // $(__div_memmap).css("height", canvasHeight);
       
       $(__div_memmap).html("<canvas id='pv_memmap_canvas_grid' width='"+canvasWidth+"' height='"+canvasHeight+"'></canvas>");
       $(__div_memmap).append("<canvas id='pv_memmap_canvas_alloc' width='"+canvasWidth+"' height='"+canvasHeight+"'></canvas>");
@@ -672,8 +669,8 @@
       var scatter_y = null;
       var scatter_vis = null;
 
-      var w = 250;
-      var h = 250;
+      var w = 575;
+      var h = 300;
       var r = 5;
       
       __vS.addListener("init", function(eventname, event, caller) {
@@ -862,8 +859,8 @@
     function create_histo_view() {
 
       var histo_vis = null;
-      var w = 250; 
-      var h = 250;
+      var w = 575; 
+      var h = 300;
       var r = 5;
 
       __vS.addListener("init", function(eventname, event, caller) {
