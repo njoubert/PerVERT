@@ -157,14 +157,20 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
   Do this last.
 
 \section {Motivation}
+  \subsection{Binary Instrumentation}
+    \begin{itemize}
+      \item  
+    \end{itemize}
   \begin{itemize}
     \item High performance codes need to be as fast as possible. 
     \item Performance is a function of memory efficiency.
     \item
-      
   \end{itemize}
 
 \section {Design}
+  \begin{itemize}
+    \item
+  \end{itemize}
 
 \section {Implementation}
   \begin{itemize}
@@ -178,6 +184,8 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
   \subsection{Binary Instrumentation}
     \begin{itemize}
       \item What it is: Pintool plugin
+      \item Programming language agnostic instrumentation tool.
+      \item Works on code written in any language that compiles to x86 binary.
       \item Produces memory trace
       \item Intercept X86 to find read/write instructions
       \item Intercept function calls to find malloc/free
