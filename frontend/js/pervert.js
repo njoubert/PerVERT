@@ -366,8 +366,8 @@
       gy: Math.floor(Math.floor(a/4)/(bytes_in_line/4))
     }}
     function alloc_gxgy(a) { return {
-      gx: (Math.ceil(a/4)%256),
-      gy: Math.floor(Math.ceil(a/4)/256)
+      gx: (Math.ceil(a/4)%(bytes_in_line/4)),
+      gy: Math.floor(Math.ceil(a/4)/(bytes_in_line/4))
     }}
     
     function gxgy_index_tl(p) {
@@ -448,8 +448,8 @@
             dt[++i] = 255;            
           }
         }
-        //draw_vert(0,gxgy_index_tl(addr_gxgy(r.begin)));
-        //draw_vert(0,gxgy_index_tl(alloc_gxgy(r.end)));
+        draw_vert(0,gxgy_index_tl(addr_gxgy(r.begin)));
+        draw_vert(0,gxgy_index_tl(alloc_gxgy(r.end)));
            
         for (var s = r.begin; s < r.end; s++) {
           var gxgy = addr_gxgy(s);            
