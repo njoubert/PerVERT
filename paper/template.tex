@@ -154,16 +154,101 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 %%% This is the first section of the body of your paper.
 
 \section{Introduction}
+  Do this last.
+
+\section {Motivation}
+  \begin{itemize}
+    \item High performance codes need to be as fast as possible. 
+    \item Performance is a function of memory efficiency.
+    \item
+      
+  \end{itemize}
+
+\section {Design}
+
+\section {Implementation}
+  \begin{itemize}
+    \item Often have to do remote performance tuning.
+    \item Development environment often divorced from production environment -- examples.
+    \item Useful to divorce visualization frontend from analysis and binary instrumentation
+    \item Also allows us to leverage existing suite of html visualization tools.
+    \item Built up from three parts -- described below
+  \end{itemize}
+
+  \subsection{Binary Instrumentation}
+    \begin{itemize}
+      \item What it is: Pintool plugin
+      \item Produces memory trace
+      \item Intercept X86 to find read/write instructions
+      \item Intercept function calls to find malloc/free
+      \item Save as trace file
+    \end{itemize}
+  \subsection{Backend}
+    \begin{itemize}
+      \item System is designed to handle massive amounts of data.
+      \item Static index built over that data.
+      \item On demand analysis done in response to user interaction.
+      \item To optimize this, we unify analysis of and interface to data.
+    \end{itemize}
+
+    % bo popsicle
+
+    \subsubsection{Index}
+      \begin{itemize}
+        \item What is is: Persistent long running analysis server
+        \item Read and index trace files (what indices?)
+        \item Read and index debug symbols from executable (what symbols?)
+      \end{itemize}
+      
+      % eric above
+      % june sandwich -- 
+      % niels below
+
+    \subsubsection{Server}
+      \begin{itemize}
+        \item HTTP JSON server
+        \item Serves frontend / presents JSON api
+        \item Persistently captures all executables so that you can do comparisons between runs.
+        \item A stateless api so that multiple users can view the same data or one user can close and come back.
+      \end{itemize}
+
+  \subsection{Frontend}
+    \begin{itemize}
+      \item Web app: user interaction initiates asynchronous request for textual data - then render as visualizations.
+      \item Caching layer stores interaction history to minimize backend communication
+      \item Use canvas to draw memory space / pixel pushing.
+      \item D3 to draw aggregate statistics
+    \end{itemize}
+
+\section {Example Applications}
+  \subsection{Algorithm}
+  \subsection{Variants}
+    \begin{itemize}
+      \item C++ array
+      \item C++ STL vector
+      \item C++ STL map
+      \item Haskell list
+    \end{itemize}
 
 \section {Related Work}
 
-\section{Implementation}
+\section{Future Work}
+  \subsection{Visualization and Interaction}
+  \begin{itemize}
+    \item Diffmaps for comparing across revisions
+    \item Aggregate views for massive amounts of data
+    \item User-defined data filtering
+  \end{itemize}
+
+  \subsection{Data Collection and Analysis}
+  \begin{itemize}
+    \item Physical memory simulator
+    \item Supporting incomplete data / sampling
+    \item Selective data capture
+  \end{itemize}
 
 \section{Conclusion}
-
-\section*{Acknowledgements}
-
-To Robert, for all the bagels.
+  Do this last.
 
 \bibliographystyle{acmsiggraph}
 \bibliography{template}
