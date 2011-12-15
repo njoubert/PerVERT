@@ -181,27 +181,46 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 \section{Design Goals}
 
   \subsection{Binary Instrumentation}
-  \begin{itemize}
-  \item At what level do we work? Performance depends on everything happening in your program, including the parts you have no insight into - libraries and system calls/
-  \item It lowers the barrier to performance tuning when the same toolset can inform you about your code and the libraries you are using.
-  \item Workin at a binary level provides transparency through everything an app uses, including system and third party libs.
-  \end{itemize}
+  %\begin{itemize}
+  %\item At what level do we work? Performance depends on everything happening in your program, including the parts you have no insight into - libraries and system calls/
+  %\item It lowers the barrier to performance tuning when the same toolset can inform you about your code and the libraries you are using.
+  %\item Workin at a binary level provides transparency through everything an app uses, including system and third party libs.
+  %\end{itemize}
+
+  Performance is an aggregate property of a software system.
+  It depends on every layer of code which is executed, including those that the user often has no insight into:
+    libraries and system calls.
+  This barrier to optimization could be substantially lowered by a toolset that could instrument both.
+  Additionally, by instrumenting code at the binary level, the resulting transparency can extent not only through
+    all layers of the code, but through to the choice of programming language as well.
 
   \subsection{Remote Analysis}
-  \begin{itemize}
-    \item development vs production machines look very different
-    \item often need to perftune remotely
-    \item ideal to ship as little data from back-end to front-end, so analysis runs on back-end and vis runs on front-end.
-  \end{itemize}
+  %\begin{itemize}
+  %  \item development vs production machines look very different
+  %  \item often need to perftune remotely
+  %  \item ideal to ship as little data from back-end to front-end, so analysis runs on back-end and vis runs on front-end.
+  %\end{itemize}
+
+  For many high performance software systems, development and production environments are completely distinct.
+  Development often takes place remotely, and code is run on exotic hardware that does not even support a graphical environment.
+  Running analysis directly on the backend and shipping the results to a thin visualization client would enable 
+    the user to debug performance in the same environment that he develops in.
+  Additionally, divorcing data analysis from visualization would allow multiple developers to inspect the same performance
+    log simultaneously.
 
   \subsection{On-Demand Analysis}
-  \begin{itemize}
-    \item massive amounts of data, aggregated into many different ways, with multiple views of this data
-    \item cannot do all analysis ahead of time
-    \item do no want to do unneeded analysis
-    \item thus we build a tool that can do analysis on-the-gly
-  \end{itemize}
-  
+  %\begin{itemize}
+  %  \item massive amounts of data, aggregated into many different ways, with multiple views of this data
+  %  \item cannot do all analysis ahead of time
+  %  \item do no want to do unneeded analysis
+  %  \item thus we build a tool that can do analysis on-the-gly
+  %\end{itemize}
+   
+  High performance software systems generate enormous amounts of profiling data.
+  Aggregating and visualizing that data statically would be intractable, 
+    both in terms of computational effor and storage requirement.
+  This complexity could be overcome both through caching and a combination of statically computing only what can
+    be stored efficiently and computing all other analyses on demand.
 
 \section {Design}
   \subsection{Memory Map}
