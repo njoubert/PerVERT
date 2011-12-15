@@ -256,33 +256,52 @@ Interaction:
   \end{itemize}
 
   \subsection{Binary Instrumentation}
-    \begin{itemize}
-      \item What it is: Pintool plugin
-      \item Programming language agnostic instrumentation tool.
-      \item Works on code written in any language that compiles to x86 binary.
-      \item Produces memory trace
-      \item Intercept X86 to find read/write instructions
-      \item Intercept function calls to find malloc/free
-      \item Save as trace file
-    \end{itemize}
-  \subsection{Backend}
-    \begin{itemize}
-      \item System is designed to handle massive amounts of data.
-      \item Static index built over that data.
-      \item On demand analysis done in response to user interaction.
-      \item To optimize this, we unify analysis of and interface to data.
-    \end{itemize}
+%    \begin{itemize}
+%      \item What it is: Pintool plugin
+%      \item Programming language agnostic instrumentation tool.
+%      \item Works on code written in any language that compiles to x86 binary.
+%      \item Produces memory trace
+%      \item Intercept X86 to find read/write instructions
+%      \item Intercept function calls to find malloc/free
+%      \item Save as trace file
+%    \end{itemize}
 
-    % bo popsicle
+    The binary instrumentation component of the PerVERT pipeline is a plugin for Intel's pintool \cite{Luk:2005:PBC:1065010.1065034}:
+      a language agnostic JIT instrumentation framework for X86 object files.
+    Because of this, PerVERT can be run object code irrespective of its original source language.
+
+    PerVERT produces a memory trace by intercepting each of a program's instructions, just before they are executed.
+    Reads and writes are found by extracting the arguments from opcodes which are known to touch memory,
+      wheras calls to malloc and free are found by identifying jumps to addresses which correspond to those functions
+      in the symbol table.
+    Reads and writes to addresses that do not appear within malloc'ed regions of the heap are ignored.  
+    The resulting trace is written out to a file, and each element is annotated with the stack context in which it occurred.  
+
+  \subsection{Backend}
+    %\begin{itemize}
+    %  \item System is designed to handle massive amounts of data.
+    %  \item Static index built over that data.
+    %  \item On demand analysis done in response to user interaction.
+    %  \item To optimize this, we unify analysis of and interface to data.
+    %\end{itemize}
+
+    The PerVERT backend is designed to handle massive amounts of data.
+    It is no uncommon for even a modestly sized program to generate in excess of one million memory events.
+    The PerVERT backend builds a static index over each memory trace that it produces, 
+      and performs on demand analysis when necessary in response to user interactions.
+    To minimize the amount of time spent transmitting the resulting data, 
+      PerVERT's analysis engine and data server are unified.
+    We describe this architecture below.
 
     \subsubsection{Index}
-      \begin{itemize}
-        \item What is is: Persistent long running analysis server
-        \item Read and index trace files (what indices?)
-        \item Read and index debug symbols from executable (what symbols?)
-      \end{itemize}
+      %\begin{itemize}
+      %  \item What is is: Persistent long running analysis server
+      %  \item Read and index trace files (what indices?)
+      %  \item Read and index debug symbols from executable (what symbols?)
+      %\end{itemize}
       
-      % eric above
+      
+
       % june sandwich -- 
       % niels below
 
