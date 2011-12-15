@@ -270,7 +270,7 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
   A single memory location can be accessed multiple times using both reads and writes following one another. We want to visually distinguish points in our history trail that have many accesses to them versus those that have a single access. Similarly, we want to visually distinguish fireworks that happen on top of one another depending on the type of accesses - reads or writes. We use a technique called ``alpha blending'' to change the color of a cell as different types of accesses happen on it. For example, a cell that is accessed by alternating reads and writes now becomes fireworks of greens and reds, and with their overlap colored yellow. In the same way, a cell that is accessed by mostly reading and sometimes writing will be colored mostly green (reads) with a small amount of red (writes). This display gives visual cues to the access patterns of an individual cell in the same way that history trails gives access patterns to different memory cells.
   
   \subsubsection{Interaction}
-    The first level of interaction with this memory map is through watching an animation play back. The set of visual cues we've described leads to interesting events being very obvious, and begging further inspection.
+    The first level of interaction with this memory map is through watching an animation play back. The set of visual cues we've described leads to interesting events being very obvious, and begging further inspection. We provide a time slider to show progress over time and interacting with the current point in time.
     
     We provide controls to pause the animation, and scrub through time or step forwards and backwards in time. By scrubbing an event you can roll up into a higher level view of quickly moving through accesses to compare memory behavior over larger chunks of time. If a locally interesting event happens, stepping over it gives time to mentally reason about the behavior.
     
@@ -452,20 +452,41 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
       % niels below
 
     \subsubsection{Server}
-      \begin{itemize}
-        \item HTTP JSON server
-        \item Serves frontend / presents JSON api
-        \item Persistently captures all executables so that you can do comparisons between runs.
-        \item A stateless api so that multiple users can view the same data or one user can close and come back.
-      \end{itemize}
+      The analysis engine performs a set of operations whenever a new binary is traced. Once this analysis is complete, the data has to be made available in a form that's quickly transmitted and easily consumed by the front-end. As the user explores a program, some analysis has to happen dynamically, so events on the front-end has to trigger new analyses. Since we want the front-end to be divorced from the analysis engine, so that analysis can happen close to the code while the front-end can run on a different machine, we implement a client-server infrastructure where the data server is contained inside the analysis engine.
+      
+      The server itself takes the form of a HTTP JSON server. The server publishes a set of paths that returns information to the front-end. Each path is associated with a different type of information, and takes parameters to specify the exact version of the information we're interested in. For example, the memory map publishes a path that computes the set of memory events and regions at a specific point in time for a specific executable. The front-end can thus request exactly and only the information it needs to display to the user, and the back-end does not need to track any state.
+      
+      The server itself is engineered in the ``Rack''-style\cite{rack} of web servers, where multiple layers of middleware are plugged together to provide a full stack web server written as a set of modules.
+      
+      The server runs presistently in the background, even between traces of executables. This makes it possible to capture multiple traces of the same executable for future analysis, and capture multiple different executables so that multiple people can use the tool on the same machine.
+      
+      Since the API is completely stateless, multiple users and view the same program at the same time, and all data transferred can be cached on either side. This allows for complete flexibility in when analysis happen and how data is caches for the most efficient view of the data.
+      
+          
+      % \begin{itemize}
+      %   \item HTTP JSON server
+      %   \item Serves frontend / presents JSON api
+      %   \item Persistently captures all executables so that you can do comparisons between runs.
+      %   \item A stateless api so that multiple users can view the same data or one user can close and come back.
+      % \end{itemize}
 
   \subsection{Frontend}
-    \begin{itemize}
-      \item Web app: user interaction initiates asynchronous request for textual data - then render as visualizations.
-      \item Caching layer stores interaction history to minimize backend communication
-      \item Use canvas to draw memory space / pixel pushing.
-      \item D3 to draw aggregate statistics
-    \end{itemize}
+    
+    The visualization is built as a HTML5 ajax application. All user interaction initiates asynchronous requests for textual data from the back-end. This information is then rendered as visualizations using a suite of toolkits.
+    
+    Any communication to the backend is stateless. To support a highly interactive experience, all back-end data is cached. The user can now perform quick comparisons between data by flipping back and forth without having to request data from the back-end. It also lowers the stress on the back-end server.
+    
+    The memory map requires drawing a large space with custom visualizations. Since performance of this view is critical, we implement it by drawing pixels on a HTML Canvas element. We stack several of these canvas elements to avoid having to redraw all the layers every frame. The alpha-blending of different accesses is implemented as a standard Alpha Compositing algorithm on the pixel level.
+    
+    Graphs of aggregate statistics are built using D3, and drawn on-demand by events firing from the user's interaction with the time slider, or as time animated. These graphs each fire their own data requests to the caching layer, and can thus easily be swapped out for different displays.
+    
+  
+    % \begin{itemize}
+    %   \item Web app: user interaction initiates asynchronous request for textual data - then render as visualizations.
+    %   \item Caching layer stores interaction history to minimize backend communication
+    %   \item Use canvas to draw memory space / pixel pushing.
+    %   \item D3 to draw aggregate statistics
+    % \end{itemize}
 
 \section{Example Applications}\label{ch_e}
   % No outline - we never specced this paragraph out
@@ -481,12 +502,34 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
     The variants differ only in the type of container used.
 
   \subsection{Variants}
-    \begin{itemize}
-      \item C++ array WITH STREAMING THROUGH
-      \item C++ STL vector WITH PICTURE OF GROWTH AND REALLOC
-      \item C++ STL map WITH PICTURE OF BINARY SEARCH
-      \item Haskell list WITH PICTURE
-    \end{itemize}
+  
+  \subsubsection{C Array}
+  For this example we inserted and read a set of integers into and from a C array.
+  
+  In the C++ Array view, the animation reveals two distinct sections of the code's behavior. Initially a linear progression of writes to memory occur as values gets inserted into the array. Once this is complete, a second linear pass over the array reads values back. 
+
+  \subsubsection{C++ STL Vector}
+  For this example we inserted and read a set of integers into and from a C++ vector.
+  
+  The vector starts off as a short 4-element array. As values are written to this array, the dynamic resizing of the array and the cost associated with that can immediately be seen: after 4 writes, a new array is allocated and all the previous values are copied to this longer array. This pattern of inserts, followed by enlarge and copy, now makes up the first section of the array. The same behavior of the array's second section can still be seen, where a linear read of the entire final array happens.
+
+  \subsubsection{C++ STL Map}
+  For this example we inserted and read a set of integers into and from a C++ map.
+  
+  The map approach has similarities to the STL vector, where lots of resizing and copying can be seen. As the animation is viewed, every insert starts with a traversal of multiple cache lines before it finds the part of the map that stores the bucket for the given item. Once the insert happens, multiple writes occur as it inserts and sorts the bucket list. 
+  Reads out of the map also is a significantly more complicated algorithm now - multiple cache lines are traversed to find the appropriate bucket, the bucket is searched for the item, and the item is returned.
+
+  \subsubsection{Haskell List}
+  For this example we inserted and read a set of integers into and from a haskell list.
+  
+  Since we are language agnostic, we used the tool to inspect haskell code that performs the same operation. In this case there is a significant amount of startup accesses happening, which appear to initialize the haskell environment. A linear array still gets built, but bookkeeping happens at the beginning and end of every access. This display makes it very obvious where haskell incurs an overhead above the equivalent C++ implementation.
+  
+    % \begin{itemize}
+    %   \item C++ array WITH STREAMING THROUGH
+    %   \item C++ STL vector WITH PICTURE OF GROWTH AND REALLOC
+    %   \item C++ STL map WITH PICTURE OF BINARY SEARCH
+    %   \item Haskell list WITH PICTURE
+    % \end{itemize}
 
 \section{Related Work}\label{ch_r}
 
