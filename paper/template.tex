@@ -117,7 +117,10 @@ Examples include web-servers which routinely handle thousands of simultaneous co
   and petaflop supercomputers which perform physical simulations that span tens of thousands of cpu cores. 
 As improvements in clock frequency slow and hardware trends continue towards increased parallelism, 
   the runtime performance of these and similar systems will become ever more a function of memory efficiency. 
-Unfortunately, the ability to effectively reason about this phenomenon using existing tools such as valgrind, gprof, or gdb, 
+Unfortunately, the ability to effectively reason about this phenomenon using existing tools such as 
+  valgrind \cite{Nethercote:2007:VFH:1250734.1250746}, 
+  gprof \cite{Graham:2004:GCG:989393.989401}, 
+  or gdb \cite{stallman1991using}, 
   through a text-based interface, is limited, and tedious at best.
 
 We present PerVERT, an instrumentation framework for logging a process's virtual memory traffic and a visualization suite for reasoning about common memory performance bugs: 
