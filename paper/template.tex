@@ -154,28 +154,59 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 %%% This is the first section of the body of your paper.
 
 \section{Introduction}
-  Do this last.
 
-  \section {Motivation}
-  \subsection{}
-
+  
   \begin{itemize}
+  \item Many people care about having high performance codes, which need to be as fast as possible. 
   \item Performance means minimizing time -- interested in viewing events over time.
+  \item Performance is often a function of memory efficiency because memory is so much slower than compute.
+  \item Performance is considered a "black art" and very difficult to get right, since it's a secondary effect of code.
+
+  \item Most debugging tools are built for correctness, which is a property of the computations done on the program's state. This leads to a control-flow-centric view of the world, where the transformations your code does is inspected.
+  \item Performance is a more global property depending on the actual data usage, thus a data-centric view is a more natural fit.
+  \item Performance is also a global property since data layout directly affects access patterns, which is state hidden from the code being written.
+  \item Even simple code can cause incredibly complicated access patterns and consume lots of data.
+  \item Thus, we want to use a visual approach to aggregate lots of data, and do this in a data-centric view that directly shows how memory is accessed.
   \end{itemize}
+  
+    The remainder of this paper is structured as follows:
+
+    Design Goals - how we want to build this system
+    Design - the visualizations we build to support this system
+    Implementation - how we built the system
+    Related Work
+    Future Work 
+    Conclusion
+  
+\section{Design Goals}
 
   \subsection{Binary Instrumentation}
   \begin{itemize}
-  \item  
+  \item At what level do we work? Performance depends on everything happening in your program, including the parts you have no insight into - libraries and system calls/
+  \item It lowers the barrier to performance tuning when the same toolset can inform you about your code and the libraries you are using.
+  \item Workin at a binary level provides transparency through everything an app uses, including system and third party libs.
   \end{itemize}
+
+  \subsection{Remote Analysis}
   \begin{itemize}
-  \item High performance codes need to be as fast as possible. 
-  \item Performance is a function of memory efficiency.
-  \item
+    \item development vs production machines look very different
+    \item often need to perftune remotely
+    \item ideal to ship as little data from back-end to front-end, so analysis runs on back-end and vis runs on front-end.
   \end{itemize}
+
+  \subsection{On-Demand Analysis}
+  \begin{itemize}
+    \item massive amounts of data, aggregated into many different ways, with multiple views of this data
+    \item cannot do all analysis ahead of time
+    \item do no want to do unneeded analysis
+    \item thus we build a tool that can do analysis on-the-gly
+  \end{itemize}
+  
 
 \section {Design}
   \subsection{Memory Map}
     \begin{itemize}
+      \item PICTURE OF MEMMAP
       \item Performance is a global property 
       \item Therefore: Grid-based representation of the virtual address space.
       \item Physical cache structure has a huge impact on performance -- represented directly in the visualization.    
@@ -200,6 +231,7 @@ Interaction:
   
   \subsection{Code Context}
     \begin{itemize}
+      \item PICTURE OF CODE CONTEXT
       \item Every event was caused by an instruction, and thus has an associated context: the stacktrace that caused it.
       \item We wish to find the code that caused this event.
       \item We display entire stacktrace, incl. user and library code
@@ -208,6 +240,7 @@ Interaction:
   
   \subsection{Context Access Patterns}
     \begin{itemize}
+      \item PICTURE OF TWO ACCESS PATTERNS
       \item For a given context we can drill down into the memory access patterns it causes
       \item It's common to reason about the stride of a context - understanding the distances between accesses it causes.
       \item Hitogramming strides gives insight into the caching behaviour of this code.
@@ -218,10 +251,7 @@ Interaction:
 
 \section {Implementation}
   \begin{itemize}
-    \item Often have to do remote performance tuning.
-    \item Development environment often divorced from production environment -- examples.
-    \item Useful to divorce visualization frontend from analysis and binary instrumentation
-    \item Also allows us to leverage existing suite of html visualization tools.
+    \item SYSTEM DIAGRAM
     \item Built up from three parts -- described below
   \end{itemize}
 
@@ -276,13 +306,18 @@ Interaction:
   \subsection{Algorithm}
   \subsection{Variants}
     \begin{itemize}
-      \item C++ array
-      \item C++ STL vector
-      \item C++ STL map
-      \item Haskell list
+      \item C++ array WITH STREAMING THROUGH
+      \item C++ STL vector WITH PICTURE OF GROWTH AND REALLOC
+      \item C++ STL map WITH PICTURE OF BINARY SEARCH
+      \item Haskell list WITH PICTURE
     \end{itemize}
 
-\section {Related Work}
+\section{Related Work}
+
+Visualizing Memory Graphs\cite{zimmerman:2001:VMG}, made the same observation that you want to drill down into memory structures, but they took a very different approach: they care about structures being built rather than than access to these structures. While we find this to be a useful inspection for debugging purposes, it does not directly show performance. It's a great example of memory visualization for debugging rather than performance.
+
+KCacheGrind allows you to visualize the static structure of your code - similar to our stack traces - and also attaches performance events to it. While we take a very visual approach to this, KCacheGrind bubbles up statistics directly related to cache performance. This is useful for identifying issues, but we claim that our approach gives a direct visualization of the reasons behind the cache performance.
+
 
 \section{Future Work}
   \subsection{Visualization and Interaction}
