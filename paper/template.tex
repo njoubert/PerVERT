@@ -408,6 +408,11 @@ Visualizing Memory Graphs\cite{zimmerman:2001:VMG}, made the same observation th
 KCacheGrind allows you to visualize the static structure of your code - similar to our stack traces - and also attaches performance events to it. While we take a very visual approach to this, KCacheGrind bubbles up statistics directly related to cache performance. This is useful for identifying issues, but we claim that our approach gives a direct visualization of the reasons behind the cache performance.
 
 \section{Future Work}
+
+  Future work for this project could proceed in two complementary directions:
+    one in which we explore new methods for visualizing and interacting with data,
+    and another in which we explore new methods for data collection and analysis.
+
   \subsection{Visualization and Interaction}
   %\begin{itemize}
   %  \item Diffmaps for comparing across revisions
@@ -416,6 +421,15 @@ KCacheGrind allows you to visualize the static structure of your code - similar 
   %  \item Bookmarking, Auto-Bookmarking
   %\end{itemize}
 
+  Comparing alternative implementations of the same program is a difficult problem.
+  Even a small change in access patterns or choice of data structures can render two traces nearly unrelatable.
+  This could be mitigated somewhat by exploring techniques for canoncalizing memory event streams and identifying patterns
+    that are invariant between two streams.
+  Another complication worth exploring is prohibitively large memory event streams.  
+  Future work could examine techniques for aggregating more data into a smaller part of the memory map,
+    user-defined methods for filtering data based on events of interest,
+    and tools for bookmarking those events either manually or automatically.
+
   \subsection{Data Collection and Analysis}
   %\begin{itemize}
   %  \item Physical memory simulator
@@ -423,8 +437,20 @@ KCacheGrind allows you to visualize the static structure of your code - similar 
   %  \item Selective data capture
   %\end{itemize}
 
+  PerVERT currently visualizes a program's use of the virtual address space, but says nothing about physical memory.
+  However because performance is truly a function of physical memory usage, it would be useful to visualize that space as well.
+  One way of doing so without being invasive would be to build in a cache simulator.
+  Other areas that could be improved include support for analyzing incomplete data, 
+    or for intelligently sampling from prohibitively large memory event traces.
+
 \section{Conclusion}
-  Do this last.
+
+In this paper we presented PerVERT, an instrumentation framework for logging a process's virtual memory traffic and 
+  a visualization suite for reasoning about common memory performance bugs.
+We described the design goals that lead us to its current form,
+  and through several small prototypical examples, demonstrated the effectiveness of its current design.
+In its current state, PerVERT functions well as a final class project.
+However, it is our intention to continue development as described above, and to evolve its design into a mature research tool.
 
 \bibliographystyle{acmsiggraph}
 \bibliography{template}
