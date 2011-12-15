@@ -230,17 +230,24 @@ Interaction:
     \end{itemize}
   
   \subsection{Code Context}
-    \begin{itemize}
-      \item PICTURE OF CODE CONTEXT
-      \item Every event was caused by an instruction, and thus has an associated context: the stacktrace that caused it.
-      \item We wish to find the code that caused this event.
-      \item We display entire stacktrace, incl. user and library code
-      \item Once a piece of code is identified, the user can further inspect the behavior of this context.
-    \end{itemize}
+    %\begin{itemize}
+    %  \item PICTURE OF CODE CONTEXT
+    %  \item Every event was caused by an instruction, and thus has an associated context: the stacktrace that caused it.
+    %  \item We wish to find the code that caused this event.
+    %  \item We display entire stacktrace, incl. user and library code
+    %\end{itemize}
+
+    Every event in a memory trace is caused by a single instruction with an associated context: the stacktrace which produced it.
+    This information is extremely valuable.
+    It allows the user to associate behavior in the memory map visualization (both good and bad) 
+      with the source code that produced it.
+    Accordingly, we display stack traces for every frame in the memory map visualization, 
+      including both user code and library code.
   
   \subsection{Context Access Patterns}
     \begin{itemize}
       \item PICTURE OF TWO ACCESS PATTERNS
+      \item Once a piece of code is identified, the user can further inspect the behavior of this context.
       \item For a given context we can drill down into the memory access patterns it causes
       \item It's common to reason about the stride of a context - understanding the distances between accesses it causes.
       \item Hitogramming strides gives insight into the caching behaviour of this code.
@@ -250,10 +257,26 @@ Interaction:
     \end{itemize}
 
 \section {Implementation}
-  \begin{itemize}
-    \item SYSTEM DIAGRAM
-    \item Built up from three parts -- described below
-  \end{itemize}
+  %\begin{itemize}
+  %  \item SYSTEM DIAGRAM
+  %  \item Built up from three parts -- described below
+  %\end{itemize}
+
+	\begin{figure}[t]
+		\centering
+    SYSTEM DIAGRAM
+    %\includegraphics[scale=0.55]{figures/isa.pdf}
+		\caption{The implementation of PerVERT.}
+    \label{fig:system}
+	\end{figure}
+
+  PerVERT consists of five separate components as suggested by Figure \ref{fig:system}:
+    a binary instrumentation tool for recording memory traces from program executions,
+    an analysis engine for indexing those traces,
+    a backend data server for performing on demand analyses on top of those indices,
+    an HTTP JSON server for serving that data,
+    and a front end for visualizing that data to the user.
+  These components are described in detail below.  
 
   \subsection{Binary Instrumentation}
 %    \begin{itemize}
@@ -299,8 +322,14 @@ Interaction:
       %  \item Read and index trace files (what indices?)
       %  \item Read and index debug symbols from executable (what symbols?)
       %\end{itemize}
-      
-      
+
+      The PerVERT analysis engine is responsible for building static indices over memory traces.
+      This includes tracking memory events by type: read, write, malloc, or free,
+        as well as by context.
+      For any event, the analysis engine records the stack context that produced the event, 
+        as well as pointers to all other events produced by that context.       
+      The PerVERT analysis engine also indexes a program's debugging symbol library so that it can decode
+        hexademical stack traces to lists of file-line pairs.
 
       % june sandwich -- 
       % niels below
@@ -322,7 +351,18 @@ Interaction:
     \end{itemize}
 
 \section {Example Applications}
+  % No outline - we never specced this paragraph out
+
   \subsection{Algorithm}
+    To evaluate PerVERT, we built a test suite of algorithmic variants for a same simple routine
+      which one would expect to find a scientific computation kernel.
+    (1) Create a container of objects on the heap.
+    (2) Write values to each of those objects.
+    (3) Read values from each of those objects.
+    (4) Free the objects and the container.
+
+    The variants differ only in the type of container used.
+
   \subsection{Variants}
     \begin{itemize}
       \item C++ array WITH STREAMING THROUGH
@@ -336,7 +376,6 @@ Interaction:
 Visualizing Memory Graphs\cite{zimmerman:2001:VMG}, made the same observation that you want to drill down into memory structures, but they took a very different approach: they care about structures being built rather than than access to these structures. While we find this to be a useful inspection for debugging purposes, it does not directly show performance. It's a great example of memory visualization for debugging rather than performance.
 
 KCacheGrind allows you to visualize the static structure of your code - similar to our stack traces - and also attaches performance events to it. While we take a very visual approach to this, KCacheGrind bubbles up statistics directly related to cache performance. This is useful for identifying issues, but we claim that our approach gives a direct visualization of the reasons behind the cache performance.
-
 
 \section{Future Work}
   \subsection{Visualization and Interaction}
