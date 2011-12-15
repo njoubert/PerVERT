@@ -256,6 +256,24 @@ Interaction:
     %  \item Inspecting a combination of these two views gives an overall insight into the caching behavior of the code and suggests approaches to fix it - change the stride or change the data layout.
     %\end{itemize}
 
+    Once a stack context is identified as problematic, a user may wish to further inspect its behavior.
+    One particular method for doing so, which is often useful, is to examine its stride:
+      the address distance between the accesses that it produces.
+    PerVERT provides two complementary visualizations for doing so.
+
+    A histogram view aggregates strides for a context over the entire run of the program.
+    This view provides insight into its caching behavior.
+    Values are binned in powers of 2 bytes up to the length of a cache line.
+    Contexts that spend the majority of their time taking large strides, likely often result in cache misses.
+    
+    A line graph view shows strides over all time.
+    This view allows the user to distinguish between a context which is consistently problematic, 
+      and one that exhibits poor striding behavior over only a small segment of a program's execution.
+
+    Inspecting both these views gives an overall insight into the overall caching behavior of a program 
+      and suggests an approach for addressing non-performant code.
+    Either change the striding pattern of the code, or modify its data layout.
+
 \section {Implementation}
   %\begin{itemize}
   %  \item SYSTEM DIAGRAM
