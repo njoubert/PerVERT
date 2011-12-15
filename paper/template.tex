@@ -155,6 +155,19 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 
 \section{Introduction}
   
+%   \begin{itemize}
+%   \item Many people care about having high performance codes, which need to be as fast as possible. 
+%   \item Performance means minimizing time -- interested in viewing events over time.
+%   \item Performance is often a function of memory efficiency because memory is so much slower than compute.
+%   \item Performance is considered a "black art" and very difficult to get right, since it's a secondary effect of code.
+% 
+%   \item Most debugging tools are built for correctness, which is a property of the computations done on the program's state. This leads to a control-flow-centric view of the world, where the transformations your code does is inspected.
+%  \item Performance is a more global property depending on the actual data usage, thus a data-centric view is a more natural fit.
+%  \item Performance is also a global property since data layout directly affects access patterns, which is state hidden from the code being written.
+%  \item Even simple code can cause incredibly complicated access patterns and consume lots of data.
+%  \item Thus, we want to use a visual approach to aggregate lots of data, and do this in a data-centric view that directly shows how memory is accessed.
+%  \end{itemize}
+  
   Users and developers alike care about the performance of computer programs. It's commonly understood that good performance can often be the distinguishing factor in the usability of a code. This is especially true is the scientific and financial simulation communities, where long-running codes have to share computing power on clusters of machines.
   
   As computers become faster and processor count increase, performance becomes more and more a function of memory efficiency. Memory speeds are not increasing at the same rate as computing power, and the cost of communicating data by touching memory is becoming the primary factor in degrading performance. For this reason, tuning the memory access patterns of a code is the primary way of increasing performance of the same algorithm. This is an important distinguishment - given the same correct code, performance is increased by using smarter datastructures with smarter access patterns to them.
@@ -215,31 +228,65 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
   This complexity could be overcome both through caching and a combination of statically computing only what can
     be stored efficiently and computing all other analyses on demand.
 
-\section {Design}\label{ch_d}
+\section{Design}\label{ch_d}
   \subsection{Memory Map}
-    \begin{itemize}
-      \item PICTURE OF MEMMAP
-      \item Performance is a global property 
-      \item Therefore: Grid-based representation of the virtual address space.
-      \item Physical cache structure has a huge impact on performance -- represented directly in the visualization.    
-      \item Therefore: Rows correspond to cache lines.
-      \item Memory events happen over time: Visualize as animation
-      \item One memory location can be used for many different malloc'd regions, therefore not a static snapshot over all time
-      \item Four types of events: mallocs, frees, reads, writes
-      \item Visual cues for malloced regions - heavy outlines for those cells
-      \item Visual cues for reads and writes - highlight memory accesses by coloring cells.
-      \item Visual history of recent accesses - s
-      \item Fireworks to highlight local changes.
-      \item Alpha blending gives cues to access patterns: R, W, mix
-   \end{itemize}
-
-Interaction:
-   \begin{itemize}   
-      \item Watching the animation shows visual queues leads to interesting events being very obvious, begs further inspection.
-      \item Pausing, Stepping fwd and back allows deeper inspection of interaction between temporally local events.
-      \item Scrubbing and Jumping through all time quickly allows for quick memory access comparisons at different points in time.
-      \item This implementation of the memory map aids in identifying problem areas.
-    \end{itemize}
+  	\begin{figure}[t]
+  		\centering
+      MEmory Map
+      %\includegraphics[scale=0.55]{figures/isa.pdf}
+  		\caption{Memory Map display showing global structure of memory sized to the width of cache lines, with local events highlighted as fireworks.}
+      \label{fig:system}
+  	\end{figure}
+  
+  We want to support understanding memory accesses in a global sense. To that end, we present a program's virtual memory space as a spatial layout of memory. Memory addresses are physically arranged in caches, where a cache line contains on the order of hundreds of individual memory locations, and subsequent accesses within a cache line have different performance characteristics than accesses that cross cache lines. This physical property of the system gives a clue to the correct visual design of the memory layout - by directly representing all of memory segmented into cache lines, there's a good impedance match between memory events of a program and the physical accesses that occur. We thus present the entire memory space as a grid of memory locations, where each row corresponds to a single cache line.
+  
+  On this grid, we want to visualize memory events - actions a program performs that impacts the memory system. As we previously stated, performance tuning attempts to minimize the amount of time a code takes to run, and memory events also happen over time. This leads us to display events over time using animation. 
+  
+  We visualize four different types of events: memory region allocation, memory region deallocation, reads and writes.
+  
+  Region allocation and deallocation affects the structure of memory, thus we present it using structural visual cues. Allocation regions are shown by highlighting those areas of the memory grid, and deallocations causes these highlights to go away.
+  
+  Reads and Writes causes memory traffic to happen to a certain address. We represent this visually by highlighting the grid cell corresponding to the memory address, in red for writes and in green for reads. By distinguishing colors, it's possible to visually see copies between locations happening, which is a strong indicator to optimize the performance of code by doing zero copies.
+    
+  Memory performance is at a maximum when accesses are both temporally and spatially local. We want to provide a visual cue to help the user judge the spatial locality of memory access over a period of time. To support this, we show a short history of memory accesses by highlighting not just the current but the last 50 cells accessed. By showing history trails we provide a visual cue to how chaotic memory accesses are, so the user can visually judge whether accesses are happening primarily in the same cache line or jumping between cache lines. This has a direct influence on the performance of their code, so it highlights problems with code as well as hinting at possible solutions.
+  
+  Given this framework we have to somehow highlight the current access and provide a strong visual cue for what's currently happening. With no highlighting of the current event, the currently described display is difficult to follow since accesses happen on individual cells of a pixel grid. By enlarging the grid slightly we make it easier to see individual accesses - a fair tradeoff against seeing less of total memory at one time.
+  
+  We highlight current accesses by using a technique we call ``fireworks'' - highlighting a large block of memory centered on the current access, and animating this access to zoom down onto the cell it touches. This gives a very strong visual cue to the local changes occuring without sacrificing our view of global structure.
+  
+  A single memory location can be accessed multiple times using both reads and writes following one another. We want to visually distinguish points in our history trail that have many accesses to them versus those that have a single access. Similarly, we want to visually distinguish fireworks that happen on top of one another depending on the type of accesses - reads or writes. We use a technique called ``alpha blending'' to change the color of a cell as different types of accesses happen on it. For example, a cell that is accessed by alternating reads and writes now becomes fireworks of greens and reds, and with their overlap colored yellow. In the same way, a cell that is accessed by mostly reading and sometimes writing will be colored mostly green (reads) with a small amount of red (writes). This display gives visual cues to the access patterns of an individual cell in the same way that history trails gives access patterns to different memory cells.
+  
+  \subsubsection{Interaction}
+    The first level of interaction with this memory map is through watching an animation play back. The set of visual cues we've described leads to interesting events being very obvious, and begging further inspection.
+    
+    We provide controls to pause the animation, and scrub through time or step forwards and backwards in time. By scrubbing an event you can roll up into a higher level view of quickly moving through accesses to compare memory behavior over larger chunks of time. If a locally interesting event happens, stepping over it gives time to mentally reason about the behavior.
+    
+    This implementation of the memory map is primarily focused on identifying problems. Once a problem area has been identified, PerVERT can be paused at this point in time program's execution, and the aggregate statistics presented next can be inspected for this event.
+  
+  
+%     \begin{itemize}
+%       \item PICTURE OF MEMMAP
+%       \item Performance is a global property 
+%       \item Therefore: Grid-based representation of the virtual address space.
+%       \item Physical cache structure has a huge impact on performance -- represented directly in the visualization.    
+%       \item Therefore: Rows correspond to cache lines.
+%       \item Memory events happen over time: Visualize as animation
+%       \item One memory location can be used for many different malloc'd regions, therefore not a static snapshot over all time
+%       \item Four types of events: mallocs, frees, reads, writes
+%       \item Visual cues for malloced regions - heavy outlines for those cells
+%       \item Visual cues for reads and writes - highlight memory accesses by coloring cells.
+%       \item Visual history of recent accesses - s
+%       \item Fireworks to highlight local changes.
+%       \item Alpha blending gives cues to access patterns: R, W, mix
+%    \end{itemize}
+% 
+% Interaction:
+%    \begin{itemize}   
+%       \item Watching the animation shows visual queues leads to interesting events being very obvious, begs further inspection.
+%       \item Pausing, Stepping fwd and back allows deeper inspection of interaction between temporally local events.
+%       \item Scrubbing and Jumping through all time quickly allows for quick memory access comparisons at different points in time.
+%       \item This implementation of the memory map aids in identifying problem areas.
+%     \end{itemize}
   
   \subsection{Code Context}
     %\begin{itemize}
@@ -286,7 +333,7 @@ Interaction:
       and suggests an approach for addressing non-performant code.
     Either change the striding pattern of the code, or modify its data layout.
 
-\section {Implementation}\label{ch_i}
+\section{Implementation}\label{ch_i}
   %\begin{itemize}
   %  \item SYSTEM DIAGRAM
   %  \item Built up from three parts -- described below
@@ -380,7 +427,7 @@ Interaction:
       \item D3 to draw aggregate statistics
     \end{itemize}
 
-\section {Example Applications}
+\section{Example Applications}\label{ch_e}
   % No outline - we never specced this paragraph out
 
   \subsection{Algorithm}
@@ -401,13 +448,13 @@ Interaction:
       \item Haskell list WITH PICTURE
     \end{itemize}
 
-\section{Related Work}
+\section{Related Work}\label{ch_r}
 
 Visualizing Memory Graphs\cite{zimmerman:2001:VMG}, made the same observation that you want to drill down into memory structures, but they took a very different approach: they care about structures being built rather than than access to these structures. While we find this to be a useful inspection for debugging purposes, it does not directly show performance. It's a great example of memory visualization for debugging rather than performance.
 
 KCacheGrind allows you to visualize the static structure of your code - similar to our stack traces - and also attaches performance events to it. While we take a very visual approach to this, KCacheGrind bubbles up statistics directly related to cache performance. This is useful for identifying issues, but we claim that our approach gives a direct visualization of the reasons behind the cache performance.
 
-\section{Future Work}
+\section{Future Work}\label{ch_f}
   \subsection{Visualization and Interaction}
   \begin{itemize}
     \item Diffmaps for comparing across revisions
