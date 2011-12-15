@@ -154,31 +154,24 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 %%% This is the first section of the body of your paper.
 
 \section{Introduction}
-
   
-  \begin{itemize}
-  \item Many people care about having high performance codes, which need to be as fast as possible. 
-  \item Performance means minimizing time -- interested in viewing events over time.
-  \item Performance is often a function of memory efficiency because memory is so much slower than compute.
-  \item Performance is considered a "black art" and very difficult to get right, since it's a secondary effect of code.
-
-  \item Most debugging tools are built for correctness, which is a property of the computations done on the program's state. This leads to a control-flow-centric view of the world, where the transformations your code does is inspected.
-  \item Performance is a more global property depending on the actual data usage, thus a data-centric view is a more natural fit.
-  \item Performance is also a global property since data layout directly affects access patterns, which is state hidden from the code being written.
-  \item Even simple code can cause incredibly complicated access patterns and consume lots of data.
-  \item Thus, we want to use a visual approach to aggregate lots of data, and do this in a data-centric view that directly shows how memory is accessed.
-  \end{itemize}
+  Users and developers alike care about the performance of computer programs. It's commonly understood that good performance can often be the distinguishing factor in the usability of a code. This is especially true is the scientific and financial simulation communities, where long-running codes have to share computing power on clusters of machines.
   
-    The remainder of this paper is structured as follows:
-
-    Design Goals - how we want to build this system
-    Design - the visualizations we build to support this system
-    Implementation - how we built the system
-    Related Work
-    Future Work 
-    Conclusion
+  As computers become faster and processor count increase, performance becomes more and more a function of memory efficiency. Memory speeds are not increasing at the same rate as computing power, and the cost of communicating data by touching memory is becoming the primary factor in degrading performance. For this reason, tuning the memory access patterns of a code is the primary way of increasing performance of the same algorithm. This is an important distinguishment - given the same correct code, performance is increased by using smarter datastructures with smarter access patterns to them.
   
-\section{Design Goals}
+  Performance tuning is still considered a ``black art'' due to the opaqueness of performance: while code directly expresses computation, the time it takes for a computation is a second order effect of the code. This is especially true for accessing memory, where the memory hierarchy is completely invisible to the user.
+  
+  Improving the performance of code means minimizing the time it takes to compute a result. For this reason, people measure performance in terms of events per amount of time. To be able to improve the performance of code, we must get insight into this currently-opaque operations of memory accesses, and understand how they relate to the code.
+  
+  Most debugging tools are built to help with the correctness of code, which is a property of the computations done on the program's state. This naturally leads to a control-flow-centric view of the program: what is the transformations and are they performing the correct behavior on their input data? Debugging works well when the tool breaks the program into small parts that can be understood and checked for correctness locally.
+  
+  Performance does not nicely follow this model, since performance is a global phenomenon - the layout of data directly affects the accesses performed by other parts of the code. Performance concerns also cuts through the normal barriers between third party libraries and your own code. It's thus important to understand the memory accesses of your program using a \emph{data-centric} approach: looking at memory accesses as events happening on data regardless of where it comes from. This needs to happen both on a global level to support understanding these concerns and on a local events level to tie events back to the code performing them, so that the programmer can change their code.
+    
+  The massive amounts of data, chaotic global changes in this dataset, and the natural spatial layout of a physical memory system leads naturally to a visual representation of this data. To that end, this paper presents a visual performance tuning tool that presents global structure, local events, and aggregate statistics of a code's memory performance, with the intent of helping the user identify problems, find solutions, and implement these solutions. 
+  
+  The remainder of this paper is structured as follows. In chapter \ref{ch_dg} we present goals for the design and use of this system. In \ref{ch_d} we present the visual and interaction design of this system, and how we anticipate developers using this system. In \ref{ch_i} we show the inner workings of this system and how we supported our design while meeting our design goals. Lastly we discuss related and future work.
+    
+\section{Design Goals}\label{ch_dg}
 
   \subsection{Binary Instrumentation}
   \begin{itemize}
@@ -203,7 +196,7 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
   \end{itemize}
   
 
-\section {Design}
+\section {Design}\label{ch_d}
   \subsection{Memory Map}
     \begin{itemize}
       \item PICTURE OF MEMMAP
@@ -274,7 +267,7 @@ Interaction:
       and suggests an approach for addressing non-performant code.
     Either change the striding pattern of the code, or modify its data layout.
 
-\section {Implementation}
+\section {Implementation}\label{ch_i}
   %\begin{itemize}
   %  \item SYSTEM DIAGRAM
   %  \item Built up from three parts -- described below
