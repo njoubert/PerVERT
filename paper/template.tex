@@ -156,21 +156,65 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 \section{Introduction}
   Do this last.
 
-\section {Motivation}
-  \subsection{Binary Instrumentation}
-    \begin{itemize}
-      \item  
-    \end{itemize}
+  \section {Motivation}
+  \subsection{}
+
   \begin{itemize}
-    \item High performance codes need to be as fast as possible. 
-    \item Performance is a function of memory efficiency.
-    \item
+  \item Performance means minimizing time -- interested in viewing events over time.
+  \end{itemize}
+
+  \subsection{Binary Instrumentation}
+  \begin{itemize}
+  \item  
+  \end{itemize}
+  \begin{itemize}
+  \item High performance codes need to be as fast as possible. 
+  \item Performance is a function of memory efficiency.
+  \item
   \end{itemize}
 
 \section {Design}
-  \begin{itemize}
-    \item
-  \end{itemize}
+  \subsection{Memory Map}
+    \begin{itemize}
+      \item Performance is a global property 
+      \item Therefore: Grid-based representation of the virtual address space.
+      \item Physical cache structure has a huge impact on performance -- represented directly in the visualization.    
+      \item Therefore: Rows correspond to cache lines.
+      \item Memory events happen over time: Visualize as animation
+      \item One memory location can be used for many different malloc'd regions, therefore not a static snapshot over all time
+      \item Four types of events: mallocs, frees, reads, writes
+      \item Visual cues for malloced regions - heavy outlines for those cells
+      \item Visual cues for reads and writes - highlight memory accesses by coloring cells.
+      \item Visual history of recent accesses - s
+      \item Fireworks to highlight local changes.
+      \item Alpha blending gives cues to access patterns: R, W, mix
+   \end{itemize}
+
+Interaction:
+   \begin{itemize}   
+      \item Watching the animation shows visual queues leads to interesting events being very obvious, begs further inspection.
+      \item Pausing, Stepping fwd and back allows deeper inspection of interaction between temporally local events.
+      \item Scrubbing and Jumping through all time quickly allows for quick memory access comparisons at different points in time.
+      \item This implementation of the memory map aids in identifying problem areas.
+    \end{itemize}
+  
+  \subsection{Code Context}
+    \begin{itemize}
+      \item Every event was caused by an instruction, and thus has an associated context: the stacktrace that caused it.
+      \item We wish to find the code that caused this event.
+      \item We display entire stacktrace, incl. user and library code
+      \item Once a piece of code is identified, the user can further inspect the behavior of this context.
+    \end{itemize}
+  
+  \subsection{Context Access Patterns}
+    \begin{itemize}
+      \item For a given context we can drill down into the memory access patterns it causes
+      \item It's common to reason about the stride of a context - understanding the distances between accesses it causes.
+      \item Hitogramming strides gives insight into the caching behaviour of this code.
+      \item We also want to distinguish whether a context is always problematic or only in this instance, histograms does not show time.
+      \item A complementary view to show access pattern of context over all time
+      \item Inspecting a combination of these two views gives an overall insight into the caching behavior of the code and suggests approaches to fix it - change the stride or change the data layout.
+    \end{itemize}
 
 \section {Implementation}
   \begin{itemize}
@@ -246,6 +290,7 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
     \item Diffmaps for comparing across revisions
     \item Aggregate views for massive amounts of data
     \item User-defined data filtering
+    \item Bookmarking, Auto-Bookmarking
   \end{itemize}
 
   \subsection{Data Collection and Analysis}
