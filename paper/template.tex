@@ -230,6 +230,7 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 
 \section{Design}\label{ch_d}
   \subsection{Memory Map}
+
   	\begin{figure}[t]
   		\centering
       MEmory Map
@@ -251,6 +252,15 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
   Memory performance is at a maximum when accesses are both temporally and spatially local. We want to provide a visual cue to help the user judge the spatial locality of memory access over a period of time. To support this, we show a short history of memory accesses by highlighting not just the current but the last 50 cells accessed. By showing history trails we provide a visual cue to how chaotic memory accesses are, so the user can visually judge whether accesses are happening primarily in the same cache line or jumping between cache lines. This has a direct influence on the performance of their code, so it highlights problems with code as well as hinting at possible solutions.
   
   Given this framework we have to somehow highlight the current access and provide a strong visual cue for what's currently happening. With no highlighting of the current event, the currently described display is difficult to follow since accesses happen on individual cells of a pixel grid. By enlarging the grid slightly we make it easier to see individual accesses - a fair tradeoff against seeing less of total memory at one time.
+  
+    	\begin{figure}[t]
+  		\centering
+      Fireworks
+      %\includegraphics[scale=0.55]{figures/isa.pdf}
+  		\caption{Fireworks with alpha blending shown on memory map}
+      \label{fig:system}
+  	\end{figure}
+
   
   We highlight current accesses by using a technique we call ``fireworks'' - highlighting a large block of memory centered on the current access, and animating this access to zoom down onto the cell it touches. This gives a very strong visual cue to the local changes occuring without sacrificing our view of global structure.
   
@@ -296,6 +306,15 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
     %  \item We display entire stacktrace, incl. user and library code
     %\end{itemize}
 
+  	\begin{figure}[t]
+  		\centering
+      Code Context
+      %\includegraphics[scale=0.55]{figures/isa.pdf}
+  		\caption{Code Context window showing the stacktrace of an event.}
+      \label{fig:system}
+  	\end{figure}
+
+
     Every event in a memory trace is caused by a single instruction with an associated context: the stacktrace which produced it.
     This information is extremely valuable.
     It allows the user to associate behavior in the memory map visualization (both good and bad) 
@@ -315,6 +334,15 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
     %  \item Inspecting a combination of these two views gives an overall insight into the caching behavior of the code and suggests approaches to fix it - change the stride or change the data layout.
     %\end{itemize}
 
+  	\begin{figure}[t]
+  		\centering
+      Aggregate Display 1
+      %\includegraphics[scale=0.55]{figures/isa.pdf}
+  		\caption{Aggregate Display 1}
+      \label{fig:system}
+  	\end{figure}
+
+
     Once a stack context is identified as problematic, a user may wish to further inspect its behavior.
     One particular method for doing so, which is often useful, is to examine its stride:
       the address distance between the accesses that it produces.
@@ -324,6 +352,15 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
     This view provides insight into its caching behavior.
     Values are binned in powers of 2 bytes up to the length of a cache line.
     Contexts that spend the majority of their time taking large strides, likely often result in cache misses.
+    
+    \begin{figure}[t]
+  		\centering
+      Agregate Display 2
+      %\includegraphics[scale=0.55]{figures/isa.pdf}
+  		\caption{Aggregate Display 2}
+      \label{fig:system}
+  	\end{figure}
+
     
     A line graph view shows strides over all time.
     This view allows the user to distinguish between a context which is consistently problematic, 
@@ -455,23 +492,49 @@ Visualizing Memory Graphs\cite{zimmerman:2001:VMG}, made the same observation th
 KCacheGrind allows you to visualize the static structure of your code - similar to our stack traces - and also attaches performance events to it. While we take a very visual approach to this, KCacheGrind bubbles up statistics directly related to cache performance. This is useful for identifying issues, but we claim that our approach gives a direct visualization of the reasons behind the cache performance.
 
 \section{Future Work}\label{ch_f}
+
+  Future work for this project could proceed in two complementary directions:
+    one in which we explore new methods for visualizing and interacting with data,
+    and another in which we explore new methods for data collection and analysis.
+
   \subsection{Visualization and Interaction}
-  \begin{itemize}
-    \item Diffmaps for comparing across revisions
-    \item Aggregate views for massive amounts of data
-    \item User-defined data filtering
-    \item Bookmarking, Auto-Bookmarking
-  \end{itemize}
+  %\begin{itemize}
+  %  \item Diffmaps for comparing across revisions
+  %  \item Aggregate views for massive amounts of data
+  %  \item User-defined data filtering
+  %  \item Bookmarking, Auto-Bookmarking
+  %\end{itemize}
+
+  Comparing alternative implementations of the same program is a difficult problem.
+  Even a small change in access patterns or choice of data structures can render two traces nearly unrelatable.
+  This could be mitigated somewhat by exploring techniques for canoncalizing memory event streams and identifying patterns
+    that are invariant between two streams.
+  Another complication worth exploring is prohibitively large memory event streams.  
+  Future work could examine techniques for aggregating more data into a smaller part of the memory map,
+    user-defined methods for filtering data based on events of interest,
+    and tools for bookmarking those events either manually or automatically.
 
   \subsection{Data Collection and Analysis}
-  \begin{itemize}
-    \item Physical memory simulator
-    \item Supporting incomplete data / sampling
-    \item Selective data capture
-  \end{itemize}
+  %\begin{itemize}
+  %  \item Physical memory simulator
+  %  \item Supporting incomplete data / sampling
+  %  \item Selective data capture
+  %\end{itemize}
+
+  PerVERT currently visualizes a program's use of the virtual address space, but says nothing about physical memory.
+  However because performance is truly a function of physical memory usage, it would be useful to visualize that space as well.
+  One way of doing so without being invasive would be to build in a cache simulator.
+  Other areas that could be improved include support for analyzing incomplete data, 
+    or for intelligently sampling from prohibitively large memory event traces.
 
 \section{Conclusion}
-  Do this last.
+
+In this paper we presented PerVERT, an instrumentation framework for logging a process's virtual memory traffic and 
+  a visualization suite for reasoning about common memory performance bugs.
+We described the design goals that lead us to its current form,
+  and through several small prototypical examples, demonstrated the effectiveness of its current design.
+In its current state, PerVERT functions well as a final class project.
+However, it is our intention to continue development as described above, and to evolve its design into a mature research tool.
 
 \bibliographystyle{acmsiggraph}
 \bibliography{template}
