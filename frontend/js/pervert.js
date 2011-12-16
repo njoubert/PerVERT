@@ -340,7 +340,9 @@
     var data_x_offset = 24;  //on both sides
     var data_y_offset = 24;  //on both sides
     var boxside = 2;
-
+    
+    var history_length = 250;
+    
     var bytes_in_line = 512;
     var canvasWidth = bytes_in_line + 2*data_x_offset;
     var canvasHeight = 690 + data_y_offset;
@@ -635,7 +637,7 @@
 
       //only draw the grid on init
       __vS.addListener("init", function(eventname, event, caller) {
-        __db.f_mem_status(0,150,function(data) {
+        __db.f_mem_status(0,history_length,function(data) {
           __db.f_counts(function(f_counts) {
             drawgrid(data, f_counts);
           })
@@ -644,7 +646,7 @@
             
       //draw the other things automatically.
       __vS.addListener("frameslider_change", function(eventname, event, caller) {
-        __db.f_mem_status(event,50,function(data) {
+        __db.f_mem_status(event,history_length,function(data) {
           __db.f_counts(function(f_counts) {
             drawmockup(data, f_counts);
           })
