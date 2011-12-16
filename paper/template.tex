@@ -240,7 +240,7 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
   
   We want to support understanding memory accesses in a global sense. To that end, we present a program's virtual memory space as a spatial layout of memory. Memory addresses are physically arranged in caches, where a cache line contains on the order of hundreds of individual memory locations, and subsequent accesses within a cache line have different performance characteristics than accesses that cross cache lines. This physical property of the system gives a clue to the correct visual design of the memory layout - by directly representing all of memory segmented into cache lines, there's a good impedance match between memory events of a program and the physical accesses that occur. We thus present the entire memory space as a grid of memory locations, where each row corresponds to a single cache line.
   
-  In figure ref{fig:memmap} we show this grid. We now want to visualize memory events - actions a program performs that impacts the memory system. As we previously stated, performance tuning attempts to minimize the amount of time a code takes to run, and memory events also happen over time. This leads us to display events over time using animation. 
+  In figure \ref{fig:memmap} we show this grid. We now want to visualize memory events - actions a program performs that impacts the memory system. As we previously stated, performance tuning attempts to minimize the amount of time a code takes to run, and memory events also happen over time. This leads us to display events over time using animation. 
   
   We visualize four different types of events: memory region allocation, memory region deallocation, reads and writes.
   
@@ -343,7 +343,7 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
   		\centering
       \includegraphics[scale=0.40]{images/histo.png}
   		\caption{Histogram showing memory access strides}
-      \label{fig:system}
+      \label{fig:histo}
   	\end{figure}
 
 
@@ -352,7 +352,7 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
       the address distance between the accesses that it produces.
     PerVERT provides two complementary visualizations for doing so.
 
-    A histogram view aggregates strides for a context over the entire run of the program.
+    A histogram view (figure \ref{fig:histo}) aggregates strides for a context over the entire run of the program.
     This view provides insight into its caching behavior.
     Values are binned in powers of 2 bytes up to the length of a cache line.
     Contexts that spend the majority of their time taking large strides, likely often result in cache misses.
@@ -361,11 +361,11 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
   		\centering
       \includegraphics[scale=0.40]{images/line.png}
   		\caption{Line graph showing memory accesses for a context over all time}
-      \label{fig:system}
+      \label{fig:line}
   	\end{figure}
 
     
-    A line graph view shows strides over all time.
+    A line graph view (figure \ref{fig:line}) shows strides over all time.
     This view allows the user to distinguish between a context which is consistently problematic, 
       and one that exhibits poor striding behavior over only a small segment of a program's execution.
 
@@ -520,7 +520,7 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 		\centering
     \includegraphics[scale=0.45]{images/example_vector.png}
 		\caption{C++ STL vector example}
-    \label{fig:example_array}
+    \label{fig:example_vector}
 	\end{figure}
   
   For this example we inserted and read a set of integers into and from a C++ vector, shown in figure \ref{fig:example_vector}.
