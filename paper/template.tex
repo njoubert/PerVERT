@@ -236,15 +236,14 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 
   	\begin{figure}[t]
   		\centering
-      MEmory Map
-      %\includegraphics[scale=0.55]{figures/isa.pdf}
-  		\caption{Memory Map display showing global structure of memory sized to the width of cache lines, with local events highlighted as fireworks.}
-      \label{fig:system}
+      \includegraphics[scale=0.40]{images/memmap.png}
+  		\caption{Memory Map display showing global structure of memory sized to the width of cache lines, with local events marked by color as reads (green) or writes (red).}
+      \label{fig:memmap}
   	\end{figure}
   
   We want to support understanding memory accesses in a global sense. To that end, we present a program's virtual memory space as a spatial layout of memory. Memory addresses are physically arranged in caches, where a cache line contains on the order of hundreds of individual memory locations, and subsequent accesses within a cache line have different performance characteristics than accesses that cross cache lines. This physical property of the system gives a clue to the correct visual design of the memory layout - by directly representing all of memory segmented into cache lines, there's a good impedance match between memory events of a program and the physical accesses that occur. We thus present the entire memory space as a grid of memory locations, where each row corresponds to a single cache line.
   
-  On this grid, we want to visualize memory events - actions a program performs that impacts the memory system. As we previously stated, performance tuning attempts to minimize the amount of time a code takes to run, and memory events also happen over time. This leads us to display events over time using animation. 
+  In figure ref{fig:memmap} we show this grid. We now want to visualize memory events - actions a program performs that impacts the memory system. As we previously stated, performance tuning attempts to minimize the amount of time a code takes to run, and memory events also happen over time. This leads us to display events over time using animation. 
   
   We visualize four different types of events: memory region allocation, memory region deallocation, reads and writes.
   
@@ -258,19 +257,26 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
   
     	\begin{figure}[t]
   		\centering
-      Fireworks
-      %\includegraphics[scale=0.55]{figures/isa.pdf}
-  		\caption{Fireworks with alpha blending shown on memory map}
-      \label{fig:system}
+      \includegraphics[scale=0.40]{images/fireworks.png}
+  		\caption{Fireworks with alpha blending shown on memory map, highlighting memory events as they occur and overlap}
+      \label{fig:fireworks}
   	\end{figure}
 
   
-  We highlight current accesses by using a technique we call ``fireworks'' - highlighting a large block of memory centered on the current access, and animating this access to zoom down onto the cell it touches. This gives a very strong visual cue to the local changes occuring without sacrificing our view of global structure.
+  We highlight current accesses by using a technique we call ``fireworks'' - highlighting a large block of memory centered on the current access, and animating this access to zoom down onto the cell it touches, shown in figure \ref{fig:fireworks}. This gives a very strong visual cue to the local changes occuring without sacrificing our view of global structure.
   
   A single memory location can be accessed multiple times using both reads and writes following one another. We want to visually distinguish points in our history trail that have many accesses to them versus those that have a single access. Similarly, we want to visually distinguish fireworks that happen on top of one another depending on the type of accesses - reads or writes. We use a technique called ``alpha blending'' to change the color of a cell as different types of accesses happen on it. For example, a cell that is accessed by alternating reads and writes now becomes fireworks of greens and reds, and with their overlap colored yellow. In the same way, a cell that is accessed by mostly reading and sometimes writing will be colored mostly green (reads) with a small amount of red (writes). This display gives visual cues to the access patterns of an individual cell in the same way that history trails gives access patterns to different memory cells.
   
   \subsubsection{Interaction}
     The first level of interaction with this memory map is through watching an animation play back. The set of visual cues we've described leads to interesting events being very obvious, and begging further inspection. We provide a time slider to show progress over time and interacting with the current point in time.
+    
+      \begin{figure}[t]
+  		\centering
+      \includegraphics[scale=0.40]{images/array_fireworks.png}
+  		\caption{Interaction happens primarily through the play/pause button, stepping the code with the keyboard, or scrubbing the time slider.}
+      \label{fig:fireworks}
+  	\end{figure}
+
     
     We provide controls to pause the animation, and scrub through time or step forwards and backwards in time. By scrubbing an event you can roll up into a higher level view of quickly moving through accesses to compare memory behavior over larger chunks of time. If a locally interesting event happens, stepping over it gives time to mentally reason about the behavior.
     
@@ -311,15 +317,14 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 
   	\begin{figure}[t]
   		\centering
-      Code Context
-      %\includegraphics[scale=0.55]{figures/isa.pdf}
+      \includegraphics[scale=0.55]{images/context.png}
   		\caption{Code Context window showing the stacktrace of an event.}
-      \label{fig:system}
+      \label{fig:context}
   	\end{figure}
 
 
     Every event in a memory trace is caused by a single instruction with an associated context: the stacktrace which produced it.
-    This information is extremely valuable.
+    This information is extremely valuable, and shown in figure \ref{fig:context}.
     It allows the user to associate behavior in the memory map visualization (both good and bad) 
       with the source code that produced it.
     Accordingly, we display stack traces for every frame in the memory map visualization, 
@@ -339,9 +344,8 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 
   	\begin{figure}[t]
   		\centering
-      Aggregate Display 1
-      %\includegraphics[scale=0.55]{figures/isa.pdf}
-  		\caption{Aggregate Display 1}
+      \includegraphics[scale=0.40]{images/histo.png}
+  		\caption{Histogram showing memory access strides}
       \label{fig:system}
   	\end{figure}
 
@@ -358,9 +362,8 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
     
     \begin{figure}[t]
   		\centering
-      Agregate Display 2
-      %\includegraphics[scale=0.55]{figures/isa.pdf}
-  		\caption{Aggregate Display 2}
+      \includegraphics[scale=0.40]{images/line.png}
+  		\caption{Line graph showing memory accesses for a context over all time}
       \label{fig:system}
   	\end{figure}
 
@@ -381,8 +384,7 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 
 	\begin{figure}[t]
 		\centering
-    SYSTEM DIAGRAM
-    %\includegraphics[scale=0.55]{figures/isa.pdf}
+    \includegraphics[scale=0.55]{images/SystemDiag.pdf}
 		\caption{The implementation of PerVERT.}
     \label{fig:system}
 	\end{figure}
@@ -503,24 +505,55 @@ We present PerVERT, an instrumentation framework for logging a process's virtual
 
   \subsection{Variants}
   
+  \begin{figure}[t]
+		\centering
+    \includegraphics[scale=0.45]{images/example_array.png}
+		\caption{C Array example}
+    \label{fig:example_array}
+	\end{figure}
+  
   \subsubsection{C Array}
-  For this example we inserted and read a set of integers into and from a C array.
+  For this example we inserted and read a set of integers into and from a C array, shown in figure \ref{fig:example_array}.
   
   In the C++ Array view, the animation reveals two distinct sections of the code's behavior. Initially a linear progression of writes to memory occur as values gets inserted into the array. Once this is complete, a second linear pass over the array reads values back. 
 
   \subsubsection{C++ STL Vector}
-  For this example we inserted and read a set of integers into and from a C++ vector.
+  
+  \begin{figure}[t]
+		\centering
+    \includegraphics[scale=0.45]{images/example_vector.png}
+		\caption{C++ STL vector example}
+    \label{fig:example_array}
+	\end{figure}
+  
+  For this example we inserted and read a set of integers into and from a C++ vector, shown in figure \ref{fig:example_vector}.
   
   The vector starts off as a short 4-element array. As values are written to this array, the dynamic resizing of the array and the cost associated with that can immediately be seen: after 4 writes, a new array is allocated and all the previous values are copied to this longer array. This pattern of inserts, followed by enlarge and copy, now makes up the first section of the array. The same behavior of the array's second section can still be seen, where a linear read of the entire final array happens.
 
   \subsubsection{C++ STL Map}
-  For this example we inserted and read a set of integers into and from a C++ map.
+  
+  \begin{figure}[t]
+		\centering
+    \includegraphics[scale=0.45]{images/example_map.png}
+		\caption{C++ STL map example}
+    \label{fig:example_map}
+	\end{figure}
+
+  For this example we inserted and read a set of integers into and from a C++ map, shown in figure \ref{fig:example_map}.
   
   The map approach has similarities to the STL vector, where lots of resizing and copying can be seen. As the animation is viewed, every insert starts with a traversal of multiple cache lines before it finds the part of the map that stores the bucket for the given item. Once the insert happens, multiple writes occur as it inserts and sorts the bucket list. 
   Reads out of the map also is a significantly more complicated algorithm now - multiple cache lines are traversed to find the appropriate bucket, the bucket is searched for the item, and the item is returned.
 
   \subsubsection{Haskell List}
-  For this example we inserted and read a set of integers into and from a haskell list.
+  
+  \begin{figure}[t]
+		\centering
+    \includegraphics[scale=0.45]{images/example_haskell.png}
+		\caption{Haskell example}
+    \label{fig:example_array}
+	\end{figure}
+
+  For this example we inserted and read a set of integers into and from a haskell list, shown in figure \ref{fig:example_haskell}.
   
   Since we are language agnostic, we used the tool to inspect haskell code that performs the same operation. In this case there is a significant amount of startup accesses happening, which appear to initialize the haskell environment. A linear array still gets built, but bookkeeping happens at the beginning and end of every access. This display makes it very obvious where haskell incurs an overhead above the equivalent C++ implementation.
   
