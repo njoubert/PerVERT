@@ -118,6 +118,7 @@ function handlePollFail() {
 function doPoll() {
   var exec = getParameterByName("exec");
   if (exec == "") {
+    handlePollFail();
     setTimeout(doPoll,2000);
   } else {
     $.ajax('/f/status?exec='+exec,
