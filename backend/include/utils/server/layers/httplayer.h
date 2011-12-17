@@ -4,19 +4,18 @@
 //  Created by Niels Joubert on 2011-11-30.
 //
 
-#ifndef PERVERT_APP_HTTPLAYER_H_
-#define PERVERT_APP_HTTPLAYER_H_
+#ifndef _UTILS_SERVER_LAYERS_HTTPLAYER_H_
+#define _UTILS_SERVER_LAYERS_HTTPLAYER_H_
 
 #include <iostream>
 #include <fstream>
 
-#include "pervert/server/server.h"
+#include "utils/server/layer.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
+namespace Layers {
 	
-using namespace Utils;
-
 /* This is an intermediate layer object that provides an API to return HTTP data. */
 class HTTPLayer : public Layer {
 public:	
@@ -42,9 +41,9 @@ private:
 
 };
 
-
+} /* namespace Layer */
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */
 
 
-#endif /* PERVERT_APP_HTTPLAYER_H_ */ 
+#endif /* _UTILS_SERVER_LAYERS_HTTPLAYER_H_ */ 

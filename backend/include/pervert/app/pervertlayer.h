@@ -10,7 +10,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "pervert/server/jsonlayer.h"
+#include "utils/server/layers/jsonlayer.h"
 #include "utils/log.h"
 #include "pervert/app/datamanager.h"
 
@@ -20,7 +20,7 @@ namespace App {
 	
 using namespace Utils;
 
-class PervertLayer : public Server::JSONLayer {
+class PervertLayer : public Server::Layers::JSONLayer {
 public:
 	PervertLayer();
 	void handle(Server::Request* req, Server::Response* res);
@@ -48,7 +48,7 @@ private:
 };
 
 
-} /* namespace Server */
+} /* namespace App */
 } /* namespace PerVERT */
 
 

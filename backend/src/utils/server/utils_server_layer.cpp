@@ -1,7 +1,7 @@
-#include "pervert/server/layer.h"
-#include "pervert/server/server.h"
+#include "utils/server/layer.h"
+#include "utils/server/server.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
 
 void Layer::init() {
@@ -21,4 +21,4 @@ void Layer::setServer(Server* server) {
 }
 
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */

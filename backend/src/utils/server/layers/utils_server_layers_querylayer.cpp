@@ -1,8 +1,9 @@
-#include "pervert/server/querylayer.h"
+#include "utils/server/layers/querylayer.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
-
+namespace Layers {
+	
 bool QueryData::exists(string value) {
 	return _data.count(value) > 0;
 }
@@ -67,5 +68,7 @@ const char* QueryLayer::name() {
 	return "QueryLayer";
 }
 
+} /* namespace Layer */
 } /* namespace Server */
 } /* namespace PerVERT */
+

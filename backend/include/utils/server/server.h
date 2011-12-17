@@ -4,18 +4,16 @@
 //  Created by Niels Joubert on 2011-11-30.
 //
 
-#ifndef PERVERT_SERVER_SERVER_H_
-#define PERVERT_SERVER_SERVER_H_
+#ifndef _UTILS_SERVER_SERVER_H_
+#define _UTILS_SERVER_SERVER_H_
 
-#include "pervert/server/globals.h"
-#include "pervert/server/layer.h"
+#include "utils/server/globals.h"
+#include "utils/server/layer.h"
 #include <vector>
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
 	
-using namespace Utils;
-
 class Server {
 public:
 	//using Meyers singleton pattern
@@ -50,7 +48,7 @@ private:
 
 	
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */
 
 
-#endif /* PERVERT_SERVER_SERVER_H_ */ 
+#endif /* _UTILS_SERVER_SERVER_H_ */ 

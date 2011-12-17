@@ -4,19 +4,20 @@
 //  Created by Niels Joubert on 2011-12-07.
 //
 
-#ifndef PERVERT_APP_JSONLAYER_H_
-#define PERVERT_APP_JSONLAYER_H_
+#ifndef _UTILS_SERVER_LAYERS_JSONLAYER_H_
+#define _UTILS_SERVER_LAYERS_JSONLAYER_H_
 
 #include <iostream>
 #include <fstream>
 #include "json/json.h"
 
-#include "pervert/server/httplayer.h"
+#include "utils/server/layers/httplayer.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
+namespace Layers {
+
 	
-using namespace Utils;
 using ::Json::Value;
 using ::Json::Reader;
 using ::Json::Writer;
@@ -37,8 +38,9 @@ private:
 };
 
 
+} /* namespace Layer */
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */
 
 
-#endif /* PERVERT_APP_JSONLAYER_H_ */ 
+#endif /* _UTILS_SERVER_LAYERS_JSONLAYER_H_ */ 

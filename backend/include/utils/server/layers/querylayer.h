@@ -4,18 +4,19 @@
 //  Created by Niels Joubert on 2011-11-30.
 //
 
-#ifndef PERVERT_SERVER_QUERY_H_
-#define PERVERT_SERVER_QUERY_H_
+#ifndef _UTILS_SERVER_LAYERS_QUERYLAYER_H_
+#define _UTILS_SERVER_LAYERS_QUERYLAYER_H_
 
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <map>
 
-#include "pervert/server/server.h"
+#include "utils/server/layer.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
-	
-using namespace Utils;
+namespace Layers {
 
 struct QueryData : public Metadata {
 	bool exists(string value);
@@ -37,12 +38,13 @@ public:
 private:
 	Log& _log;
 
-	
 };
 
 
+} /* namespace Layer */
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */
 
 
-#endif /* PERVERT_SERVER_QUERY_H_ */ 
+
+#endif /* _UTILS_SERVER_LAYERS_QUERYLAYER_H_ */ 

@@ -6,8 +6,8 @@
 //  Copyright (c) 2011 Niels Joubert. All rights reserved.
 //
 
-#ifndef LOG_H_
-#define LOG_H_
+#ifndef _UTILS_LOG_H_
+#define _UTILS_LOG_H_
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -68,4 +68,4 @@ private:
 } /* namespace Utils */
 
 
-#endif  // LOG_H_
+#endif  // _UTILS_LOG_H_

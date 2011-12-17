@@ -4,11 +4,11 @@
 //  Created by Niels Joubert on 2011-01-21.
 //  Copyright (c) 2011 Niels Joubert. All rights reserved.
 //
-#ifndef PERVERT_SERVER_CONFIG_H_
-#define PERVERT_SERVER_CONFIG_H_
+#ifndef _UTILS_SERVER_CONFIG_H_
+#define _UTILS_SERVER_CONFIG_H_
 
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
 		
 struct Config {
@@ -21,4 +21,4 @@ struct Config {
 } /* namespace Server */
 } /* namespace PerVERT */
 
-#endif  // PERVERT_SERVER_CONFIG_H_
+#endif  // _UTILS_SERVER_CONFIG_H_

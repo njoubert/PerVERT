@@ -1,5 +1,5 @@
 #include "pervert/app/pervertlayer.h"
-#include "pervert/server/querylayer.h"
+#include "utils/server/layers/querylayer.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -26,7 +26,7 @@ void PervertLayer::writePollResponse(Server::Request* req, Server::Response* res
 	write200Response(req,res,TEXT_PLAIN,buffer,strlen(buffer));
 }
 void PervertLayer::f_status(Server::Request* req, Server::Response* res) {
-	Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+	Server::Layers::QueryData* query = (Server::Layers::QueryData*) res->getMetadata("query");
 	if (query == NULL ||
 		!query->exists("exec")) {
 		return writeStatusAndEnd(req,res,500);
@@ -49,7 +49,7 @@ void PervertLayer::f_status(Server::Request* req, Server::Response* res) {
 
 void PervertLayer::pp_update(Server::Request* req, Server::Response* res) {
 	_log.log(LOG_STATUS, "pp_update called\n");	
-	Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+	Server::Layers::QueryData* query = (Server::Layers::QueryData*) res->getMetadata("query");
 	if (query == NULL ||
 		!query->exists("exec") ||
 		!query->exists("logs")) {
@@ -95,7 +95,7 @@ void PervertLayer::pp_list(Server::Request* req, Server::Response* res) {
 	
 }
 void PervertLayer::f_counts(Server::Request* req, Server::Response* res) {
-  Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+  Server::Layers::QueryData* query = (Server::Layers::QueryData*) res->getMetadata("query");
 	if (query == NULL || !query->exists("exec")) 
 		return writeStatusAndEnd(req,res,500);
   
@@ -118,7 +118,7 @@ void PervertLayer::f_counts(Server::Request* req, Server::Response* res) {
   writeJSONResponse(req,res,root);
 }
 void PervertLayer::f_mem_status(Server::Request* req, Server::Response* res) {
-  Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+  Server::Layers::QueryData* query = (Server::Layers::QueryData*) res->getMetadata("query");
 	if (query == NULL || !query->exists("exec") || !query->exists("frame") || !query->exists("window")) 
 		return writeStatusAndEnd(req,res,500);
   
@@ -180,7 +180,7 @@ void PervertLayer::f_mem_status(Server::Request* req, Server::Response* res) {
   writeJSONResponse(req,res,root);
 }
 void PervertLayer::f_context_stack(Server::Request* req, Server::Response* res) {
-  Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+  Server::Layers::QueryData* query = (Server::Layers::QueryData*) res->getMetadata("query");
 	if (query == NULL || !query->exists("exec") || !query->exists("frame")) 
 		return writeStatusAndEnd(req,res,500);
 
@@ -213,7 +213,7 @@ void PervertLayer::f_context_stack(Server::Request* req, Server::Response* res) 
   writeJSONResponse(req,res,root);
 }
 void PervertLayer::f_context_events(Server::Request* req, Server::Response* res) {
-  Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+  Server::Layers::QueryData* query = (Server::Layers::QueryData*) res->getMetadata("query");
 	if (query == NULL || !query->exists("exec") || !query->exists("frame")) 
 		return writeStatusAndEnd(req,res,500);
 
@@ -274,7 +274,7 @@ void PervertLayer::f_context_events(Server::Request* req, Server::Response* res)
 }
 
 void PervertLayer::f_context_deriv(Server::Request* req, Server::Response* res) {
-  Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+  Server::Layers::QueryData* query = (Server::Layers::QueryData*) res->getMetadata("query");
 	if (query == NULL || !query->exists("exec") || !query->exists("frame")) 
 		return writeStatusAndEnd(req,res,500);
 
@@ -317,7 +317,7 @@ void PervertLayer::f_context_deriv(Server::Request* req, Server::Response* res) 
 }
 
 void PervertLayer::f_context_histo(Server::Request* req, Server::Response* res) {
-  Server::QueryData* query = (Server::QueryData*) res->getMetadata("query");
+  Server::Layers::QueryData* query = (Server::Layers::QueryData*) res->getMetadata("query");
 	if (query == NULL || !query->exists("exec") || !query->exists("frame")) 
 		return writeStatusAndEnd(req,res,500);
 

@@ -4,17 +4,15 @@
 //  Created by Niels Joubert on 2011-11-30.
 //
 
-#ifndef PERVERT_SERVER_LAYER_H_
-#define PERVERT_SERVER_LAYER_H_
+#ifndef _UTILS_SERVER_LAYER_H_
+#define _UTILS_SERVER_LAYER_H_
 
-#include "pervert/server/globals.h"
-#include "pervert/server/requestresponse.h"
+#include "utils/server/globals.h"
+#include "utils/server/requestresponse.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
 	
-using namespace Utils;
-
 class Server;
 
 class Layer {
@@ -39,7 +37,7 @@ private:
 };
 
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */
 
 
-#endif /* PERVERT_SERVER_LAYER_H_ */ 
+#endif /* _UTILS_SERVER_LAYER_H_ */ 

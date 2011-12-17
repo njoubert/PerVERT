@@ -1,9 +1,11 @@
-#include "pervert/server/loggerlayer.h"
+#include "utils/server/layers/loggerlayer.h"
+
 #include <arpa/inet.h>
 #include <sys/time.h>
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
+namespace Layers {
 
 struct LoggerMetadata : public Metadata {
 	timeval starttime;
@@ -63,5 +65,7 @@ const char* LoggerLayer::name() {
 	return "LoggerLayer";
 }
 
+} /* namespace Layer */
 } /* namespace Server */
 } /* namespace PerVERT */
+

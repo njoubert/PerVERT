@@ -1,6 +1,6 @@
-#include "pervert/server/server.h"
+#include "utils/server/server.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
 
 static void *event_handler(enum mg_event event,
@@ -105,4 +105,4 @@ int Server::handleRequest(enum mg_event event,
 }
 
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */

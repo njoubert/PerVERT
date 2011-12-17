@@ -4,19 +4,17 @@
 //  Created by Niels Joubert on 2011-11-30.
 //
 
-#ifndef PERVERT_APP_STATICLAYER_H_
-#define PERVERT_APP_STATICLAYER_H_
+#ifndef _UTILS_SERVER_LAYERS_STATICLAYER_H_
+#define _UTILS_SERVER_LAYERS_STATICLAYER_H_
 
 #include <iostream>
 #include <fstream>
 
-#include "pervert/server/server.h"
-#include "pervert/server/httplayer.h"
+#include "utils/server/layers/httplayer.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
-	
-using namespace Utils;
+namespace Layers {
 
 class StaticLayer : public HTTPLayer {
 public:
@@ -29,8 +27,9 @@ private:
 };
 
 
+} /* namespace Layer */
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */
 
 
-#endif /* PERVERT_APP_STATICLAYER_H_ */ 
+#endif /* _UTILS_SERVER_LAYERS_STATICLAYER_H_ */ 

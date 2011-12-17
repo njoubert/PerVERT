@@ -4,12 +4,12 @@
 //  Created by Niels Joubert on 2011-12-01 !!!
 //
 
-#ifndef PERVERT_SERVER_REQUESTRESPONSE_H_
-#define PERVERT_SERVER_REQUESTRESPONSE_H_
+#ifndef _UTILS_SERVER_REQUESTRESPONSE_H_
+#define _UTILS_SERVER_REQUESTRESPONSE_H_
 
-#include "pervert/server/globals.h"
+#include "utils/server/globals.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
 	
 enum ResponseStatus { NONE, FIRSTHEADER, HEADERS, DATA, CLOSED };
@@ -47,7 +47,7 @@ private:
 
 	
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */
 
 
-#endif /* PERVERT_SERVER_REQUEST_H_ */ 
+#endif /* _UTILS_SERVER_REQUESTRESPONSE_H_ */ 

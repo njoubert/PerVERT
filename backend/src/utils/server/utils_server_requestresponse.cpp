@@ -1,6 +1,6 @@
-#include "pervert/server/requestresponse.h"
+#include "utils/server/requestresponse.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
 
 /***************************************************************************
@@ -41,4 +41,4 @@ Metadata* Response::getMetadata(string name) {
 
 
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */

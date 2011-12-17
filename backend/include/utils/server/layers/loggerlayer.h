@@ -4,18 +4,17 @@
 //  Created by Niels Joubert on 2011-11-30.
 //
 
-#ifndef PERVERT_SERVER_LOGGER_H_
-#define PERVERT_SERVER_LOGGER_H_
+#ifndef _UTILS_SERVER_LAYERS_LOGGERLAYER_H_
+#define _UTILS_SERVER_LAYERS_LOGGERLAYER_H_
 
 #include <iostream>
 #include <fstream>
 
-#include "pervert/server/server.h"
+#include "utils/server/layer.h"
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
-	
-using namespace Utils;
+namespace Layers {
 
 enum LoggerLayerLevel { TINY, BIG };
 
@@ -35,8 +34,10 @@ private:
 };
 
 
+} /* namespace Layer */
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */
 
 
-#endif /* PERVERT_SERVER_LOGGER_H_ */ 
+
+#endif /* _UTILS_SERVER_LAYERS_LOGGERLAYER_H_ */ 

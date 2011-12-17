@@ -1,10 +1,12 @@
-#include "pervert/server/httplayer.h"
+#include "utils/server/layers/httplayer.h"
+
 #include <sys/times.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
+namespace Layers {
 
 static const char* content_type_to_string[] = {
 	"unknown",
@@ -65,6 +67,6 @@ void HTTPLayer::write200Response(Request* req, Response* res, CONTENT_TYPE ct, c
 }
 
 
-
+} /* namespace Layer */
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Util */

@@ -5,8 +5,8 @@
 //  Copyright (c) 2011 Niels Joubert. All rights reserved.
 //
 
-#ifndef PERVERT_SERVER_GLOBALS_H_
-#define PERVERT_SERVER_GLOBALS_H_
+#ifndef _UTILS_SERVER_GLOBALS_H_
+#define _UTILS_SERVER_GLOBALS_H_
 
 #include <cstring>
 #include <cstdio>
@@ -19,4 +19,4 @@
 #include "utils/log.h"
 
 
-#endif  // PERVERT_SERVER_GLOBALS_H_
+#endif  // _UTILS_SERVER_GLOBALS_H_

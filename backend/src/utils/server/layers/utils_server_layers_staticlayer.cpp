@@ -1,10 +1,12 @@
-#include "pervert/server/staticlayer.h"
+#include "utils/server/layers/staticlayer.h"
+
 #include <sys/times.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
+namespace Layers {
 
 
 StaticLayer::StaticLayer(const char* httproot, unsigned int maxfilesize) {
@@ -70,5 +72,6 @@ const char* StaticLayer::name() {
 	return "StaticLayer";
 }
 
+} /* namespace Layer */
 } /* namespace Server */
 } /* namespace PerVERT */

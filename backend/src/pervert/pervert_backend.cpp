@@ -1,11 +1,12 @@
 #include <cstring>
 
+#include "utils/server/server.h"
+#include "utils/server/config.h"
+#include "utils/server/layers/loggerlayer.h"
+#include "utils/server/layers/staticlayer.h"
+#include "utils/server/layers/querylayer.h"
+
 #include "pervert/backend.h"
-#include "pervert/server/server.h"
-#include "pervert/server/config.h"
-#include "pervert/server/loggerlayer.h"
-#include "pervert/server/staticlayer.h"
-#include "pervert/server/querylayer.h"
 #include "pervert/app/pervertlayer.h"
 
 namespace PerVERT {
@@ -58,10 +59,10 @@ void init(Server::Config *config) {
 	//you HAVE to initialize this code BEFORE you daemonize, since 
 	//daemonizing changes the current directory  to avoid locking a dir.
 	Server::Server &server = PerVERT::Server::Server::Instance();
-	server.registerLayer(new Server::LoggerLayer(Server::TINY,"server.log"));
-	server.registerLayer(new Server::QueryLayer());
+	server.registerLayer(new Server::Layers::LoggerLayer(Server::Layers::TINY,"server.log"));
+	server.registerLayer(new Server::Layers::QueryLayer());
 	server.registerLayer(new App::PervertLayer());
-	server.registerLayer(new Server::StaticLayer("/../frontend",10485760));
+	server.registerLayer(new Server::Layers::StaticLayer("/../frontend",10485760));
 
 
 	if (config->makeDaemon) {

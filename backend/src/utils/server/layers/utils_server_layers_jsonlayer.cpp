@@ -1,11 +1,13 @@
-#include "pervert/server/jsonlayer.h"
+#include "utils/server/layers/jsonlayer.h"
+
 #include <sys/times.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
-namespace PerVERT {
+namespace Utils {
 namespace Server {
-	
+namespace Layers {
+
 using namespace ::Json;
 
 void JSONLayer::writeJSONResponse(Request* req, Response* res, const Value& value) {
@@ -14,5 +16,7 @@ void JSONLayer::writeJSONResponse(Request* req, Response* res, const Value& valu
 	write200Response(req, res, APP_JSON, out.c_str(), out.length());
 }
 	
+} /* namespace Layer */
 } /* namespace Server */
 } /* namespace PerVERT */
+
