@@ -1,0 +1,15 @@
+#!/bin/bash
+
+./pervert_debug array1  /Users/njoubert/Code/PerVERT/testdata/array1.o/1323658810
+./pervert_debug array2  /Users/njoubert/Code/PerVERT/testdata/array2.o/1323658824
+# ./pervert_debug array3  /Users/njoubert/Code/PerVERT/testdata/array3.o/1323658850
+./pervert_debug list1   /Users/njoubert/Code/PerVERT/testdata/list1.o/1323658812
+./pervert_debug list2   /Users/njoubert/Code/PerVERT/testdata/list2.o/1323658825
+# ./pervert_debug list3   /Users/njoubert/Code/PerVERT/testdata/list3.o/1323658857
+./pervert_debug map1    /Users/njoubert/Code/PerVERT/testdata/map1.o/1323658815
+./pervert_debug map2    /Users/njoubert/Code/PerVERT/testdata/map2.o/1323658831
+# ./pervert_debug map3    /Users/njoubert/Code/PerVERT/testdata/map3.o/1323658869
+./pervert_debug stack1  /Users/njoubert/Code/PerVERT/testdata/stack1.o/1323658822
+./pervert_debug vector1 /Users/njoubert/Code/PerVERT/testdata/vector1.o/1323658823
+./pervert_debug vector2 /Users/njoubert/Code/PerVERT/testdata/vector2.o/1323658849
+#./pervert_debug vector3 /Users/njoubert/Code/PerVERT/testdata/vector3.o/1323658901
