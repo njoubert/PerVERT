@@ -5,3 +5,6 @@ backend/server
 *.log
 *.err
 *.pid
+*.aux
+*.bbl
+*.blg
