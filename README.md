@@ -1,6 +1,9 @@
 # PerVERT: Performance Visualization and Error Remediation Toolkit
 
-Authors: Niels Joubert [@njoubert](http://github.com/njoubert), Eric Schkufza [@eschkufz](https://github.com/eschkufz)
+**Authors:**
+ 
+- Niels Joubert [@njoubert](http://github.com/njoubert)
+- Eric Schkufza [@eschkufz](https://github.com/eschkufz)
 
 This is a class project for Prof. Jeff Heer's CS448B class at Stanford. 
 
