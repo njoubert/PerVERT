@@ -14,7 +14,7 @@ CXXFILES           := $(UTILS_CXXFILES) $(PERVERT_CXXFILES) $(JSON_CXXFILES)
 JSON_HEADERS     := $(shell find $(INCLUDEDIR)/json -type f -name '*.h')
 UTILS_HEADERS     := $(shell find $(INCLUDEDIR)/utils -type f -name '*.h')
 PERVERT_HEADERS   := $(shell find $(INCLUDEDIR)/pervert -type f -name '*.h')
-HEADERS            := $(UTILS_HEADERS) $(SERVER_HEADERS) $(JSON_HEADERS)
+HEADERS            := $(UTILS_HEADERS) $(PERVERT_HEADERS) $(JSON_HEADERS)
 
 CFLAGS      := -W -Wall -I -pthread -g
 INCLUDE := -I$(INCLUDEDIR)/ -Ilib/
