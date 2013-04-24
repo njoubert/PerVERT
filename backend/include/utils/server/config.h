@@ -19,6 +19,6 @@ struct Config {
 };
 
 } /* namespace Server */
-} /* namespace PerVERT */
+} /* namespace Utils */
 
 #endif  // _UTILS_SERVER_CONFIG_H_

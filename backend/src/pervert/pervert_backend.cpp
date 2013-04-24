@@ -58,7 +58,7 @@ void init(Server::Config *config) {
 	//If you want to use relative paths to the current running directory,
 	//you HAVE to initialize this code BEFORE you daemonize, since 
 	//daemonizing changes the current directory  to avoid locking a dir.
-	Server::Server &server = PerVERT::Server::Server::Instance();
+	Server::Server &server = Server::Server::Instance();
 	server.registerLayer(new Server::Layers::LoggerLayer(Server::Layers::TINY,"server.log"));
 	server.registerLayer(new Server::Layers::QueryLayer());
 	server.registerLayer(new App::PervertLayer());
@@ -106,7 +106,7 @@ void usage() {
 
 int main(int argc, char *argv[]) {
 	
-	PerVERT::Server::Config config;
+	Utils::Server::Config config;
 	
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i],"--daemon") == 0) {
