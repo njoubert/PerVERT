@@ -7,7 +7,12 @@
 #ifndef PERVERT_BACKEND_H_
 #define PERVERT_BACKEND_H_
 
+#ifdef __APPLE__
+#include <memory>
+#else
 #include <tr1/memory>
+#endif
+
 #include <vector>
 #include <cstdio>
 
